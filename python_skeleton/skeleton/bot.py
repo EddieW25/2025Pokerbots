@@ -2,16 +2,11 @@
 This file contains the base class that you should implement for your pokerbot.
 '''
 
-from skeleton.actions import FoldAction, CallAction, CheckAction, RaiseAction
-from skeleton.states import GameState, TerminalState, RoundState
-from skeleton.states import NUM_ROUNDS, STARTING_STACK, BIG_BLIND, SMALL_BLIND
-from skeleton.bot import Bot
-from skeleton.runner import parse_args, run_bot
+from .actions import *
+from .states import *
 
-import random
 import eval7 as val
-import itertools
-from eval7 import py_hand_vs_range_monte_carlo
+from eval7 import py_hand_vs_range_monte_carlo 
 
 NUM_SIMULATIONS = 100_000
 
@@ -60,22 +55,15 @@ class Bot():
         my_bounty_hit = terminal_state.bounty_hits[active]  # True if you hit bounty
         opponent_bounty_hit = terminal_state.bounty_hits[1-active] # True if opponent hit bounty
 
-    def generate_possible_hands(deck, n):
-        if n <= 0:
-            raise ValueError("n must be a positive integer.")
-        if n > len(deck.cards):
-            raise ValueError(f"Cannot generate hands with {n} cards from a deck of {len(deck.cards)} cards.")
-
-        # Use itertools.combinations to generate all possible n-card combinations
-        # This returns tuples of eval7.Card objects
+    def generate_possible_hands(self, deck, n):
         ls = []
-        for i in range(len(deck.cards)):
-            for j in range(len(deck.cards)):
+        for i in range(len(deck)):
+            for j in range(len(deck)):
                 if i == j:
                     continue
                 temp = []
-                temp.append(deck.cards[i])
-                temp.append(deck.cards[j])
+                temp.append(deck[i])
+                temp.append(deck[j])
                 ls.append([temp])
         return ls
 
@@ -111,32 +99,38 @@ class Bot():
            min_cost = min_raise - my_pip  # the cost of a minimum bet/raise
            max_cost = max_raise - my_pip  # the cost of a maximum bet/raise
 
+        # newDeck = val.Deck()
+        hand = [val.Card(s) for s in my_cards+board_cards]
         deck = val.Deck()
-        hand = my_cards+board_cards
-        bounty_hit = False
-        if my_bounty in hand:
-            bounty_hit = True
-        eval = val.evaluate(hand)
         for card in hand:
             deck.cards.remove(card)
 
         # Define the opponent's range as all possible two-card combinations remaining in the deck
-        opponent_range = Bot.generate_possible_hands(deck, 2)
+        opponent_range = self.generate_possible_hands(deck, 2)
+        MY_CARDS = [val.Card(s) for s in my_cards]
+        BOARD_CARDS = [val.Card(s) for s in board_cards]
 
-        equity = py_hand_vs_range_monte_carlo(my_cards, opponent_range, board_cards, NUM_SIMULATIONS)
+        equity = py_hand_vs_range_monte_carlo(MY_CARDS, opponent_range, BOARD_CARDS, NUM_SIMULATIONS)
         # print(f"Your equity on the flop is approximately {equity:.2f}")
 
-        board_total = my_pip+opp_pip
+        board_total = my_contribution+opp_contribution
+
+        bounty_hit = False
+        if my_bounty in hand:
+            bounty_hit = True
+
         if not bounty_hit: 
             pot_odds = (continue_cost)/(board_total+continue_cost)
-            min_raise_pot_odds = (min_cost)/(board_total+min_cost)
-            # add 3x raise, 6x raise, 10x raise etc. 
-            all_in_pot_odds = (max_cost)/(board_total+max_cost)
+            if RaiseAction in legal_actions:
+                min_raise_pot_odds = (min_cost)/(board_total+min_cost)
+                # add 3x raise, 6x raise, 10x raise etc. 
+                all_in_pot_odds = (max_cost)/(board_total+max_cost)
         else: 
             pot_odds = (continue_cost)/(1.5*(board_total+continue_cost)+10)
-            min_raise_pot_odds = (min_cost)/(1.5*(board_total+min_cost)+10)
-            # add 3x raise, 6x raise, 10x raise etc. 
-            all_in_pot_odds = (max_cost)/(1.5*(board_total+max_cost)+10)
+            if RaiseAction in legal_actions:
+                min_raise_pot_odds = (min_cost)/(1.5*(board_total+min_cost)+10)
+                # add 3x raise, 6x raise, 10x raise etc. 
+                all_in_pot_odds = (max_cost)/(1.5*(board_total+max_cost)+10)
 
         # somewhat gto bot
 
@@ -155,13 +149,13 @@ class Bot():
             
         # call equity
         if (equity > pot_odds+call_threshold and CallAction in legal_actions):
-            return CallAction
+            return CallAction()
         
         # check/fold
         if CheckAction in legal_actions: 
-            return CheckAction
+            return CheckAction()
         else: 
-            return FoldAction
+            return FoldAction()
 
         
         # # ALL IN BOT
