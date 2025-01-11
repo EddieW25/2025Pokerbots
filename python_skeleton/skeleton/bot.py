@@ -13,7 +13,7 @@ import eval7 as val
 import itertools
 from eval7 import py_hand_vs_range_monte_carlo
 
-NUM_SIMULATIONS = 1_000_000
+NUM_SIMULATIONS = 100_000
 
 class Bot():
     '''
@@ -69,10 +69,13 @@ class Bot():
         # Use itertools.combinations to generate all possible n-card combinations
         # This returns tuples of eval7.Card objects
         ls = []
-        for hand in itertools.combinations(deck.cards, n):
-            temp = []
-            for card in hand:
-                temp.append(card)
+        for i in range(len(deck.cards)):
+            for j in range(len(deck.cards)):
+                if i == j:
+                    continue
+                temp = []
+                temp.append(deck.cards[i])
+                temp.append(deck.cards[j])
                 ls.append([temp])
         return ls
 
@@ -109,12 +112,12 @@ class Bot():
            max_cost = max_raise - my_pip  # the cost of a maximum bet/raise
 
         deck = val.Deck()
-        hand = my_cards+board_cards # idk if this is correct syntax
+        hand = my_cards+board_cards
         bounty_hit = False
         if my_bounty in hand:
             bounty_hit = True
         eval = val.evaluate(hand)
-        for card in my_cards:
+        for card in hand:
             deck.cards.remove(card)
 
         # Define the opponent's range as all possible two-card combinations remaining in the deck
@@ -126,19 +129,20 @@ class Bot():
         board_total = my_pip+opp_pip
         if not bounty_hit: 
             pot_odds = (continue_cost)/(board_total+continue_cost)
-            min_raise_pot_odds = (min_raise)/(board_total+min_raise)
+            min_raise_pot_odds = (min_cost)/(board_total+min_cost)
             # add 3x raise, 6x raise, 10x raise etc. 
-            all_in_pot_odds = (max_raise)/(board_total+max_raise)
+            all_in_pot_odds = (max_cost)/(board_total+max_cost)
         else: 
             pot_odds = (continue_cost)/(1.5*(board_total+continue_cost)+10)
-            min_raise_pot_odds = (min_raise)/(1.5*(board_total+min_raise)+10)
+            min_raise_pot_odds = (min_cost)/(1.5*(board_total+min_cost)+10)
             # add 3x raise, 6x raise, 10x raise etc. 
-            all_in_pot_odds = (max_raise)/(1.5*(board_total+max_raise)+10)
+            all_in_pot_odds = (max_cost)/(1.5*(board_total+max_cost)+10)
 
         # somewhat gto bot
 
         # thresholds to include the fact that our opponent might have a good hand, variables subject to change
         all_in_threshold = 0.20
+        # specific_raise_threshold = 0.15
         min_raise_threshold = 0.10
         call_threshold = 0.03
 
@@ -160,7 +164,7 @@ class Bot():
             return FoldAction
 
         
-        # #ALL IN BOT
+        # # ALL IN BOT
         # if RaiseAction in legal_actions:
         #     return RaiseAction(max_raise)
         # if CallAction in legal_actions: 
@@ -168,6 +172,7 @@ class Bot():
         # else:
         #     return CheckAction
 
+        # # Random bot
         # if RaiseAction in legal_actions:
         #     if random.random() < 0.5:
         #         return RaiseAction(min_raise)
