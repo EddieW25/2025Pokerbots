@@ -37,8 +37,11 @@ class Bot():
         big_blind = bool(active)  # True if you are the big blind
         my_bounty = round_state.bounties[active]  # your current bounty rank
 
+        ## reset opp_bounty_prob
         if round_num % 25 == 1:
+            global opp_bounty_prob
             opp_bounty_prob = [1/13] * 13
+            print(f"RESET BOUNTY PROBABILITIES: {opp_bounty_prob}")
 
         pass
 
@@ -87,39 +90,31 @@ class Bot():
                     # If the rank is present in opp_hand, the bounty is definitely hit
                     likelihood = 1.0
                 else:
-                    if remaining_count == 0:
-                        # No remaining cards of this rank; bounty cannot be hit
+                    # Probability that at least one card in opponent's hand is of this rank
+                    # P(hit | rank) = 1 - P(no cards of rank in opponent's hand)
+                    # P(no cards of rank) = C(remaining_deck_size - remaining_count, 2) / C(remaining_deck_size, 2)
+                    try:
+                        combinations_total = math.comb(remaining_deck_size, 2)
+                        combinations_without_rank = math.comb(remaining_deck_size - remaining_count, 2)
+                        prob_no_rank = combinations_without_rank / combinations_total
+                        likelihood = 1.0 - prob_no_rank
+                    except ValueError:
+                        # Handle cases where remaining_deck_size < 2
                         likelihood = 0.0
-                    else:
-                        # Probability that at least one card in opponent's hand is of this rank
-                        # P(hit | rank) = 1 - P(no cards of rank in opponent's hand)
-                        # P(no cards of rank) = C(remaining_deck_size - remaining_count, 2) / C(remaining_deck_size, 2)
-                        try:
-                            combinations_total = math.comb(remaining_deck_size, 2)
-                            combinations_without_rank = math.comb(remaining_deck_size - remaining_count, 2)
-                            prob_no_rank = combinations_without_rank / combinations_total
-                            likelihood = 1.0 - prob_no_rank
-                        except ValueError:
-                            # Handle cases where remaining_deck_size < 2
-                            likelihood = 0.0
             else:
                 if count_seen > 0:
                     # If the rank is present in opp_hand, and bounty wasn't hit, this rank cannot be the bounty
                     likelihood = 0.0
                 else:
-                    if remaining_count == 0:
-                        # All cards of this rank have been seen; bounty couldn't be hit
+                    # Probability that no cards in opponent's hand are of this rank
+                    # P(not hit | rank) = C(remaining_deck_size - remaining_count, 2) / C(remaining_deck_size, 2)
+                    try:
+                        combinations_total = math.comb(remaining_deck_size, 2)
+                        combinations_without_rank = math.comb(remaining_deck_size - remaining_count, 2)
+                        likelihood = combinations_without_rank / combinations_total
+                    except ValueError:
+                        # Handle cases where remaining_deck_size < 2
                         likelihood = 1.0
-                    else:
-                        # Probability that no cards in opponent's hand are of this rank
-                        # P(not hit | rank) = C(remaining_deck_size - remaining_count, 2) / C(remaining_deck_size, 2)
-                        try:
-                            combinations_total = math.comb(remaining_deck_size, 2)
-                            combinations_without_rank = math.comb(remaining_deck_size - remaining_count, 2)
-                            likelihood = combinations_without_rank / combinations_total
-                        except ValueError:
-                            # Handle cases where remaining_deck_size < 2
-                            likelihood = 1.0
             
             # Multiply by the prior probability
             prior_prob = opp_bounty_prob[idx]
@@ -138,7 +133,8 @@ class Bot():
         # Normalize the probabilities so that they sum to 1
         updated_prob = [prob / total_unnormalized for prob in unnormalized_probs]
 
-        print(f"updated bounty probabilities: {updated_prob}")
+        for rank, prob in zip(ranks, updated_prob):
+            print(f"Rank {rank}: {prob:.2%}")
         return updated_prob
 
 
@@ -166,6 +162,7 @@ class Bot():
         opp_hand = board_cards+opp_cards
         OPP_HAND = [val.Card(s) for s in opp_hand]
         if my_delta < 0:
+            global opp_bounty_prob
             opp_bounty_prob = self.update_bounty_prob(OPP_HAND, opp_bounty_hit)
 
 
@@ -181,26 +178,83 @@ class Bot():
                 ls.append([temp])
         return ls
     
-    def calculate_pot_odds(self, opp_bounty_prob, equity, board_cards, is_raise, 
+    def compute_opp_bounty_hit_prob(self, opp_bounty_prob, my_cards, board_cards):
+
+        rank_to_index = {rank: i for i, rank in enumerate(ranks)}  
+        board_count = {r: 0 for r in ranks}
+        my_count    = {r: 0 for r in ranks}
+        
+        for card in board_cards:
+            # If card is '7c', card[0] = '7', card[1] = 'c'
+            # If you store suits differently, adjust accordingly.
+            r = card[0]  # rank character
+            if r in board_count:
+                board_count[r] += 1
+
+        for card in my_cards:
+            r = card[0]
+            if r in my_count:
+                my_count[r] += 1
+
+        # 2. Number of known cards = my_cards + board_cards
+        known_cards_count = len(my_cards) + len(board_cards)
+        unknown_deck_size = 52 - known_cards_count
+
+        opp_bounty_hit_prob = 0.0
+        
+        for r in ranks:
+            idx = rank_to_index[r]
+            # Probability that r is the opponent's bounty
+            p_bounty = opp_bounty_prob[idx]
+            if p_bounty <= 0.0:
+                # If we've already deduced it's impossible or extremely unlikely,
+                # no need to do more math
+                continue
+            
+            # 3. Count how many copies of rank r are definitely seen in your hand + board
+            total_seen = board_count[r] + my_count[r]
+            
+            # If the board already has at least 1 card of rank r,
+            # then the opponent's final 5-card hand definitely "hits" that rank
+            # (assuming we are at showdown or no more community cards to come).
+            if board_count[r] > 0:
+                p_hit_if_r = 1.0
+            else:
+                # Board does not show r.  The only way the opponent "hits" r
+                # is if at least 1 of their 2 unknown hole cards is r.
+                
+                # 4. remaining_count = how many copies of rank r are left unseen in the deck
+                remaining_count = 4 - total_seen
+                if remaining_count <= 0:
+                    # Means we've already accounted for all 4 copies in known cards,
+                    # so there's no way the opponent has it
+                    p_hit_if_r = 0.0
+                else:
+                    # Probability that the opponent has at least 1 copy of r 
+                    # in their 2 unknown hole cards
+                    #
+                    #   = 1 - [C(unknown_deck_size - remaining_count, 2) 
+                    #          / C(unknown_deck_size, 2)]
+                    #
+                    # (the complement of "none of the 2 hole cards are rank r")
+                    if unknown_deck_size < 2:
+                        # Edge case: if there's fewer than 2 unknown cards left in the deck
+                        # (very unusual in normal workflow, but let's be safe)
+                        p_hit_if_r = 0.0
+                    else:
+                        num_ways_without_r = math.comb(unknown_deck_size - remaining_count, 2)
+                        num_ways_total     = math.comb(unknown_deck_size, 2)
+                        p_no_r = num_ways_without_r / num_ways_total
+                        p_hit_if_r = 1.0 - p_no_r
+            
+            # 5. Weighted by the probability that the bounty *is* r
+            opp_bounty_hit_prob += p_bounty * p_hit_if_r
+
+        return opp_bounty_hit_prob
+
+    
+    def calculate_pot_odds(self, opp_bounty_prob, equity, my_cards, board_cards, is_raise, 
                             my_contribution, opp_contribution, cost, bounty_hit):
-        """
-        Calculate pot odds in Bounty Poker considering opponent's bounty probabilities and equity.
-        
-        Parameters:
-        - opp_bounty_prob (list of float): List of 13 probabilities for each rank being the opponent's bounty.
-                                        Order: ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-        - equity (float): Your equity in the hand, defined as 1 * P(win) + 0.5 * P(tie).
-        - cards_in_hand (list of str): Observed card ranks in your hand and on the board (e.g., ['2', '2', '4', '6']).
-        - usual_winnings (float): The usual pot size or expected winnings without considering the bounty.
-        - cost (float): The amount it costs to make the call.
-        
-        Returns:
-        - pot_odds (float): The ratio of expected value to cost.
-                            Interpretation:
-                                >1: Profitable call
-                                =1: Break-even
-                                <1: Unprofitable call
-        """
         
         # Create a mapping from rank to index for easy access
         rank_to_index = {rank: idx for idx, rank in enumerate(ranks)}
@@ -212,12 +266,9 @@ class Bot():
             observed_ranks.add(card[0])
         # print (f"observed ranks: {observed_ranks}")
 
-        opp_bounty_hit = 0.0 #NOT CORRECT YET, should be around 1-(12/13)^2 or 0.148 if opp's bounty in starting hand
-        for rank in observed_ranks:
-            if rank in rank_to_index:
-                opp_bounty_hit += opp_bounty_prob[rank_to_index[rank[0]]]
+        opp_bounty_hit = self.compute_opp_bounty_hit_prob(opp_bounty_prob, my_cards, board_cards)
 
-        print(f"Probability opponent bounty hit: {opp_bounty_hit:.3f}")
+        print(f"Probability opponent bounty is hit: {opp_bounty_hit:.3f}")
         
         # Compute expected_loss:
         # If opponent's bounty was hit and they win, their winnings are 1.5 * usual_winnings + 10
@@ -235,7 +286,6 @@ class Bot():
                 ev = equity * (1.5 * my_total + 10) - (1.0 - equity) * expected_loss
             else: 
                 ev = equity * my_total - (1.0 - equity) * expected_loss
-
 
         # Compute Pot Odds
         pot_odds = 1000  #check pot odds set to 1000 to always check if should and can
@@ -296,14 +346,14 @@ class Bot():
             bounty_hit = True
 
         if CheckAction in legal_actions: 
-            check_pot_odds = self.calculate_pot_odds(opp_bounty_prob, equity, board_cards, False, 
+            check_pot_odds = self.calculate_pot_odds(opp_bounty_prob, equity, my_cards, board_cards, False, 
                                             my_contribution, opp_contribution, continue_cost, bounty_hit)
         if CallAction in legal_actions:
-            call_pot_odds = self.calculate_pot_odds(opp_bounty_prob, equity, board_cards, False, 
+            call_pot_odds = self.calculate_pot_odds(opp_bounty_prob, equity, my_cards, board_cards, False, 
                                             my_contribution, opp_contribution, continue_cost, bounty_hit)
             print(f"Call pot odds: {call_pot_odds:.3f}")
         if RaiseAction in legal_actions:
-            all_in_pot_odds = self.calculate_pot_odds(opp_bounty_prob, equity, board_cards, True, 
+            all_in_pot_odds = self.calculate_pot_odds(opp_bounty_prob, equity, my_cards, board_cards, True, 
                                             my_contribution, opp_contribution, max_cost, bounty_hit)
             print(f"All in pot odds: {all_in_pot_odds:.3f}")
         
