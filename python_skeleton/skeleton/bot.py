@@ -19,6 +19,7 @@ ranks = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']
 suits = ['s', 'h', 'd', 'c']
 opp_bounty_prob = [1/13] * 13
 past_bankroll = 0
+weights_list = []
 
 class Bot():
     '''
@@ -204,15 +205,9 @@ class Bot():
 
 
     def pick_weighted_two_card_hand(self, opponent_range):
-        r = random.random() # random float from 0 to 1
-        sum = 0.0
-        for hand_tuple, weight in opponent_range.items():
-            sum += weight
-            if r < sum:
-                opp_cards = []
-                for card in hand_tuple:
-                    opp_cards.append(card)
-                return opp_cards
+        global weights_list
+        r = random.randint(0, len(weights_list)-1) # random float from 0 to 1
+        return weights_list[r]
     
 
     def weight_hands(self, hands, board_cards):
@@ -311,6 +306,10 @@ class Bot():
         weights = self.weight_hands(hands, board_cards)
         hands = self.update_range_based_on_action(hands, weights, action)
         weights = {hand: weights[hand] for hand in hands}  # Filter weights for remaining hands
+        global weights_list
+        weights_list = []
+        for hand in hands:
+            weights_list += [hand] * weights[hand]
         normalized_weights = self.normalize_weights(weights)
         return normalized_weights
 
