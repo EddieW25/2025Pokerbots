@@ -235,36 +235,36 @@ class Bot():
             #pockets
             pocket = False
             if rank1 == rank2:
-                weights[hand] = 1.4+rank1/12
+                weights[hand] = math.floor(10 * (1.4+rank1/12))
                 pocket = True
             #quads
             if (rank_count[rank1] == 4 or rank_count[rank2] == 4):
-                weights[hand] = 25
+                weights[hand] = 250
             trips = False
             tripIndex = -1
             #trips
             if (rank_count[rank1] == 3 or rank_count[rank2] == 3):
-                weights[hand] = 4 if pocket else 3.5
+                weights[hand] = 40 if pocket else 35
                 trips = True
                 tripIndex = rank1 if rank_count[rank1] == 3 else rank2
             for card in board_cards:
                 # full house
                 if trips and (rank_count[card.rank] >= 2 and card.rank != tripIndex):
-                    weights[hand] = 15
+                    weights[hand] = 150
                     break
                 #pair 
                 if rank1 == card.rank:
-                    weights[hand] *= 1.2+rank1/20
+                    weights[hand] *= math.floor(10 * (1.2+rank1/20))
                 if rank2 == card.rank:
-                    weights[hand] *= 1.2+rank1/20
+                    weights[hand] *= math.floor(10 * (1.2+rank1/20))
 
             # straight draw and flush draw
             flush = False
             for suit in range(4):
                 if suit_count[suit] == 4:
-                    weights[hand] *= 3 if len(board_cards) == 3 else 2
+                    weights[hand] *= 30 if len(board_cards) == 3 else 20
                 elif suit_count[suit] == 5:
-                    weights[hand] = 10
+                    weights[hand] = 100
                     flush = True
             psums = []
             psums.append(0)
@@ -273,9 +273,9 @@ class Bot():
             for i in range(5,14):
                 val = psums[i] - psums[i-5]
                 if val == 4:
-                    weights[hand] *= 1.6 if len(board_cards) == 3 else 1.3
+                    weights[hand] *= 16 if len(board_cards) == 3 else 13
                 elif val == 5:
-                    weights[hand] = 7.5 if not flush else 35
+                    weights[hand] = 75 if not flush else 350
         return weights
 
 
@@ -309,7 +309,7 @@ class Bot():
         global weights_list
         weights_list = []
         for hand in hands:
-            weights_list += [hand] * weights[hand]
+            weights_list.extend([hand] * weights[hand])
         normalized_weights = self.normalize_weights(weights)
         return normalized_weights
 
