@@ -9,15 +9,17 @@ import eval7 as val
 import math
 import random 
 import sys, os
+import numpy as np
 sys.path.append(os.path.join(os.path.dirname(__file__), "python_skeleton", "skeleton"))
-from .bounty_equity import get_equity_and_opp_bounty_prob
+from .bounty_equity import py_hand_vs_weighted_range_monte_carlo 
 from itertools import combinations
-from eval7 import py_hand_vs_range_monte_carlo 
+# from eval7 import py_hand_vs_range_monte_carlo 
+import bisect
 
-NUM_SIMULATIONS = 1_000
+NUM_SIMULATIONS = 100_000
 ranks = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']
 suits = ['s', 'h', 'd', 'c']
-opp_bounty_prob = [1/13] * 13
+opp_bounty_prob = np.array([1/13]*13, dtype=np.float64)
 past_bankroll = 0
 weights_list = []
 
@@ -46,12 +48,13 @@ class Bot():
         big_blind = bool(active)  # True if you are the big blind
         my_bounty = round_state.bounties[active]  # your current bounty rank
         
+        print(f"ROUND NUM: {round_num}")
         print(f"TIME LEFT: {game_clock}")
 
         # reset opp_bounty_prob
         if round_num % 25 == 1:
             global opp_bounty_prob
-            opp_bounty_prob = [1/13] * 13
+            opp_bounty_prob = np.array([1/13]*13, dtype=np.float64)
             print(f"RESET BOUNTY PROBABILITIES: {opp_bounty_prob}")
         
         # # reset past_bankroll every 200 rounds, and change strategy if needed
@@ -71,60 +74,37 @@ class Bot():
 
 
     def update_bounty_prob(self, opp_hand, opp_bounty_hit):
-        """
-        Update the opponent's bounty probabilities based on the outcome of a hand.
-
-        Parameters:
-        - opp_hand (list of str): Observed card ranks in the current hand (e.g., ['2', '2', '4', '6']).
-        - opp_bounty_hit (bool): True if the opponent's bounty was hit; False otherwise.
-        - opp_bounty_prob (list of float): Current probabilities for each rank being the opponent's bounty.
-
-        Returns:
-        - updated_prob (list of float): Updated probabilities after considering the current hand.
-        """
-        
         # Create a mapping from rank to index for easy access
         rank_to_index = {rank: idx for idx, rank in enumerate(ranks)}
         
         # Initialize a dictionary to count occurrences of each rank in opp_hand
         rank_counts = {rank: 0 for rank in ranks}
-        # print(f"Opponent hand: {opp_hand}")
         for card in opp_hand:
             rank = ranks[card.rank]
             if rank in rank_counts:
                 rank_counts[rank] += 1
-        # print (f"rank count: {rank_counts}")
         
-        # Calculate the number of remaining cards in the deck
         remaining_deck_size = 52 - len(opp_hand)
-        
-        # Initialize a list to store unnormalized probabilities
         unnormalized_probs = []
         
         for rank in ranks:
             idx = rank_to_index[rank]
             count_seen = rank_counts[rank]
-            remaining_count = 4 - count_seen  # Total of 4 cards per rank in a standard deck
+            remaining_count = 4 - count_seen 
             
-            # If remaining_count is negative, it's an impossible scenario; set to 0
             if remaining_count < 0:
                 remaining_count = 0
             
             if opp_bounty_hit:
                 if count_seen > 0:
-                    # If the rank is present in opp_hand, the bounty is definitely hit
                     likelihood = 1.0
                 else:
-                    # Probability that at least one card in opponent's hand is of this rank
-                    # P(hit | rank) = 1 - P(no cards of rank in opponent's hand)
-                    # P(no cards of rank) = C(remaining_deck_size - remaining_count, 2) / C(remaining_deck_size, 2)
                     try:
                         combinations_total = math.comb(remaining_deck_size, 2)
                         combinations_without_rank = math.comb(remaining_deck_size - remaining_count, 2)
                         prob_no_rank = combinations_without_rank / combinations_total
                         likelihood = 1.0 - prob_no_rank
                     except ValueError:
-                        # Handle cases where remaining_deck_size < 2
                         likelihood = 0.0
             else:
                 if count_seen > 0:
@@ -156,7 +136,8 @@ class Bot():
             return opp_bounty_prob.copy()
         
         # Normalize the probabilities so that they sum to 1
-        updated_prob = [prob / total_unnormalized for prob in unnormalized_probs]
+        updated_prob = np.array(unnormalized_probs, dtype=np.float64)
+        updated_prob /= total_unnormalized
 
         for rank, prob in zip(ranks, updated_prob):
             print(f"Rank {rank}: {prob:.2%}")
@@ -194,6 +175,14 @@ class Bot():
         # global past_bankroll
         # past_bankroll += my_delta
 
+    # def generate_possible_hands(self, deck):
+    #     ls = []
+    #     for hand in combinations(deck.cards, 2):
+    #         temp = []
+    #         for card in hand:
+    #             temp.append(card)
+    #             ls.append([temp])
+    #     return ls
 
     def generate_possible_hands(self, deck, my_hand):
         ls = []
@@ -204,10 +193,22 @@ class Bot():
         return ls
 
 
-    def pick_weighted_two_card_hand(self, opponent_range):
-        global weights_list
-        r = random.randint(0, len(weights_list)-1) # random float from 0 to 1
-        return weights_list[r]
+    def build_prefix_sums(self, hands, weights):
+        prefix_sums = []
+        sum = 0
+        for hand in hands:
+            sum += weights[hand]
+            prefix_sums.append(sum)
+        return prefix_sums
+
+
+    def pick_weighted_two_card_hand(self, prefix_sums, hands):
+        r = random.random()
+        i = bisect.bisect_left(prefix_sums, r)
+        opp_cards = []
+        for card in hands[i]:
+            opp_cards.append(card)
+        return opp_cards
     
 
     def weight_hands(self, hands, board_cards):
@@ -230,7 +231,7 @@ class Bot():
             suit_count[suit1] += 1
             suit_count[suit2] += 1
 
-            weights[hand] = 1.0
+            weights[hand] = 1
 
             #pockets
             pocket = False
@@ -306,15 +307,11 @@ class Bot():
         weights = self.weight_hands(hands, board_cards)
         hands = self.update_range_based_on_action(hands, weights, action)
         weights = {hand: weights[hand] for hand in hands}  # Filter weights for remaining hands
-        global weights_list
-        weights_list = []
-        for hand in hands:
-            weights_list.extend([hand] * weights[hand])
         normalized_weights = self.normalize_weights(weights)
-        return normalized_weights
+        return hands, normalized_weights
 
 
-    def get_equity_and_opp_bounty_prob(self, my_cards, opponent_range, board_cards, NUM_SIMULATIONS):
+    def get_equity_and_opp_bounty_prob(self, my_cards, hands, weights, board_cards, NUM_SIMULATIONS):
         """
         Returns the equity (probability of winning + 0.5 * probability of tying)
         for 'my_cards' against the weighted 'opponent_range', by performing 
@@ -325,22 +322,28 @@ class Bot():
         ties = 0
         opp_bounty_hit_total = 0.0
         needed_board_cards = 5-len(board_cards)
+        prefix_sums = self.build_prefix_sums(hands, weights)
         
         for _ in range(NUM_SIMULATIONS):
-            opp_cards = self.pick_weighted_two_card_hand(opponent_range)
+            opp_cards = self.pick_weighted_two_card_hand(prefix_sums, hands)
             all_cards = my_cards+opp_cards+board_cards
 
             deck = val.Deck()
             deck.shuffle()
 
             # deal remaining board cards without any repeats
-            board = board_cards.copy()
-            for i in range(needed_board_cards):
+            board = []
+            counter = 0
+            for i in range(52):
                 card = deck.cards[i]
-                board.append(card)
+                if card not in all_cards:
+                    board.append(card)
+                    counter += 1
+                if counter == needed_board_cards:
+                    break
                     
-            my_hand = my_cards+board
-            opp_hand = opp_cards+board
+            my_hand = my_cards+board+board_cards
+            opp_hand = opp_cards+board+board_cards
 
             #calculate opp_bounty_prob
             opp_bounty_hit_prob = 0.0
@@ -366,8 +369,7 @@ class Bot():
         return equity, opp_bounty_hit
 
     
-    def calculate_pot_odds(self, opponent_range, my_cards, board_cards, is_raise, my_contribution, 
-                            opp_contribution, cost, my_bounty_hit, equity, opp_bounty_hit):
+    def calculate_pot_odds(self, is_raise, my_contribution, opp_contribution, cost, my_bounty_hit, equity, opp_bounty_hit):
         
         # Compute expected_loss:
         # If opponent's bounty was hit and they win, their winnings are 1.5 * usual_winnings + 10
@@ -407,6 +409,8 @@ class Bot():
         Your action.
         '''
 
+        time = game_state.game_clock
+        print(f"Action time: {time}")
         legal_actions = round_state.legal_actions()  # the actions you are allowed to take
         street = round_state.street  # 0, 3, 4, or 5 representing pre-flop, flop, turn, or river respectively
         my_cards = round_state.hands[active]  # your cards
@@ -425,7 +429,7 @@ class Bot():
            max_cost = max_raise - my_pip  # the cost of a maximum bet/raise
 
         # newDeck = val.Deck()
-        hand = [val.Card(s) for s in my_cards+board_cards]
+        my_hand = [val.Card(s) for s in my_cards+board_cards]
 
         print(my_cards)
         print(board_cards)
@@ -434,40 +438,41 @@ class Bot():
         MY_HAND = MY_CARDS+BOARD_CARDS
 
         my_bounty_hit = False
-        if my_bounty in hand:
+        if my_bounty in my_hand:
             my_bounty_hit = True
 
         if opp_contribution > my_contribution: 
             action = 'raise'
         else:
             action = 'call'
-        opponent_range = self.estimate_opponent_range(MY_HAND, BOARD_CARDS, action)
-        # print(opponent_range)
+        hands, weights = self.estimate_opponent_range(MY_HAND, BOARD_CARDS, action)
 
         # global opp_bounty_prob
-        # equity, opp_bounty_hit = get_equity_and_opp_bounty_prob(MY_CARDS, opponent_range, BOARD_CARDS, opp_bounty_prob, NUM_SIMULATIONS)
+        # equity, opp_bounty_hit = self.get_equity_and_opp_bounty_prob(MY_CARDS, hands, weights, BOARD_CARDS, NUM_SIMULATIONS)
+        # deck = val.Deck()
+        # for card in my_hand:
+        #     deck.cards.remove(card)
+        # opponent_range = self.generate_possible_hands(deck)
+        equity, opp_bounty_hit = py_hand_vs_weighted_range_monte_carlo(MY_CARDS, weights, BOARD_CARDS, opp_bounty_prob, NUM_SIMULATIONS)
+        # opp_bounty_hit = 1/13
+        print(f"Equity: {equity}")
+        print(f"Opponent bounty hit: {opp_bounty_hit}")
 
-        # print(f"Equity: {equity:.3f}")
-        # print(f"Probability opponent bounty is hit: {opp_bounty_hit:.3f}")
-        # if CheckAction in legal_actions: 
-        #     check_pot_odds = self.calculate_pot_odds(opponent_range, MY_CARDS, BOARD_CARDS, False, 
-        #                                     my_contribution, opp_contribution, continue_cost, my_bounty_hit, equity, opp_bounty_hit)
-        # if CallAction in legal_actions:
-        #     call_pot_odds = self.calculate_pot_odds(opponent_range, MY_CARDS, BOARD_CARDS, False, 
-        #                                     my_contribution, opp_contribution, continue_cost, my_bounty_hit, equity, opp_bounty_hit)
-        #     print(f"Call pot odds: {call_pot_odds:.3f}")
-        # if RaiseAction in legal_actions:
-        #     all_in_pot_odds = self.calculate_pot_odds(opponent_range, MY_CARDS, BOARD_CARDS, True, 
-        #                                     my_contribution, opp_contribution, max_cost, my_bounty_hit, equity, opp_bounty_hit)
-        #     print(f"All in pot odds: {all_in_pot_odds:.3f}")
-        
+        print(f"Equity: {equity:.3f}")
+        print(f"Probability opponent bounty is hit: {opp_bounty_hit:.3f}")
+        if CheckAction in legal_actions: 
+            check_pot_odds = self.calculate_pot_odds(False, my_contribution, opp_contribution, continue_cost, my_bounty_hit, equity, opp_bounty_hit)
+        if CallAction in legal_actions:
+            call_pot_odds = self.calculate_pot_odds(False, my_contribution, opp_contribution, continue_cost, my_bounty_hit, equity, opp_bounty_hit)
+            print(f"Call pot odds: {call_pot_odds:.3f}")
+        if RaiseAction in legal_actions:
+            all_in_pot_odds = self.calculate_pot_odds(True, my_contribution, opp_contribution, max_cost, my_bounty_hit, equity, opp_bounty_hit)
+            print(f"All in pot odds: {all_in_pot_odds:.3f}")
         
         # !!!! CHANGE ALL NUMBERS TO FLOAT. Ex: 2 --> 2.0
 
         
         # ALL IN BOT
-        all_in_pot_odds = 1000
-        call_pot_odds = -1
         if RaiseAction in legal_actions:
             if all_in_pot_odds >= 0:
                 return RaiseAction(max_raise)
