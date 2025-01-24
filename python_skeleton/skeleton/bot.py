@@ -11,7 +11,7 @@ import random
 import sys, os
 import numpy as np
 sys.path.append(os.path.join(os.path.dirname(__file__), "python_skeleton", "skeleton"))
-from .bounty_equity import py_hand_vs_weighted_range_monte_carlo 
+from .bounty_equity import py_hand_vs_weighted_range_monte_carlo, py_estimate_opponent_range
 from itertools import combinations
 # from eval7 import py_hand_vs_range_monte_carlo 
 import bisect
@@ -205,7 +205,7 @@ class Bot():
             #pockets
             pocket = False
             if rank1 == rank2:
-                weights[hand] = math.floor(1.4+rank1/12)
+                weights[hand] = (1.4+rank1/10)
                 pocket = True
             #quads
             if (rank_count[rank1] == 4 or rank_count[rank2] == 4):
@@ -224,9 +224,9 @@ class Bot():
                     break
                 #pair 
                 if rank1 == card.rank:
-                    weights[hand] *= math.floor(1.2+rank1/20)
+                    weights[hand] *= (1.2+rank1/20)
                 if rank2 == card.rank:
-                    weights[hand] *= math.floor(1.2+rank1/20)
+                    weights[hand] *= (1.2+rank1/20)
 
             # straight draw and flush draw
             flush = False
@@ -263,22 +263,13 @@ class Bot():
         return hands
 
 
-    # def normalize_weights(self, weights):
-    #     total_weight = sum(weights.values())
-    #     for hand in weights:
-    #         weights[hand] /= total_weight
+    # def estimate_opponent_range(self, my_hand, board_cards, action):
+    #     deck = val.Deck()
+    #     hands = self.generate_possible_hands(deck, my_hand)
+    #     weights = self.weight_hands(hands, board_cards)
+    #     hands = self.update_range_based_on_action(hands, weights, action)
+    #     weights = {hand: weights[hand] for hand in hands}  # Filter weights for remaining hands
     #     return weights
-
-
-    def estimate_opponent_range(self, my_hand, board_cards, action):
-        deck = val.Deck()
-        hands = self.generate_possible_hands(deck, my_hand)
-        weights = self.weight_hands(hands, board_cards)
-        hands = self.update_range_based_on_action(hands, weights, action)
-        weights = {hand: weights[hand] for hand in hands}  # Filter weights for remaining hands
-        # normalized_weights = self.normalize_weights(weights)
-        # return normalized_weights
-        return weights
 
 
     def calculate_pot_odds(self, is_raise, my_contribution, opp_contribution, cost, my_bounty_hit, equity, opp_bounty_hit):
@@ -357,8 +348,8 @@ class Bot():
             action = 'raise'
         else:
             action = 'call'
-        weights = self.estimate_opponent_range(MY_HAND, BOARD_CARDS, action)
-        print(weights)
+        weights = py_estimate_opponent_range(MY_HAND, BOARD_CARDS, action)
+        # print(weights)
 
         equity, opp_bounty_hit = py_hand_vs_weighted_range_monte_carlo(MY_CARDS, weights, BOARD_CARDS, opp_bounty_prob, NUM_SIMULATIONS)
         print(f"Equity: {equity}")

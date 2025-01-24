@@ -1912,6 +1912,19 @@ static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j);
 static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
                                                      int is_list, int wraparound, int boundscheck);
 
+/* PySequenceContains.proto */
+static CYTHON_INLINE int __Pyx_PySequence_ContainsTF(PyObject* item, PyObject* seq, int eq) {
+    int result = PySequence_Contains(seq, item);
+    return unlikely(result < 0) ? result : (result == (eq == Py_EQ));
+}
+
+/* StrEquals.proto */
+#if PY_MAJOR_VERSION >= 3
+#define __Pyx_PyString_Equals __Pyx_PyUnicode_Equals
+#else
+#define __Pyx_PyString_Equals __Pyx_PyBytes_Equals
+#endif
+
 /* TypeImport.proto */
 #ifndef __PYX_HAVE_RT_ImportType_proto_3_0_11
 #define __PYX_HAVE_RT_ImportType_proto_3_0_11
@@ -2133,6 +2146,9 @@ static CYTHON_INLINE unsigned int __Pyx_PyInt_As_unsigned_int(PyObject *);
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
+/* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
+
 /* FormatTypeName.proto */
 #if CYTHON_COMPILING_IN_LIMITED_API
 typedef PyObject *__Pyx_TypeName;
@@ -2145,9 +2161,6 @@ typedef const char *__Pyx_TypeName;
 #define __Pyx_PyType_GetName(tp) ((tp)->tp_name)
 #define __Pyx_DECREF_TypeName(obj)
 #endif
-
-/* CIntToPy.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
 /* CIntFromPy.proto */
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
@@ -2200,6 +2213,9 @@ static unsigned PY_LONG_LONG __pyx_f_13bounty_equity_deal_card(unsigned PY_LONG_
 static void __pyx_f_13bounty_equity_build_weighted_arrays(PyObject *, unsigned PY_LONG_LONG **, double **, int *, double *); /*proto*/
 static CYTHON_INLINE unsigned PY_LONG_LONG __pyx_f_13bounty_equity_pick_weighted_combo(unsigned PY_LONG_LONG *, double *, int, double); /*proto*/
 static double __pyx_f_13bounty_equity_hand_vs_weighted_range_monte_carlo(unsigned PY_LONG_LONG, unsigned PY_LONG_LONG *, double *, int, double, unsigned PY_LONG_LONG, int, double *, int); /*proto*/
+static double __pyx_f_13bounty_equity_c_weight_hand(unsigned int, unsigned int, unsigned int, unsigned int, PyObject *); /*proto*/
+static PyObject *__pyx_f_13bounty_equity_c_generate_weighted_dict(PyObject *, PyObject *, PyObject *); /*proto*/
+static PyObject *__pyx_f_13bounty_equity_c_estimate_opponent_range(PyObject *, PyObject *, PyObject *); /*proto*/
 /* #### Code section: typeinfo ### */
 /* #### Code section: before_global_var ### */
 #define __Pyx_MODULE_NAME "bounty_equity"
@@ -2213,26 +2229,34 @@ static PyObject *__pyx_builtin_range;
 static const char __pyx_k_i[] = "i";
 static const char __pyx_k_n[] = "n";
 static const char __pyx_k__3[] = "*";
-static const char __pyx_k__6[] = "?";
+static const char __pyx_k__8[] = "?";
 static const char __pyx_k_eq[] = "eq";
 static const char __pyx_k_cnt[] = "cnt";
 static const char __pyx_k_idx[] = "idx";
 static const char __pyx_k_run[] = "run";
+static const char __pyx_k_Deck[] = "Deck";
+static const char __pyx_k_call[] = "call";
 static const char __pyx_k_dead[] = "dead";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
 static const char __pyx_k_prev[] = "prev";
+static const char __pyx_k_rank[] = "rank";
 static const char __pyx_k_spec[] = "__spec__";
+static const char __pyx_k_suit[] = "suit";
 static const char __pyx_k_test[] = "__test__";
+static const char __pyx_k_cards[] = "cards";
 static const char __pyx_k_eval7[] = "eval7";
 static const char __pyx_k_items[] = "items";
+static const char __pyx_k_raise[] = "raise";
 static const char __pyx_k_range[] = "range";
+static const char __pyx_k_action[] = "action";
 static const char __pyx_k_ccombo[] = "ccombo";
 static const char __pyx_k_combos[] = "combos";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_length[] = "length";
 static const char __pyx_k_prefix[] = "prefix";
 static const char __pyx_k_random[] = "random";
+static const char __pyx_k_my_hand[] = "my_hand";
 static const char __pyx_k_py_hand[] = "py_hand";
 static const char __pyx_k_py_board[] = "py_board";
 static const char __pyx_k_array_ptr[] = "array_ptr";
@@ -2240,6 +2264,7 @@ static const char __pyx_k_hero_mask[] = "hero_mask";
 static const char __pyx_k_num_board[] = "num_board";
 static const char __pyx_k_board_mask[] = "board_mask";
 static const char __pyx_k_iterations[] = "iterations";
+static const char __pyx_k_board_cards[] = "board_cards";
 static const char __pyx_k_initializing[] = "_initializing";
 static const char __pyx_k_is_coroutine[] = "_is_coroutine";
 static const char __pyx_k_total_weight[] = "total_weight";
@@ -2250,9 +2275,11 @@ static const char __pyx_k_py_villain_dict[] = "py_villain_dict";
 static const char __pyx_k_bounty_equity_pyx[] = "bounty_equity.pyx";
 static const char __pyx_k_asyncio_coroutines[] = "asyncio.coroutines";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
+static const char __pyx_k_py_estimate_opponent_range[] = "py_estimate_opponent_range";
 static const char __pyx_k_py_hand_vs_weighted_range_monte[] = "py_hand_vs_weighted_range_monte_carlo";
 /* #### Code section: decls ### */
 static PyObject *__pyx_pf_13bounty_equity_py_hand_vs_weighted_range_monte_carlo(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_py_hand, PyObject *__pyx_v_py_villain_dict, PyObject *__pyx_v_py_board, PyObject *__pyx_v_opp_bounty_prob, PyObject *__pyx_v_py_iterations); /* proto */
+static PyObject *__pyx_pf_13bounty_equity_2py_estimate_opponent_range(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_my_hand, PyObject *__pyx_v_board_cards, PyObject *__pyx_v_action); /* proto */
 /* #### Code section: late_includes ### */
 /* #### Code section: module_state ### */
 typedef struct {
@@ -2291,13 +2318,18 @@ typedef struct {
   #endif
   #if CYTHON_USE_MODULE_STATE
   #endif
+  PyObject *__pyx_n_s_Deck;
   PyObject *__pyx_n_s__3;
-  PyObject *__pyx_n_s__6;
+  PyObject *__pyx_n_s__8;
+  PyObject *__pyx_n_s_action;
   PyObject *__pyx_n_s_array_ptr;
   PyObject *__pyx_n_s_asyncio_coroutines;
+  PyObject *__pyx_n_s_board_cards;
   PyObject *__pyx_n_s_board_mask;
   PyObject *__pyx_n_s_bounty_equity;
   PyObject *__pyx_kp_s_bounty_equity_pyx;
+  PyObject *__pyx_n_s_call;
+  PyObject *__pyx_n_s_cards;
   PyObject *__pyx_n_s_ccombo;
   PyObject *__pyx_n_s_cline_in_traceback;
   PyObject *__pyx_n_s_cnt;
@@ -2315,6 +2347,7 @@ typedef struct {
   PyObject *__pyx_n_s_iterations;
   PyObject *__pyx_n_s_length;
   PyObject *__pyx_n_s_main;
+  PyObject *__pyx_n_s_my_hand;
   PyObject *__pyx_n_s_n;
   PyObject *__pyx_n_s_name;
   PyObject *__pyx_n_s_num_board;
@@ -2322,14 +2355,18 @@ typedef struct {
   PyObject *__pyx_n_s_prefix;
   PyObject *__pyx_n_s_prev;
   PyObject *__pyx_n_s_py_board;
+  PyObject *__pyx_n_s_py_estimate_opponent_range;
   PyObject *__pyx_n_s_py_hand;
   PyObject *__pyx_n_s_py_hand_vs_weighted_range_monte;
   PyObject *__pyx_n_s_py_iterations;
   PyObject *__pyx_n_s_py_villain_dict;
+  PyObject *__pyx_n_s_raise;
   PyObject *__pyx_n_s_random;
   PyObject *__pyx_n_s_range;
+  PyObject *__pyx_n_s_rank;
   PyObject *__pyx_n_s_run;
   PyObject *__pyx_n_s_spec;
+  PyObject *__pyx_n_s_suit;
   PyObject *__pyx_n_s_test;
   PyObject *__pyx_n_s_total_weight;
   PyObject *__pyx_float_1_0;
@@ -2339,7 +2376,9 @@ typedef struct {
   PyObject *__pyx_slice_;
   PyObject *__pyx_slice__2;
   PyObject *__pyx_tuple__4;
+  PyObject *__pyx_tuple__6;
   PyObject *__pyx_codeobj__5;
+  PyObject *__pyx_codeobj__7;
 } __pyx_mstate;
 
 #if CYTHON_USE_MODULE_STATE
@@ -2383,13 +2422,18 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_FusedFunctionType);
   #endif
   Py_CLEAR(clear_module_state->__pyx_ptype_5eval7_5cards_Card);
+  Py_CLEAR(clear_module_state->__pyx_n_s_Deck);
   Py_CLEAR(clear_module_state->__pyx_n_s__3);
-  Py_CLEAR(clear_module_state->__pyx_n_s__6);
+  Py_CLEAR(clear_module_state->__pyx_n_s__8);
+  Py_CLEAR(clear_module_state->__pyx_n_s_action);
   Py_CLEAR(clear_module_state->__pyx_n_s_array_ptr);
   Py_CLEAR(clear_module_state->__pyx_n_s_asyncio_coroutines);
+  Py_CLEAR(clear_module_state->__pyx_n_s_board_cards);
   Py_CLEAR(clear_module_state->__pyx_n_s_board_mask);
   Py_CLEAR(clear_module_state->__pyx_n_s_bounty_equity);
   Py_CLEAR(clear_module_state->__pyx_kp_s_bounty_equity_pyx);
+  Py_CLEAR(clear_module_state->__pyx_n_s_call);
+  Py_CLEAR(clear_module_state->__pyx_n_s_cards);
   Py_CLEAR(clear_module_state->__pyx_n_s_ccombo);
   Py_CLEAR(clear_module_state->__pyx_n_s_cline_in_traceback);
   Py_CLEAR(clear_module_state->__pyx_n_s_cnt);
@@ -2407,6 +2451,7 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_iterations);
   Py_CLEAR(clear_module_state->__pyx_n_s_length);
   Py_CLEAR(clear_module_state->__pyx_n_s_main);
+  Py_CLEAR(clear_module_state->__pyx_n_s_my_hand);
   Py_CLEAR(clear_module_state->__pyx_n_s_n);
   Py_CLEAR(clear_module_state->__pyx_n_s_name);
   Py_CLEAR(clear_module_state->__pyx_n_s_num_board);
@@ -2414,14 +2459,18 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_prefix);
   Py_CLEAR(clear_module_state->__pyx_n_s_prev);
   Py_CLEAR(clear_module_state->__pyx_n_s_py_board);
+  Py_CLEAR(clear_module_state->__pyx_n_s_py_estimate_opponent_range);
   Py_CLEAR(clear_module_state->__pyx_n_s_py_hand);
   Py_CLEAR(clear_module_state->__pyx_n_s_py_hand_vs_weighted_range_monte);
   Py_CLEAR(clear_module_state->__pyx_n_s_py_iterations);
   Py_CLEAR(clear_module_state->__pyx_n_s_py_villain_dict);
+  Py_CLEAR(clear_module_state->__pyx_n_s_raise);
   Py_CLEAR(clear_module_state->__pyx_n_s_random);
   Py_CLEAR(clear_module_state->__pyx_n_s_range);
+  Py_CLEAR(clear_module_state->__pyx_n_s_rank);
   Py_CLEAR(clear_module_state->__pyx_n_s_run);
   Py_CLEAR(clear_module_state->__pyx_n_s_spec);
+  Py_CLEAR(clear_module_state->__pyx_n_s_suit);
   Py_CLEAR(clear_module_state->__pyx_n_s_test);
   Py_CLEAR(clear_module_state->__pyx_n_s_total_weight);
   Py_CLEAR(clear_module_state->__pyx_float_1_0);
@@ -2431,7 +2480,9 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_slice_);
   Py_CLEAR(clear_module_state->__pyx_slice__2);
   Py_CLEAR(clear_module_state->__pyx_tuple__4);
+  Py_CLEAR(clear_module_state->__pyx_tuple__6);
   Py_CLEAR(clear_module_state->__pyx_codeobj__5);
+  Py_CLEAR(clear_module_state->__pyx_codeobj__7);
   return 0;
 }
 #endif
@@ -2453,13 +2504,18 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_FusedFunctionType);
   #endif
   Py_VISIT(traverse_module_state->__pyx_ptype_5eval7_5cards_Card);
+  Py_VISIT(traverse_module_state->__pyx_n_s_Deck);
   Py_VISIT(traverse_module_state->__pyx_n_s__3);
-  Py_VISIT(traverse_module_state->__pyx_n_s__6);
+  Py_VISIT(traverse_module_state->__pyx_n_s__8);
+  Py_VISIT(traverse_module_state->__pyx_n_s_action);
   Py_VISIT(traverse_module_state->__pyx_n_s_array_ptr);
   Py_VISIT(traverse_module_state->__pyx_n_s_asyncio_coroutines);
+  Py_VISIT(traverse_module_state->__pyx_n_s_board_cards);
   Py_VISIT(traverse_module_state->__pyx_n_s_board_mask);
   Py_VISIT(traverse_module_state->__pyx_n_s_bounty_equity);
   Py_VISIT(traverse_module_state->__pyx_kp_s_bounty_equity_pyx);
+  Py_VISIT(traverse_module_state->__pyx_n_s_call);
+  Py_VISIT(traverse_module_state->__pyx_n_s_cards);
   Py_VISIT(traverse_module_state->__pyx_n_s_ccombo);
   Py_VISIT(traverse_module_state->__pyx_n_s_cline_in_traceback);
   Py_VISIT(traverse_module_state->__pyx_n_s_cnt);
@@ -2477,6 +2533,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_iterations);
   Py_VISIT(traverse_module_state->__pyx_n_s_length);
   Py_VISIT(traverse_module_state->__pyx_n_s_main);
+  Py_VISIT(traverse_module_state->__pyx_n_s_my_hand);
   Py_VISIT(traverse_module_state->__pyx_n_s_n);
   Py_VISIT(traverse_module_state->__pyx_n_s_name);
   Py_VISIT(traverse_module_state->__pyx_n_s_num_board);
@@ -2484,14 +2541,18 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_prefix);
   Py_VISIT(traverse_module_state->__pyx_n_s_prev);
   Py_VISIT(traverse_module_state->__pyx_n_s_py_board);
+  Py_VISIT(traverse_module_state->__pyx_n_s_py_estimate_opponent_range);
   Py_VISIT(traverse_module_state->__pyx_n_s_py_hand);
   Py_VISIT(traverse_module_state->__pyx_n_s_py_hand_vs_weighted_range_monte);
   Py_VISIT(traverse_module_state->__pyx_n_s_py_iterations);
   Py_VISIT(traverse_module_state->__pyx_n_s_py_villain_dict);
+  Py_VISIT(traverse_module_state->__pyx_n_s_raise);
   Py_VISIT(traverse_module_state->__pyx_n_s_random);
   Py_VISIT(traverse_module_state->__pyx_n_s_range);
+  Py_VISIT(traverse_module_state->__pyx_n_s_rank);
   Py_VISIT(traverse_module_state->__pyx_n_s_run);
   Py_VISIT(traverse_module_state->__pyx_n_s_spec);
+  Py_VISIT(traverse_module_state->__pyx_n_s_suit);
   Py_VISIT(traverse_module_state->__pyx_n_s_test);
   Py_VISIT(traverse_module_state->__pyx_n_s_total_weight);
   Py_VISIT(traverse_module_state->__pyx_float_1_0);
@@ -2501,7 +2562,9 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_slice_);
   Py_VISIT(traverse_module_state->__pyx_slice__2);
   Py_VISIT(traverse_module_state->__pyx_tuple__4);
+  Py_VISIT(traverse_module_state->__pyx_tuple__6);
   Py_VISIT(traverse_module_state->__pyx_codeobj__5);
+  Py_VISIT(traverse_module_state->__pyx_codeobj__7);
   return 0;
 }
 #endif
@@ -2541,13 +2604,18 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #endif
 #if CYTHON_USE_MODULE_STATE
 #endif
+#define __pyx_n_s_Deck __pyx_mstate_global->__pyx_n_s_Deck
 #define __pyx_n_s__3 __pyx_mstate_global->__pyx_n_s__3
-#define __pyx_n_s__6 __pyx_mstate_global->__pyx_n_s__6
+#define __pyx_n_s__8 __pyx_mstate_global->__pyx_n_s__8
+#define __pyx_n_s_action __pyx_mstate_global->__pyx_n_s_action
 #define __pyx_n_s_array_ptr __pyx_mstate_global->__pyx_n_s_array_ptr
 #define __pyx_n_s_asyncio_coroutines __pyx_mstate_global->__pyx_n_s_asyncio_coroutines
+#define __pyx_n_s_board_cards __pyx_mstate_global->__pyx_n_s_board_cards
 #define __pyx_n_s_board_mask __pyx_mstate_global->__pyx_n_s_board_mask
 #define __pyx_n_s_bounty_equity __pyx_mstate_global->__pyx_n_s_bounty_equity
 #define __pyx_kp_s_bounty_equity_pyx __pyx_mstate_global->__pyx_kp_s_bounty_equity_pyx
+#define __pyx_n_s_call __pyx_mstate_global->__pyx_n_s_call
+#define __pyx_n_s_cards __pyx_mstate_global->__pyx_n_s_cards
 #define __pyx_n_s_ccombo __pyx_mstate_global->__pyx_n_s_ccombo
 #define __pyx_n_s_cline_in_traceback __pyx_mstate_global->__pyx_n_s_cline_in_traceback
 #define __pyx_n_s_cnt __pyx_mstate_global->__pyx_n_s_cnt
@@ -2565,6 +2633,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_iterations __pyx_mstate_global->__pyx_n_s_iterations
 #define __pyx_n_s_length __pyx_mstate_global->__pyx_n_s_length
 #define __pyx_n_s_main __pyx_mstate_global->__pyx_n_s_main
+#define __pyx_n_s_my_hand __pyx_mstate_global->__pyx_n_s_my_hand
 #define __pyx_n_s_n __pyx_mstate_global->__pyx_n_s_n
 #define __pyx_n_s_name __pyx_mstate_global->__pyx_n_s_name
 #define __pyx_n_s_num_board __pyx_mstate_global->__pyx_n_s_num_board
@@ -2572,14 +2641,18 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_prefix __pyx_mstate_global->__pyx_n_s_prefix
 #define __pyx_n_s_prev __pyx_mstate_global->__pyx_n_s_prev
 #define __pyx_n_s_py_board __pyx_mstate_global->__pyx_n_s_py_board
+#define __pyx_n_s_py_estimate_opponent_range __pyx_mstate_global->__pyx_n_s_py_estimate_opponent_range
 #define __pyx_n_s_py_hand __pyx_mstate_global->__pyx_n_s_py_hand
 #define __pyx_n_s_py_hand_vs_weighted_range_monte __pyx_mstate_global->__pyx_n_s_py_hand_vs_weighted_range_monte
 #define __pyx_n_s_py_iterations __pyx_mstate_global->__pyx_n_s_py_iterations
 #define __pyx_n_s_py_villain_dict __pyx_mstate_global->__pyx_n_s_py_villain_dict
+#define __pyx_n_s_raise __pyx_mstate_global->__pyx_n_s_raise
 #define __pyx_n_s_random __pyx_mstate_global->__pyx_n_s_random
 #define __pyx_n_s_range __pyx_mstate_global->__pyx_n_s_range
+#define __pyx_n_s_rank __pyx_mstate_global->__pyx_n_s_rank
 #define __pyx_n_s_run __pyx_mstate_global->__pyx_n_s_run
 #define __pyx_n_s_spec __pyx_mstate_global->__pyx_n_s_spec
+#define __pyx_n_s_suit __pyx_mstate_global->__pyx_n_s_suit
 #define __pyx_n_s_test __pyx_mstate_global->__pyx_n_s_test
 #define __pyx_n_s_total_weight __pyx_mstate_global->__pyx_n_s_total_weight
 #define __pyx_float_1_0 __pyx_mstate_global->__pyx_float_1_0
@@ -2589,7 +2662,9 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_slice_ __pyx_mstate_global->__pyx_slice_
 #define __pyx_slice__2 __pyx_mstate_global->__pyx_slice__2
 #define __pyx_tuple__4 __pyx_mstate_global->__pyx_tuple__4
+#define __pyx_tuple__6 __pyx_mstate_global->__pyx_tuple__6
 #define __pyx_codeobj__5 __pyx_mstate_global->__pyx_codeobj__5
+#define __pyx_codeobj__7 __pyx_mstate_global->__pyx_codeobj__7
 /* #### Code section: module_code ### */
 
 /* "bounty_equity.pyx":18
@@ -3132,42 +3207,45 @@ static CYTHON_INLINE unsigned PY_LONG_LONG __pyx_f_13bounty_equity_pick_weighted
   /* "bounty_equity.pyx":113
  *     Return the chosen combo mask.
  *     """
- *     cdef double r = random() * total             # <<<<<<<<<<<<<<
+ *     cdef double r = random.random() * total             # <<<<<<<<<<<<<<
  *     # or you could do a real floating random if you had it:
  *     #   r = random() * total
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_random); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 113, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = NULL;
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_random); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = NULL;
   __pyx_t_4 = 0;
   #if CYTHON_UNPACK_METHODS
-  if (unlikely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_3)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_3);
+  if (unlikely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_2)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_2);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
       __pyx_t_4 = 1;
     }
   }
   #endif
   {
-    PyObject *__pyx_callargs[2] = {__pyx_t_3, NULL};
-    __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+1-__pyx_t_4, 0+__pyx_t_4);
-    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+    PyObject *__pyx_callargs[2] = {__pyx_t_2, NULL};
+    __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+1-__pyx_t_4, 0+__pyx_t_4);
+    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   }
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_total); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 113, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyNumber_Multiply(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_total); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 113, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_2 = PyNumber_Multiply(__pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_t_3); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 113, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_r = __pyx_t_5;
 
   /* "bounty_equity.pyx":117
@@ -4336,6 +4414,8 @@ static PyObject *__pyx_pf_13bounty_equity_py_hand_vs_weighted_range_monte_carlo(
  * 
  *     global opp_bounty_hit
  *     return eq, opp_bounty_hit             # <<<<<<<<<<<<<<
+ * 
+ * 
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_9 = PyFloat_FromDouble(__pyx_v_eq); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 298, __pyx_L1_error)
@@ -4375,6 +4455,1499 @@ static PyObject *__pyx_pf_13bounty_equity_py_hand_vs_weighted_range_monte_carlo(
   return __pyx_r;
 }
 
+/* "bounty_equity.pyx":318
+ * 
+ * 
+ * cdef double c_weight_hand(             # <<<<<<<<<<<<<<
+ *     unsigned int rank1, unsigned int suit1,
+ *     unsigned int rank2, unsigned int suit2,
+ */
+
+static double __pyx_f_13bounty_equity_c_weight_hand(unsigned int __pyx_v_rank1, unsigned int __pyx_v_suit1, unsigned int __pyx_v_rank2, unsigned int __pyx_v_suit2, PyObject *__pyx_v_board_cards) {
+  double __pyx_v_w;
+  unsigned int __pyx_v_i;
+  unsigned int __pyx_v_r1;
+  unsigned int __pyx_v_r2;
+  unsigned int __pyx_v_s1;
+  unsigned int __pyx_v_s2;
+  int __pyx_v_rank_count[13];
+  int __pyx_v_suit_count[4];
+  int __pyx_v_n;
+  unsigned int __pyx_v_brank;
+  unsigned int __pyx_v_bsuit;
+  int __pyx_v_pocket;
+  int __pyx_v_trips;
+  int __pyx_v_tripIndex;
+  int __pyx_v_j;
+  int __pyx_v_flush;
+  int __pyx_v_psums[14];
+  int __pyx_v_val;
+  double __pyx_r;
+  __Pyx_RefNannyDeclarations
+  unsigned int __pyx_t_1;
+  Py_ssize_t __pyx_t_2;
+  int __pyx_t_3;
+  int __pyx_t_4;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  unsigned int __pyx_t_7;
+  int __pyx_t_8;
+  int __pyx_t_9;
+  double __pyx_t_10;
+  int __pyx_t_11;
+  long __pyx_t_12;
+  long __pyx_t_13;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("c_weight_hand", 1);
+
+  /* "bounty_equity.pyx":328
+ *     This is your custom logic replicated in a cdef function for speed.
+ *     """
+ *     cdef double w = 1.0             # <<<<<<<<<<<<<<
+ *     cdef unsigned int i
+ *     cdef unsigned int r1 = rank1
+ */
+  __pyx_v_w = 1.0;
+
+  /* "bounty_equity.pyx":330
+ *     cdef double w = 1.0
+ *     cdef unsigned int i
+ *     cdef unsigned int r1 = rank1             # <<<<<<<<<<<<<<
+ *     cdef unsigned int r2 = rank2
+ *     cdef unsigned int s1 = suit1
+ */
+  __pyx_v_r1 = __pyx_v_rank1;
+
+  /* "bounty_equity.pyx":331
+ *     cdef unsigned int i
+ *     cdef unsigned int r1 = rank1
+ *     cdef unsigned int r2 = rank2             # <<<<<<<<<<<<<<
+ *     cdef unsigned int s1 = suit1
+ *     cdef unsigned int s2 = suit2
+ */
+  __pyx_v_r2 = __pyx_v_rank2;
+
+  /* "bounty_equity.pyx":332
+ *     cdef unsigned int r1 = rank1
+ *     cdef unsigned int r2 = rank2
+ *     cdef unsigned int s1 = suit1             # <<<<<<<<<<<<<<
+ *     cdef unsigned int s2 = suit2
+ * 
+ */
+  __pyx_v_s1 = __pyx_v_suit1;
+
+  /* "bounty_equity.pyx":333
+ *     cdef unsigned int r2 = rank2
+ *     cdef unsigned int s1 = suit1
+ *     cdef unsigned int s2 = suit2             # <<<<<<<<<<<<<<
+ * 
+ *     # rank_count / suit_count
+ */
+  __pyx_v_s2 = __pyx_v_suit2;
+
+  /* "bounty_equity.pyx":339
+ *     cdef int suit_count[4]
+ * 
+ *     for i in range(13):             # <<<<<<<<<<<<<<
+ *         rank_count[i] = 0
+ *     for i in range(4):
+ */
+  for (__pyx_t_1 = 0; __pyx_t_1 < 13; __pyx_t_1+=1) {
+    __pyx_v_i = __pyx_t_1;
+
+    /* "bounty_equity.pyx":340
+ * 
+ *     for i in range(13):
+ *         rank_count[i] = 0             # <<<<<<<<<<<<<<
+ *     for i in range(4):
+ *         suit_count[i] = 0
+ */
+    (__pyx_v_rank_count[__pyx_v_i]) = 0;
+  }
+
+  /* "bounty_equity.pyx":341
+ *     for i in range(13):
+ *         rank_count[i] = 0
+ *     for i in range(4):             # <<<<<<<<<<<<<<
+ *         suit_count[i] = 0
+ * 
+ */
+  for (__pyx_t_1 = 0; __pyx_t_1 < 4; __pyx_t_1+=1) {
+    __pyx_v_i = __pyx_t_1;
+
+    /* "bounty_equity.pyx":342
+ *         rank_count[i] = 0
+ *     for i in range(4):
+ *         suit_count[i] = 0             # <<<<<<<<<<<<<<
+ * 
+ *     cdef int n = len(board_cards)
+ */
+    (__pyx_v_suit_count[__pyx_v_i]) = 0;
+  }
+
+  /* "bounty_equity.pyx":344
+ *         suit_count[i] = 0
+ * 
+ *     cdef int n = len(board_cards)             # <<<<<<<<<<<<<<
+ *     cdef unsigned int brank, bsuit
+ *     for i in range(n):
+ */
+  if (unlikely(__pyx_v_board_cards == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    __PYX_ERR(0, 344, __pyx_L1_error)
+  }
+  __pyx_t_2 = __Pyx_PyList_GET_SIZE(__pyx_v_board_cards); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 344, __pyx_L1_error)
+  __pyx_v_n = __pyx_t_2;
+
+  /* "bounty_equity.pyx":346
+ *     cdef int n = len(board_cards)
+ *     cdef unsigned int brank, bsuit
+ *     for i in range(n):             # <<<<<<<<<<<<<<
+ *         brank = board_cards[i].rank
+ *         bsuit = board_cards[i].suit
+ */
+  __pyx_t_3 = __pyx_v_n;
+  __pyx_t_4 = __pyx_t_3;
+  for (__pyx_t_1 = 0; __pyx_t_1 < __pyx_t_4; __pyx_t_1+=1) {
+    __pyx_v_i = __pyx_t_1;
+
+    /* "bounty_equity.pyx":347
+ *     cdef unsigned int brank, bsuit
+ *     for i in range(n):
+ *         brank = board_cards[i].rank             # <<<<<<<<<<<<<<
+ *         bsuit = board_cards[i].suit
+ *         rank_count[brank] += 1
+ */
+    if (unlikely(__pyx_v_board_cards == Py_None)) {
+      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+      __PYX_ERR(0, 347, __pyx_L1_error)
+    }
+    __pyx_t_5 = __Pyx_GetItemInt_List(__pyx_v_board_cards, __pyx_v_i, unsigned int, 0, __Pyx_PyInt_From_unsigned_int, 1, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 347, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_rank); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 347, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_7 = __Pyx_PyInt_As_unsigned_int(__pyx_t_6); if (unlikely((__pyx_t_7 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 347, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_v_brank = __pyx_t_7;
+
+    /* "bounty_equity.pyx":348
+ *     for i in range(n):
+ *         brank = board_cards[i].rank
+ *         bsuit = board_cards[i].suit             # <<<<<<<<<<<<<<
+ *         rank_count[brank] += 1
+ *         suit_count[bsuit] += 1
+ */
+    if (unlikely(__pyx_v_board_cards == Py_None)) {
+      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+      __PYX_ERR(0, 348, __pyx_L1_error)
+    }
+    __pyx_t_6 = __Pyx_GetItemInt_List(__pyx_v_board_cards, __pyx_v_i, unsigned int, 0, __Pyx_PyInt_From_unsigned_int, 1, 0, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 348, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_suit); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 348, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_7 = __Pyx_PyInt_As_unsigned_int(__pyx_t_5); if (unlikely((__pyx_t_7 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 348, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_v_bsuit = __pyx_t_7;
+
+    /* "bounty_equity.pyx":349
+ *         brank = board_cards[i].rank
+ *         bsuit = board_cards[i].suit
+ *         rank_count[brank] += 1             # <<<<<<<<<<<<<<
+ *         suit_count[bsuit] += 1
+ * 
+ */
+    __pyx_t_7 = __pyx_v_brank;
+    (__pyx_v_rank_count[__pyx_t_7]) = ((__pyx_v_rank_count[__pyx_t_7]) + 1);
+
+    /* "bounty_equity.pyx":350
+ *         bsuit = board_cards[i].suit
+ *         rank_count[brank] += 1
+ *         suit_count[bsuit] += 1             # <<<<<<<<<<<<<<
+ * 
+ *     rank_count[r1] += 1
+ */
+    __pyx_t_7 = __pyx_v_bsuit;
+    (__pyx_v_suit_count[__pyx_t_7]) = ((__pyx_v_suit_count[__pyx_t_7]) + 1);
+  }
+
+  /* "bounty_equity.pyx":352
+ *         suit_count[bsuit] += 1
+ * 
+ *     rank_count[r1] += 1             # <<<<<<<<<<<<<<
+ *     rank_count[r2] += 1
+ *     suit_count[s1] += 1
+ */
+  __pyx_t_1 = __pyx_v_r1;
+  (__pyx_v_rank_count[__pyx_t_1]) = ((__pyx_v_rank_count[__pyx_t_1]) + 1);
+
+  /* "bounty_equity.pyx":353
+ * 
+ *     rank_count[r1] += 1
+ *     rank_count[r2] += 1             # <<<<<<<<<<<<<<
+ *     suit_count[s1] += 1
+ *     suit_count[s2] += 1
+ */
+  __pyx_t_1 = __pyx_v_r2;
+  (__pyx_v_rank_count[__pyx_t_1]) = ((__pyx_v_rank_count[__pyx_t_1]) + 1);
+
+  /* "bounty_equity.pyx":354
+ *     rank_count[r1] += 1
+ *     rank_count[r2] += 1
+ *     suit_count[s1] += 1             # <<<<<<<<<<<<<<
+ *     suit_count[s2] += 1
+ * 
+ */
+  __pyx_t_1 = __pyx_v_s1;
+  (__pyx_v_suit_count[__pyx_t_1]) = ((__pyx_v_suit_count[__pyx_t_1]) + 1);
+
+  /* "bounty_equity.pyx":355
+ *     rank_count[r2] += 1
+ *     suit_count[s1] += 1
+ *     suit_count[s2] += 1             # <<<<<<<<<<<<<<
+ * 
+ *     # pockets
+ */
+  __pyx_t_1 = __pyx_v_s2;
+  (__pyx_v_suit_count[__pyx_t_1]) = ((__pyx_v_suit_count[__pyx_t_1]) + 1);
+
+  /* "bounty_equity.pyx":358
+ * 
+ *     # pockets
+ *     cdef bint pocket = False             # <<<<<<<<<<<<<<
+ *     if r1 == r2:
+ *         w = 1.4 + r1 / 10.0
+ */
+  __pyx_v_pocket = 0;
+
+  /* "bounty_equity.pyx":359
+ *     # pockets
+ *     cdef bint pocket = False
+ *     if r1 == r2:             # <<<<<<<<<<<<<<
+ *         w = 1.4 + r1 / 10.0
+ *         pocket = True
+ */
+  __pyx_t_8 = (__pyx_v_r1 == __pyx_v_r2);
+  if (__pyx_t_8) {
+
+    /* "bounty_equity.pyx":360
+ *     cdef bint pocket = False
+ *     if r1 == r2:
+ *         w = 1.4 + r1 / 10.0             # <<<<<<<<<<<<<<
+ *         pocket = True
+ * 
+ */
+    __pyx_v_w = (1.4 + (((double)__pyx_v_r1) / 10.0));
+
+    /* "bounty_equity.pyx":361
+ *     if r1 == r2:
+ *         w = 1.4 + r1 / 10.0
+ *         pocket = True             # <<<<<<<<<<<<<<
+ * 
+ *     # quads
+ */
+    __pyx_v_pocket = 1;
+
+    /* "bounty_equity.pyx":359
+ *     # pockets
+ *     cdef bint pocket = False
+ *     if r1 == r2:             # <<<<<<<<<<<<<<
+ *         w = 1.4 + r1 / 10.0
+ *         pocket = True
+ */
+  }
+
+  /* "bounty_equity.pyx":364
+ * 
+ *     # quads
+ *     if rank_count[r1] == 4 or rank_count[r2] == 4:             # <<<<<<<<<<<<<<
+ *         w = 25.0
+ * 
+ */
+  __pyx_t_9 = ((__pyx_v_rank_count[__pyx_v_r1]) == 4);
+  if (!__pyx_t_9) {
+  } else {
+    __pyx_t_8 = __pyx_t_9;
+    goto __pyx_L11_bool_binop_done;
+  }
+  __pyx_t_9 = ((__pyx_v_rank_count[__pyx_v_r2]) == 4);
+  __pyx_t_8 = __pyx_t_9;
+  __pyx_L11_bool_binop_done:;
+  if (__pyx_t_8) {
+
+    /* "bounty_equity.pyx":365
+ *     # quads
+ *     if rank_count[r1] == 4 or rank_count[r2] == 4:
+ *         w = 25.0             # <<<<<<<<<<<<<<
+ * 
+ *     # trips logic
+ */
+    __pyx_v_w = 25.0;
+
+    /* "bounty_equity.pyx":364
+ * 
+ *     # quads
+ *     if rank_count[r1] == 4 or rank_count[r2] == 4:             # <<<<<<<<<<<<<<
+ *         w = 25.0
+ * 
+ */
+  }
+
+  /* "bounty_equity.pyx":368
+ * 
+ *     # trips logic
+ *     cdef bint trips = False             # <<<<<<<<<<<<<<
+ *     cdef int tripIndex = -1
+ *     if rank_count[r1] == 3 or rank_count[r2] == 3:
+ */
+  __pyx_v_trips = 0;
+
+  /* "bounty_equity.pyx":369
+ *     # trips logic
+ *     cdef bint trips = False
+ *     cdef int tripIndex = -1             # <<<<<<<<<<<<<<
+ *     if rank_count[r1] == 3 or rank_count[r2] == 3:
+ *         w = 4.5 if pocket else 4.0
+ */
+  __pyx_v_tripIndex = -1;
+
+  /* "bounty_equity.pyx":370
+ *     cdef bint trips = False
+ *     cdef int tripIndex = -1
+ *     if rank_count[r1] == 3 or rank_count[r2] == 3:             # <<<<<<<<<<<<<<
+ *         w = 4.5 if pocket else 4.0
+ *         trips = True
+ */
+  __pyx_t_9 = ((__pyx_v_rank_count[__pyx_v_r1]) == 3);
+  if (!__pyx_t_9) {
+  } else {
+    __pyx_t_8 = __pyx_t_9;
+    goto __pyx_L14_bool_binop_done;
+  }
+  __pyx_t_9 = ((__pyx_v_rank_count[__pyx_v_r2]) == 3);
+  __pyx_t_8 = __pyx_t_9;
+  __pyx_L14_bool_binop_done:;
+  if (__pyx_t_8) {
+
+    /* "bounty_equity.pyx":371
+ *     cdef int tripIndex = -1
+ *     if rank_count[r1] == 3 or rank_count[r2] == 3:
+ *         w = 4.5 if pocket else 4.0             # <<<<<<<<<<<<<<
+ *         trips = True
+ *         tripIndex = r1 if rank_count[r1] == 3 else r2
+ */
+    if (__pyx_v_pocket) {
+      __pyx_t_10 = 4.5;
+    } else {
+      __pyx_t_10 = 4.0;
+    }
+    __pyx_v_w = __pyx_t_10;
+
+    /* "bounty_equity.pyx":372
+ *     if rank_count[r1] == 3 or rank_count[r2] == 3:
+ *         w = 4.5 if pocket else 4.0
+ *         trips = True             # <<<<<<<<<<<<<<
+ *         tripIndex = r1 if rank_count[r1] == 3 else r2
+ * 
+ */
+    __pyx_v_trips = 1;
+
+    /* "bounty_equity.pyx":373
+ *         w = 4.5 if pocket else 4.0
+ *         trips = True
+ *         tripIndex = r1 if rank_count[r1] == 3 else r2             # <<<<<<<<<<<<<<
+ * 
+ *     cdef int j
+ */
+    __pyx_t_8 = ((__pyx_v_rank_count[__pyx_v_r1]) == 3);
+    if (__pyx_t_8) {
+      __pyx_t_1 = __pyx_v_r1;
+    } else {
+      __pyx_t_1 = __pyx_v_r2;
+    }
+    __pyx_v_tripIndex = __pyx_t_1;
+
+    /* "bounty_equity.pyx":370
+ *     cdef bint trips = False
+ *     cdef int tripIndex = -1
+ *     if rank_count[r1] == 3 or rank_count[r2] == 3:             # <<<<<<<<<<<<<<
+ *         w = 4.5 if pocket else 4.0
+ *         trips = True
+ */
+  }
+
+  /* "bounty_equity.pyx":376
+ * 
+ *     cdef int j
+ *     for j in range(n):             # <<<<<<<<<<<<<<
+ *         brank = board_cards[j].rank
+ *         # full house
+ */
+  __pyx_t_3 = __pyx_v_n;
+  __pyx_t_4 = __pyx_t_3;
+  for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_4; __pyx_t_11+=1) {
+    __pyx_v_j = __pyx_t_11;
+
+    /* "bounty_equity.pyx":377
+ *     cdef int j
+ *     for j in range(n):
+ *         brank = board_cards[j].rank             # <<<<<<<<<<<<<<
+ *         # full house
+ *         if trips and rank_count[brank] >= 2 and brank != tripIndex:
+ */
+    if (unlikely(__pyx_v_board_cards == Py_None)) {
+      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+      __PYX_ERR(0, 377, __pyx_L1_error)
+    }
+    __pyx_t_5 = __Pyx_GetItemInt_List(__pyx_v_board_cards, __pyx_v_j, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 377, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_rank); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 377, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_1 = __Pyx_PyInt_As_unsigned_int(__pyx_t_6); if (unlikely((__pyx_t_1 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 377, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_v_brank = __pyx_t_1;
+
+    /* "bounty_equity.pyx":379
+ *         brank = board_cards[j].rank
+ *         # full house
+ *         if trips and rank_count[brank] >= 2 and brank != tripIndex:             # <<<<<<<<<<<<<<
+ *             w = 15.0
+ *             break
+ */
+    if (__pyx_v_trips) {
+    } else {
+      __pyx_t_8 = __pyx_v_trips;
+      goto __pyx_L19_bool_binop_done;
+    }
+    __pyx_t_9 = ((__pyx_v_rank_count[__pyx_v_brank]) >= 2);
+    if (__pyx_t_9) {
+    } else {
+      __pyx_t_8 = __pyx_t_9;
+      goto __pyx_L19_bool_binop_done;
+    }
+    __pyx_t_9 = (__pyx_v_brank != __pyx_v_tripIndex);
+    __pyx_t_8 = __pyx_t_9;
+    __pyx_L19_bool_binop_done:;
+    if (__pyx_t_8) {
+
+      /* "bounty_equity.pyx":380
+ *         # full house
+ *         if trips and rank_count[brank] >= 2 and brank != tripIndex:
+ *             w = 15.0             # <<<<<<<<<<<<<<
+ *             break
+ *         # pairs
+ */
+      __pyx_v_w = 15.0;
+
+      /* "bounty_equity.pyx":381
+ *         if trips and rank_count[brank] >= 2 and brank != tripIndex:
+ *             w = 15.0
+ *             break             # <<<<<<<<<<<<<<
+ *         # pairs
+ *         if r1 == brank:
+ */
+      goto __pyx_L17_break;
+
+      /* "bounty_equity.pyx":379
+ *         brank = board_cards[j].rank
+ *         # full house
+ *         if trips and rank_count[brank] >= 2 and brank != tripIndex:             # <<<<<<<<<<<<<<
+ *             w = 15.0
+ *             break
+ */
+    }
+
+    /* "bounty_equity.pyx":383
+ *             break
+ *         # pairs
+ *         if r1 == brank:             # <<<<<<<<<<<<<<
+ *             w *= (1.2 + r1 / 20.0)
+ *         if r2 == brank:
+ */
+    __pyx_t_8 = (__pyx_v_r1 == __pyx_v_brank);
+    if (__pyx_t_8) {
+
+      /* "bounty_equity.pyx":384
+ *         # pairs
+ *         if r1 == brank:
+ *             w *= (1.2 + r1 / 20.0)             # <<<<<<<<<<<<<<
+ *         if r2 == brank:
+ *             w *= (1.2 + r2 / 20.0)
+ */
+      __pyx_v_w = (__pyx_v_w * (1.2 + (((double)__pyx_v_r1) / 20.0)));
+
+      /* "bounty_equity.pyx":383
+ *             break
+ *         # pairs
+ *         if r1 == brank:             # <<<<<<<<<<<<<<
+ *             w *= (1.2 + r1 / 20.0)
+ *         if r2 == brank:
+ */
+    }
+
+    /* "bounty_equity.pyx":385
+ *         if r1 == brank:
+ *             w *= (1.2 + r1 / 20.0)
+ *         if r2 == brank:             # <<<<<<<<<<<<<<
+ *             w *= (1.2 + r2 / 20.0)
+ * 
+ */
+    __pyx_t_8 = (__pyx_v_r2 == __pyx_v_brank);
+    if (__pyx_t_8) {
+
+      /* "bounty_equity.pyx":386
+ *             w *= (1.2 + r1 / 20.0)
+ *         if r2 == brank:
+ *             w *= (1.2 + r2 / 20.0)             # <<<<<<<<<<<<<<
+ * 
+ *     # flush logic
+ */
+      __pyx_v_w = (__pyx_v_w * (1.2 + (((double)__pyx_v_r2) / 20.0)));
+
+      /* "bounty_equity.pyx":385
+ *         if r1 == brank:
+ *             w *= (1.2 + r1 / 20.0)
+ *         if r2 == brank:             # <<<<<<<<<<<<<<
+ *             w *= (1.2 + r2 / 20.0)
+ * 
+ */
+    }
+  }
+  __pyx_L17_break:;
+
+  /* "bounty_equity.pyx":389
+ * 
+ *     # flush logic
+ *     cdef bint flush = False             # <<<<<<<<<<<<<<
+ *     for j in range(4):
+ *         if suit_count[j] == 4:
+ */
+  __pyx_v_flush = 0;
+
+  /* "bounty_equity.pyx":390
+ *     # flush logic
+ *     cdef bint flush = False
+ *     for j in range(4):             # <<<<<<<<<<<<<<
+ *         if suit_count[j] == 4:
+ *             w *= 3.5 if n == 3 else 2.4
+ */
+  for (__pyx_t_3 = 0; __pyx_t_3 < 4; __pyx_t_3+=1) {
+    __pyx_v_j = __pyx_t_3;
+
+    /* "bounty_equity.pyx":391
+ *     cdef bint flush = False
+ *     for j in range(4):
+ *         if suit_count[j] == 4:             # <<<<<<<<<<<<<<
+ *             w *= 3.5 if n == 3 else 2.4
+ *         elif suit_count[j] == 5:
+ */
+    __pyx_t_8 = ((__pyx_v_suit_count[__pyx_v_j]) == 4);
+    if (__pyx_t_8) {
+
+      /* "bounty_equity.pyx":392
+ *     for j in range(4):
+ *         if suit_count[j] == 4:
+ *             w *= 3.5 if n == 3 else 2.4             # <<<<<<<<<<<<<<
+ *         elif suit_count[j] == 5:
+ *             w = 10.0
+ */
+      __pyx_t_8 = (__pyx_v_n == 3);
+      if (__pyx_t_8) {
+        __pyx_t_10 = 3.5;
+      } else {
+        __pyx_t_10 = 2.4;
+      }
+      __pyx_v_w = (__pyx_v_w * __pyx_t_10);
+
+      /* "bounty_equity.pyx":391
+ *     cdef bint flush = False
+ *     for j in range(4):
+ *         if suit_count[j] == 4:             # <<<<<<<<<<<<<<
+ *             w *= 3.5 if n == 3 else 2.4
+ *         elif suit_count[j] == 5:
+ */
+      goto __pyx_L26;
+    }
+
+    /* "bounty_equity.pyx":393
+ *         if suit_count[j] == 4:
+ *             w *= 3.5 if n == 3 else 2.4
+ *         elif suit_count[j] == 5:             # <<<<<<<<<<<<<<
+ *             w = 10.0
+ *             flush = True
+ */
+    __pyx_t_8 = ((__pyx_v_suit_count[__pyx_v_j]) == 5);
+    if (__pyx_t_8) {
+
+      /* "bounty_equity.pyx":394
+ *             w *= 3.5 if n == 3 else 2.4
+ *         elif suit_count[j] == 5:
+ *             w = 10.0             # <<<<<<<<<<<<<<
+ *             flush = True
+ * 
+ */
+      __pyx_v_w = 10.0;
+
+      /* "bounty_equity.pyx":395
+ *         elif suit_count[j] == 5:
+ *             w = 10.0
+ *             flush = True             # <<<<<<<<<<<<<<
+ * 
+ *     # straight logic
+ */
+      __pyx_v_flush = 1;
+
+      /* "bounty_equity.pyx":393
+ *         if suit_count[j] == 4:
+ *             w *= 3.5 if n == 3 else 2.4
+ *         elif suit_count[j] == 5:             # <<<<<<<<<<<<<<
+ *             w = 10.0
+ *             flush = True
+ */
+    }
+    __pyx_L26:;
+  }
+
+  /* "bounty_equity.pyx":399
+ *     # straight logic
+ *     cdef int psums[14]
+ *     psums[0] = 0             # <<<<<<<<<<<<<<
+ *     for j in range(13):
+ *         psums[j+1] = psums[j] + min(1, rank_count[j])
+ */
+  (__pyx_v_psums[0]) = 0;
+
+  /* "bounty_equity.pyx":400
+ *     cdef int psums[14]
+ *     psums[0] = 0
+ *     for j in range(13):             # <<<<<<<<<<<<<<
+ *         psums[j+1] = psums[j] + min(1, rank_count[j])
+ * 
+ */
+  for (__pyx_t_3 = 0; __pyx_t_3 < 13; __pyx_t_3+=1) {
+    __pyx_v_j = __pyx_t_3;
+
+    /* "bounty_equity.pyx":401
+ *     psums[0] = 0
+ *     for j in range(13):
+ *         psums[j+1] = psums[j] + min(1, rank_count[j])             # <<<<<<<<<<<<<<
+ * 
+ *     cdef int val
+ */
+    __pyx_t_4 = (__pyx_v_rank_count[__pyx_v_j]);
+    __pyx_t_12 = 1;
+    __pyx_t_8 = (__pyx_t_4 < __pyx_t_12);
+    if (__pyx_t_8) {
+      __pyx_t_13 = __pyx_t_4;
+    } else {
+      __pyx_t_13 = __pyx_t_12;
+    }
+    (__pyx_v_psums[(__pyx_v_j + 1)]) = ((__pyx_v_psums[__pyx_v_j]) + __pyx_t_13);
+  }
+
+  /* "bounty_equity.pyx":404
+ * 
+ *     cdef int val
+ *     for j in range(5, 14):             # <<<<<<<<<<<<<<
+ *         val = psums[j] - psums[j - 5]
+ *         if val == 4:
+ */
+  for (__pyx_t_3 = 5; __pyx_t_3 < 14; __pyx_t_3+=1) {
+    __pyx_v_j = __pyx_t_3;
+
+    /* "bounty_equity.pyx":405
+ *     cdef int val
+ *     for j in range(5, 14):
+ *         val = psums[j] - psums[j - 5]             # <<<<<<<<<<<<<<
+ *         if val == 4:
+ *             w *= 1.6 if n == 3 else 1.3
+ */
+    __pyx_v_val = ((__pyx_v_psums[__pyx_v_j]) - (__pyx_v_psums[(__pyx_v_j - 5)]));
+
+    /* "bounty_equity.pyx":406
+ *     for j in range(5, 14):
+ *         val = psums[j] - psums[j - 5]
+ *         if val == 4:             # <<<<<<<<<<<<<<
+ *             w *= 1.6 if n == 3 else 1.3
+ *         elif val == 5:
+ */
+    switch (__pyx_v_val) {
+      case 4:
+
+      /* "bounty_equity.pyx":407
+ *         val = psums[j] - psums[j - 5]
+ *         if val == 4:
+ *             w *= 1.6 if n == 3 else 1.3             # <<<<<<<<<<<<<<
+ *         elif val == 5:
+ *             w = 8.0 if not flush else 35.0
+ */
+      __pyx_t_8 = (__pyx_v_n == 3);
+      if (__pyx_t_8) {
+        __pyx_t_10 = 1.6;
+      } else {
+        __pyx_t_10 = 1.3;
+      }
+      __pyx_v_w = (__pyx_v_w * __pyx_t_10);
+
+      /* "bounty_equity.pyx":406
+ *     for j in range(5, 14):
+ *         val = psums[j] - psums[j - 5]
+ *         if val == 4:             # <<<<<<<<<<<<<<
+ *             w *= 1.6 if n == 3 else 1.3
+ *         elif val == 5:
+ */
+      break;
+      case 5:
+
+      /* "bounty_equity.pyx":409
+ *             w *= 1.6 if n == 3 else 1.3
+ *         elif val == 5:
+ *             w = 8.0 if not flush else 35.0             # <<<<<<<<<<<<<<
+ * 
+ *     return w
+ */
+      __pyx_t_8 = (!__pyx_v_flush);
+      if (__pyx_t_8) {
+        __pyx_t_10 = 8.0;
+      } else {
+        __pyx_t_10 = 35.0;
+      }
+      __pyx_v_w = __pyx_t_10;
+
+      /* "bounty_equity.pyx":408
+ *         if val == 4:
+ *             w *= 1.6 if n == 3 else 1.3
+ *         elif val == 5:             # <<<<<<<<<<<<<<
+ *             w = 8.0 if not flush else 35.0
+ * 
+ */
+      break;
+      default: break;
+    }
+  }
+
+  /* "bounty_equity.pyx":411
+ *             w = 8.0 if not flush else 35.0
+ * 
+ *     return w             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_r = __pyx_v_w;
+  goto __pyx_L0;
+
+  /* "bounty_equity.pyx":318
+ * 
+ * 
+ * cdef double c_weight_hand(             # <<<<<<<<<<<<<<
+ *     unsigned int rank1, unsigned int suit1,
+ *     unsigned int rank2, unsigned int suit2,
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_AddTraceback("bounty_equity.c_weight_hand", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "bounty_equity.pyx":417
+ * # 2) cdef function to generate a Python dict of combos -> weight
+ * #
+ * cdef dict c_generate_weighted_dict(             # <<<<<<<<<<<<<<
+ *     list deck,
+ *     list my_hand,
+ */
+
+static PyObject *__pyx_f_13bounty_equity_c_generate_weighted_dict(PyObject *__pyx_v_deck, PyObject *__pyx_v_my_hand, PyObject *__pyx_v_board_cards) {
+  PyObject *__pyx_v_result = 0;
+  int __pyx_v_nd;
+  int __pyx_v_i;
+  int __pyx_v_j;
+  PyObject *__pyx_v_c1 = 0;
+  PyObject *__pyx_v_c2 = 0;
+  double __pyx_v_w;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  Py_ssize_t __pyx_t_2;
+  int __pyx_t_3;
+  int __pyx_t_4;
+  int __pyx_t_5;
+  int __pyx_t_6;
+  int __pyx_t_7;
+  int __pyx_t_8;
+  int __pyx_t_9;
+  int __pyx_t_10;
+  unsigned int __pyx_t_11;
+  unsigned int __pyx_t_12;
+  unsigned int __pyx_t_13;
+  unsigned int __pyx_t_14;
+  double __pyx_t_15;
+  PyObject *__pyx_t_16 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("c_generate_weighted_dict", 1);
+
+  /* "bounty_equity.pyx":426
+ *     excluding 'my_hand'.
+ *     """
+ *     cdef dict result = {}             # <<<<<<<<<<<<<<
+ *     cdef int nd = len(deck)
+ *     cdef int i, j
+ */
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 426, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_result = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "bounty_equity.pyx":427
+ *     """
+ *     cdef dict result = {}
+ *     cdef int nd = len(deck)             # <<<<<<<<<<<<<<
+ *     cdef int i, j
+ *     cdef object c1, c2
+ */
+  if (unlikely(__pyx_v_deck == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    __PYX_ERR(0, 427, __pyx_L1_error)
+  }
+  __pyx_t_2 = __Pyx_PyList_GET_SIZE(__pyx_v_deck); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 427, __pyx_L1_error)
+  __pyx_v_nd = __pyx_t_2;
+
+  /* "bounty_equity.pyx":432
+ *     cdef double w
+ * 
+ *     for i in range(nd):             # <<<<<<<<<<<<<<
+ *         c1 = deck[i]
+ *         for j in range(i+1, nd):
+ */
+  __pyx_t_3 = __pyx_v_nd;
+  __pyx_t_4 = __pyx_t_3;
+  for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
+    __pyx_v_i = __pyx_t_5;
+
+    /* "bounty_equity.pyx":433
+ * 
+ *     for i in range(nd):
+ *         c1 = deck[i]             # <<<<<<<<<<<<<<
+ *         for j in range(i+1, nd):
+ *             c2 = deck[j]
+ */
+    if (unlikely(__pyx_v_deck == Py_None)) {
+      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+      __PYX_ERR(0, 433, __pyx_L1_error)
+    }
+    __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_deck, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 433, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_XDECREF_SET(__pyx_v_c1, __pyx_t_1);
+    __pyx_t_1 = 0;
+
+    /* "bounty_equity.pyx":434
+ *     for i in range(nd):
+ *         c1 = deck[i]
+ *         for j in range(i+1, nd):             # <<<<<<<<<<<<<<
+ *             c2 = deck[j]
+ *             if c1 not in my_hand and c2 not in my_hand:
+ */
+    __pyx_t_6 = __pyx_v_nd;
+    __pyx_t_7 = __pyx_t_6;
+    for (__pyx_t_8 = (__pyx_v_i + 1); __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
+      __pyx_v_j = __pyx_t_8;
+
+      /* "bounty_equity.pyx":435
+ *         c1 = deck[i]
+ *         for j in range(i+1, nd):
+ *             c2 = deck[j]             # <<<<<<<<<<<<<<
+ *             if c1 not in my_hand and c2 not in my_hand:
+ *                 w = c_weight_hand(
+ */
+      if (unlikely(__pyx_v_deck == Py_None)) {
+        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+        __PYX_ERR(0, 435, __pyx_L1_error)
+      }
+      __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_deck, __pyx_v_j, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 435, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_XDECREF_SET(__pyx_v_c2, __pyx_t_1);
+      __pyx_t_1 = 0;
+
+      /* "bounty_equity.pyx":436
+ *         for j in range(i+1, nd):
+ *             c2 = deck[j]
+ *             if c1 not in my_hand and c2 not in my_hand:             # <<<<<<<<<<<<<<
+ *                 w = c_weight_hand(
+ *                     c1.rank, c1.suit,
+ */
+      __pyx_t_10 = (__Pyx_PySequence_ContainsTF(__pyx_v_c1, __pyx_v_my_hand, Py_NE)); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 436, __pyx_L1_error)
+      if (__pyx_t_10) {
+      } else {
+        __pyx_t_9 = __pyx_t_10;
+        goto __pyx_L8_bool_binop_done;
+      }
+      __pyx_t_10 = (__Pyx_PySequence_ContainsTF(__pyx_v_c2, __pyx_v_my_hand, Py_NE)); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 436, __pyx_L1_error)
+      __pyx_t_9 = __pyx_t_10;
+      __pyx_L8_bool_binop_done:;
+      if (__pyx_t_9) {
+
+        /* "bounty_equity.pyx":438
+ *             if c1 not in my_hand and c2 not in my_hand:
+ *                 w = c_weight_hand(
+ *                     c1.rank, c1.suit,             # <<<<<<<<<<<<<<
+ *                     c2.rank, c2.suit,
+ *                     board_cards
+ */
+        __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_c1, __pyx_n_s_rank); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 438, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __pyx_t_11 = __Pyx_PyInt_As_unsigned_int(__pyx_t_1); if (unlikely((__pyx_t_11 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 438, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+        __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_c1, __pyx_n_s_suit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 438, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __pyx_t_12 = __Pyx_PyInt_As_unsigned_int(__pyx_t_1); if (unlikely((__pyx_t_12 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 438, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+        /* "bounty_equity.pyx":439
+ *                 w = c_weight_hand(
+ *                     c1.rank, c1.suit,
+ *                     c2.rank, c2.suit,             # <<<<<<<<<<<<<<
+ *                     board_cards
+ *                 )
+ */
+        __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_c2, __pyx_n_s_rank); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 439, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __pyx_t_13 = __Pyx_PyInt_As_unsigned_int(__pyx_t_1); if (unlikely((__pyx_t_13 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 439, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+        __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_c2, __pyx_n_s_suit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 439, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __pyx_t_14 = __Pyx_PyInt_As_unsigned_int(__pyx_t_1); if (unlikely((__pyx_t_14 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 439, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+        /* "bounty_equity.pyx":437
+ *             c2 = deck[j]
+ *             if c1 not in my_hand and c2 not in my_hand:
+ *                 w = c_weight_hand(             # <<<<<<<<<<<<<<
+ *                     c1.rank, c1.suit,
+ *                     c2.rank, c2.suit,
+ */
+        __pyx_t_15 = __pyx_f_13bounty_equity_c_weight_hand(__pyx_t_11, __pyx_t_12, __pyx_t_13, __pyx_t_14, __pyx_v_board_cards); if (unlikely(__pyx_t_15 == ((double)-1) && PyErr_Occurred())) __PYX_ERR(0, 437, __pyx_L1_error)
+        __pyx_v_w = __pyx_t_15;
+
+        /* "bounty_equity.pyx":442
+ *                     board_cards
+ *                 )
+ *                 result[(c1, c2)] = w             # <<<<<<<<<<<<<<
+ *     return result
+ * 
+ */
+        __pyx_t_1 = PyFloat_FromDouble(__pyx_v_w); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 442, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __pyx_t_16 = PyTuple_New(2); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 442, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_16);
+        __Pyx_INCREF(__pyx_v_c1);
+        __Pyx_GIVEREF(__pyx_v_c1);
+        if (__Pyx_PyTuple_SET_ITEM(__pyx_t_16, 0, __pyx_v_c1)) __PYX_ERR(0, 442, __pyx_L1_error);
+        __Pyx_INCREF(__pyx_v_c2);
+        __Pyx_GIVEREF(__pyx_v_c2);
+        if (__Pyx_PyTuple_SET_ITEM(__pyx_t_16, 1, __pyx_v_c2)) __PYX_ERR(0, 442, __pyx_L1_error);
+        if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_t_16, __pyx_t_1) < 0))) __PYX_ERR(0, 442, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+        /* "bounty_equity.pyx":436
+ *         for j in range(i+1, nd):
+ *             c2 = deck[j]
+ *             if c1 not in my_hand and c2 not in my_hand:             # <<<<<<<<<<<<<<
+ *                 w = c_weight_hand(
+ *                     c1.rank, c1.suit,
+ */
+      }
+    }
+  }
+
+  /* "bounty_equity.pyx":443
+ *                 )
+ *                 result[(c1, c2)] = w
+ *     return result             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_result);
+  __pyx_r = __pyx_v_result;
+  goto __pyx_L0;
+
+  /* "bounty_equity.pyx":417
+ * # 2) cdef function to generate a Python dict of combos -> weight
+ * #
+ * cdef dict c_generate_weighted_dict(             # <<<<<<<<<<<<<<
+ *     list deck,
+ *     list my_hand,
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_16);
+  __Pyx_AddTraceback("bounty_equity.c_generate_weighted_dict", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_result);
+  __Pyx_XDECREF(__pyx_v_c1);
+  __Pyx_XDECREF(__pyx_v_c2);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "bounty_equity.pyx":449
+ * # 3) cdef function that prunes combos based on action
+ * #
+ * cdef dict c_estimate_opponent_range(             # <<<<<<<<<<<<<<
+ *     list my_hand,
+ *     list board_cards,
+ */
+
+static PyObject *__pyx_f_13bounty_equity_c_estimate_opponent_range(PyObject *__pyx_v_my_hand, PyObject *__pyx_v_board_cards, PyObject *__pyx_v_action) {
+  PyObject *__pyx_v_deck = 0;
+  PyObject *__pyx_v_raw_dict = 0;
+  PyObject *__pyx_v_final_dict = 0;
+  double __pyx_v_min_threshold;
+  PyObject *__pyx_v_combo = 0;
+  double __pyx_v_w;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  unsigned int __pyx_t_4;
+  int __pyx_t_5;
+  Py_ssize_t __pyx_t_6;
+  Py_ssize_t __pyx_t_7;
+  int __pyx_t_8;
+  int __pyx_t_9;
+  double __pyx_t_10;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("c_estimate_opponent_range", 1);
+
+  /* "bounty_equity.pyx":460
+ *     4) return final { (Card,Card): weight }
+ *     """
+ *     cdef list deck = eval7.Deck().cards             # <<<<<<<<<<<<<<
+ *     cdef dict raw_dict = c_generate_weighted_dict(deck, my_hand, board_cards)
+ * 
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_eval7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 460, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_Deck); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 460, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = NULL;
+  __pyx_t_4 = 0;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_2)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_2);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+      __pyx_t_4 = 1;
+    }
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_2, NULL};
+    __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+1-__pyx_t_4, 0+__pyx_t_4);
+    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 460, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  }
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_cards); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 460, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (!(likely(PyList_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None) || __Pyx_RaiseUnexpectedTypeError("list", __pyx_t_3))) __PYX_ERR(0, 460, __pyx_L1_error)
+  __pyx_v_deck = ((PyObject*)__pyx_t_3);
+  __pyx_t_3 = 0;
+
+  /* "bounty_equity.pyx":461
+ *     """
+ *     cdef list deck = eval7.Deck().cards
+ *     cdef dict raw_dict = c_generate_weighted_dict(deck, my_hand, board_cards)             # <<<<<<<<<<<<<<
+ * 
+ *     cdef dict final_dict = {}
+ */
+  __pyx_t_3 = __pyx_f_13bounty_equity_c_generate_weighted_dict(__pyx_v_deck, __pyx_v_my_hand, __pyx_v_board_cards); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 461, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_v_raw_dict = ((PyObject*)__pyx_t_3);
+  __pyx_t_3 = 0;
+
+  /* "bounty_equity.pyx":463
+ *     cdef dict raw_dict = c_generate_weighted_dict(deck, my_hand, board_cards)
+ * 
+ *     cdef dict final_dict = {}             # <<<<<<<<<<<<<<
+ *     cdef double min_threshold = 1.0
+ *     if action == 'raise':
+ */
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 463, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_v_final_dict = ((PyObject*)__pyx_t_3);
+  __pyx_t_3 = 0;
+
+  /* "bounty_equity.pyx":464
+ * 
+ *     cdef dict final_dict = {}
+ *     cdef double min_threshold = 1.0             # <<<<<<<<<<<<<<
+ *     if action == 'raise':
+ *         min_threshold = 2.0
+ */
+  __pyx_v_min_threshold = 1.0;
+
+  /* "bounty_equity.pyx":465
+ *     cdef dict final_dict = {}
+ *     cdef double min_threshold = 1.0
+ *     if action == 'raise':             # <<<<<<<<<<<<<<
+ *         min_threshold = 2.0
+ *     elif action == 'call':
+ */
+  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_v_action, __pyx_n_s_raise, Py_EQ)); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 465, __pyx_L1_error)
+  if (__pyx_t_5) {
+
+    /* "bounty_equity.pyx":466
+ *     cdef double min_threshold = 1.0
+ *     if action == 'raise':
+ *         min_threshold = 2.0             # <<<<<<<<<<<<<<
+ *     elif action == 'call':
+ *         min_threshold = 1.5
+ */
+    __pyx_v_min_threshold = 2.0;
+
+    /* "bounty_equity.pyx":465
+ *     cdef dict final_dict = {}
+ *     cdef double min_threshold = 1.0
+ *     if action == 'raise':             # <<<<<<<<<<<<<<
+ *         min_threshold = 2.0
+ *     elif action == 'call':
+ */
+    goto __pyx_L3;
+  }
+
+  /* "bounty_equity.pyx":467
+ *     if action == 'raise':
+ *         min_threshold = 2.0
+ *     elif action == 'call':             # <<<<<<<<<<<<<<
+ *         min_threshold = 1.5
+ *     # else fold => empty
+ */
+  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_v_action, __pyx_n_s_call, Py_EQ)); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 467, __pyx_L1_error)
+  if (__pyx_t_5) {
+
+    /* "bounty_equity.pyx":468
+ *         min_threshold = 2.0
+ *     elif action == 'call':
+ *         min_threshold = 1.5             # <<<<<<<<<<<<<<
+ *     # else fold => empty
+ * 
+ */
+    __pyx_v_min_threshold = 1.5;
+
+    /* "bounty_equity.pyx":467
+ *     if action == 'raise':
+ *         min_threshold = 2.0
+ *     elif action == 'call':             # <<<<<<<<<<<<<<
+ *         min_threshold = 1.5
+ *     # else fold => empty
+ */
+  }
+  __pyx_L3:;
+
+  /* "bounty_equity.pyx":473
+ *     cdef object combo
+ *     cdef double w
+ *     for combo, w in raw_dict.items():             # <<<<<<<<<<<<<<
+ *         if w >= min_threshold:
+ *             final_dict[combo] = w
+ */
+  __pyx_t_6 = 0;
+  if (unlikely(__pyx_v_raw_dict == Py_None)) {
+    PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "items");
+    __PYX_ERR(0, 473, __pyx_L1_error)
+  }
+  __pyx_t_1 = __Pyx_dict_iterator(__pyx_v_raw_dict, 1, __pyx_n_s_items, (&__pyx_t_7), (&__pyx_t_8)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 473, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_3);
+  __pyx_t_3 = __pyx_t_1;
+  __pyx_t_1 = 0;
+  while (1) {
+    __pyx_t_9 = __Pyx_dict_iter_next(__pyx_t_3, __pyx_t_7, &__pyx_t_6, &__pyx_t_1, &__pyx_t_2, NULL, __pyx_t_8);
+    if (unlikely(__pyx_t_9 == 0)) break;
+    if (unlikely(__pyx_t_9 == -1)) __PYX_ERR(0, 473, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_10 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_10 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 473, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_combo, __pyx_t_1);
+    __pyx_t_1 = 0;
+    __pyx_v_w = __pyx_t_10;
+
+    /* "bounty_equity.pyx":474
+ *     cdef double w
+ *     for combo, w in raw_dict.items():
+ *         if w >= min_threshold:             # <<<<<<<<<<<<<<
+ *             final_dict[combo] = w
+ * 
+ */
+    __pyx_t_5 = (__pyx_v_w >= __pyx_v_min_threshold);
+    if (__pyx_t_5) {
+
+      /* "bounty_equity.pyx":475
+ *     for combo, w in raw_dict.items():
+ *         if w >= min_threshold:
+ *             final_dict[combo] = w             # <<<<<<<<<<<<<<
+ * 
+ *     return final_dict
+ */
+      __pyx_t_2 = PyFloat_FromDouble(__pyx_v_w); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 475, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      if (unlikely((PyDict_SetItem(__pyx_v_final_dict, __pyx_v_combo, __pyx_t_2) < 0))) __PYX_ERR(0, 475, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+      /* "bounty_equity.pyx":474
+ *     cdef double w
+ *     for combo, w in raw_dict.items():
+ *         if w >= min_threshold:             # <<<<<<<<<<<<<<
+ *             final_dict[combo] = w
+ * 
+ */
+    }
+  }
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+  /* "bounty_equity.pyx":477
+ *             final_dict[combo] = w
+ * 
+ *     return final_dict             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_final_dict);
+  __pyx_r = __pyx_v_final_dict;
+  goto __pyx_L0;
+
+  /* "bounty_equity.pyx":449
+ * # 3) cdef function that prunes combos based on action
+ * #
+ * cdef dict c_estimate_opponent_range(             # <<<<<<<<<<<<<<
+ *     list my_hand,
+ *     list board_cards,
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("bounty_equity.c_estimate_opponent_range", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_deck);
+  __Pyx_XDECREF(__pyx_v_raw_dict);
+  __Pyx_XDECREF(__pyx_v_final_dict);
+  __Pyx_XDECREF(__pyx_v_combo);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "bounty_equity.pyx":483
+ * # 4) The only Python-level wrapper
+ * #
+ * def py_estimate_opponent_range(my_hand, board_cards, action):             # <<<<<<<<<<<<<<
+ *     """
+ *     Python wrapper that calls the cdef function c_estimate_opponent_range().
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_13bounty_equity_3py_estimate_opponent_range(PyObject *__pyx_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+); /*proto*/
+PyDoc_STRVAR(__pyx_doc_13bounty_equity_2py_estimate_opponent_range, "\n    Python wrapper that calls the cdef function c_estimate_opponent_range().\n    This is the only function directly visible at Python level.\n    ");
+static PyMethodDef __pyx_mdef_13bounty_equity_3py_estimate_opponent_range = {"py_estimate_opponent_range", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13bounty_equity_3py_estimate_opponent_range, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_13bounty_equity_2py_estimate_opponent_range};
+static PyObject *__pyx_pw_13bounty_equity_3py_estimate_opponent_range(PyObject *__pyx_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+) {
+  PyObject *__pyx_v_my_hand = 0;
+  PyObject *__pyx_v_board_cards = 0;
+  PyObject *__pyx_v_action = 0;
+  #if !CYTHON_METH_FASTCALL
+  CYTHON_UNUSED Py_ssize_t __pyx_nargs;
+  #endif
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject* values[3] = {0,0,0};
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("py_estimate_opponent_range (wrapper)", 0);
+  #if !CYTHON_METH_FASTCALL
+  #if CYTHON_ASSUME_SAFE_MACROS
+  __pyx_nargs = PyTuple_GET_SIZE(__pyx_args);
+  #else
+  __pyx_nargs = PyTuple_Size(__pyx_args); if (unlikely(__pyx_nargs < 0)) return NULL;
+  #endif
+  #endif
+  __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
+  {
+    PyObject **__pyx_pyargnames[] = {&__pyx_n_s_my_hand,&__pyx_n_s_board_cards,&__pyx_n_s_action,0};
+    if (__pyx_kwds) {
+      Py_ssize_t kw_args;
+      switch (__pyx_nargs) {
+        case  3: values[2] = __Pyx_Arg_FASTCALL(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
+        case  2: values[1] = __Pyx_Arg_FASTCALL(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = __Pyx_Arg_FASTCALL(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = __Pyx_NumKwargs_FASTCALL(__pyx_kwds);
+      switch (__pyx_nargs) {
+        case  0:
+        if (likely((values[0] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_my_hand)) != 0)) {
+          (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
+          kw_args--;
+        }
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 483, __pyx_L3_error)
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_board_cards)) != 0)) {
+          (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
+          kw_args--;
+        }
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 483, __pyx_L3_error)
+        else {
+          __Pyx_RaiseArgtupleInvalid("py_estimate_opponent_range", 1, 3, 3, 1); __PYX_ERR(0, 483, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  2:
+        if (likely((values[2] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_action)) != 0)) {
+          (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
+          kw_args--;
+        }
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 483, __pyx_L3_error)
+        else {
+          __Pyx_RaiseArgtupleInvalid("py_estimate_opponent_range", 1, 3, 3, 2); __PYX_ERR(0, 483, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        const Py_ssize_t kwd_pos_args = __pyx_nargs;
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "py_estimate_opponent_range") < 0)) __PYX_ERR(0, 483, __pyx_L3_error)
+      }
+    } else if (unlikely(__pyx_nargs != 3)) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = __Pyx_Arg_FASTCALL(__pyx_args, 0);
+      values[1] = __Pyx_Arg_FASTCALL(__pyx_args, 1);
+      values[2] = __Pyx_Arg_FASTCALL(__pyx_args, 2);
+    }
+    __pyx_v_my_hand = values[0];
+    __pyx_v_board_cards = values[1];
+    __pyx_v_action = values[2];
+  }
+  goto __pyx_L6_skip;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("py_estimate_opponent_range", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 483, __pyx_L3_error)
+  __pyx_L6_skip:;
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  {
+    Py_ssize_t __pyx_temp;
+    for (__pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+      __Pyx_Arg_XDECREF_FASTCALL(values[__pyx_temp]);
+    }
+  }
+  __Pyx_AddTraceback("bounty_equity.py_estimate_opponent_range", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_13bounty_equity_2py_estimate_opponent_range(__pyx_self, __pyx_v_my_hand, __pyx_v_board_cards, __pyx_v_action);
+
+  /* function exit code */
+  {
+    Py_ssize_t __pyx_temp;
+    for (__pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+      __Pyx_Arg_XDECREF_FASTCALL(values[__pyx_temp]);
+    }
+  }
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_13bounty_equity_2py_estimate_opponent_range(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_my_hand, PyObject *__pyx_v_board_cards, PyObject *__pyx_v_action) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("py_estimate_opponent_range", 1);
+
+  /* "bounty_equity.pyx":488
+ *     This is the only function directly visible at Python level.
+ *     """
+ *     return c_estimate_opponent_range(my_hand, board_cards, action)             # <<<<<<<<<<<<<<
+ */
+  __Pyx_XDECREF(__pyx_r);
+  if (!(likely(PyList_CheckExact(__pyx_v_my_hand))||((__pyx_v_my_hand) == Py_None) || __Pyx_RaiseUnexpectedTypeError("list", __pyx_v_my_hand))) __PYX_ERR(0, 488, __pyx_L1_error)
+  if (!(likely(PyList_CheckExact(__pyx_v_board_cards))||((__pyx_v_board_cards) == Py_None) || __Pyx_RaiseUnexpectedTypeError("list", __pyx_v_board_cards))) __PYX_ERR(0, 488, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_action))||((__pyx_v_action) == Py_None) || __Pyx_RaiseUnexpectedTypeError("str", __pyx_v_action))) __PYX_ERR(0, 488, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_13bounty_equity_c_estimate_opponent_range(((PyObject*)__pyx_v_my_hand), ((PyObject*)__pyx_v_board_cards), ((PyObject*)__pyx_v_action)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 488, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "bounty_equity.pyx":483
+ * # 4) The only Python-level wrapper
+ * #
+ * def py_estimate_opponent_range(my_hand, board_cards, action):             # <<<<<<<<<<<<<<
+ *     """
+ *     Python wrapper that calls the cdef function c_estimate_opponent_range().
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("bounty_equity.py_estimate_opponent_range", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 static PyMethodDef __pyx_methods[] = {
   {0, 0, 0, 0}
 };
@@ -4391,13 +5964,18 @@ static PyMethodDef __pyx_methods[] = {
 
 static int __Pyx_CreateStringTabAndInitStrings(void) {
   __Pyx_StringTabEntry __pyx_string_tab[] = {
+    {&__pyx_n_s_Deck, __pyx_k_Deck, sizeof(__pyx_k_Deck), 0, 0, 1, 1},
     {&__pyx_n_s__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 0, 1, 1},
-    {&__pyx_n_s__6, __pyx_k__6, sizeof(__pyx_k__6), 0, 0, 1, 1},
+    {&__pyx_n_s__8, __pyx_k__8, sizeof(__pyx_k__8), 0, 0, 1, 1},
+    {&__pyx_n_s_action, __pyx_k_action, sizeof(__pyx_k_action), 0, 0, 1, 1},
     {&__pyx_n_s_array_ptr, __pyx_k_array_ptr, sizeof(__pyx_k_array_ptr), 0, 0, 1, 1},
     {&__pyx_n_s_asyncio_coroutines, __pyx_k_asyncio_coroutines, sizeof(__pyx_k_asyncio_coroutines), 0, 0, 1, 1},
+    {&__pyx_n_s_board_cards, __pyx_k_board_cards, sizeof(__pyx_k_board_cards), 0, 0, 1, 1},
     {&__pyx_n_s_board_mask, __pyx_k_board_mask, sizeof(__pyx_k_board_mask), 0, 0, 1, 1},
     {&__pyx_n_s_bounty_equity, __pyx_k_bounty_equity, sizeof(__pyx_k_bounty_equity), 0, 0, 1, 1},
     {&__pyx_kp_s_bounty_equity_pyx, __pyx_k_bounty_equity_pyx, sizeof(__pyx_k_bounty_equity_pyx), 0, 0, 1, 0},
+    {&__pyx_n_s_call, __pyx_k_call, sizeof(__pyx_k_call), 0, 0, 1, 1},
+    {&__pyx_n_s_cards, __pyx_k_cards, sizeof(__pyx_k_cards), 0, 0, 1, 1},
     {&__pyx_n_s_ccombo, __pyx_k_ccombo, sizeof(__pyx_k_ccombo), 0, 0, 1, 1},
     {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
     {&__pyx_n_s_cnt, __pyx_k_cnt, sizeof(__pyx_k_cnt), 0, 0, 1, 1},
@@ -4415,6 +5993,7 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_iterations, __pyx_k_iterations, sizeof(__pyx_k_iterations), 0, 0, 1, 1},
     {&__pyx_n_s_length, __pyx_k_length, sizeof(__pyx_k_length), 0, 0, 1, 1},
     {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
+    {&__pyx_n_s_my_hand, __pyx_k_my_hand, sizeof(__pyx_k_my_hand), 0, 0, 1, 1},
     {&__pyx_n_s_n, __pyx_k_n, sizeof(__pyx_k_n), 0, 0, 1, 1},
     {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
     {&__pyx_n_s_num_board, __pyx_k_num_board, sizeof(__pyx_k_num_board), 0, 0, 1, 1},
@@ -4422,14 +6001,18 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_prefix, __pyx_k_prefix, sizeof(__pyx_k_prefix), 0, 0, 1, 1},
     {&__pyx_n_s_prev, __pyx_k_prev, sizeof(__pyx_k_prev), 0, 0, 1, 1},
     {&__pyx_n_s_py_board, __pyx_k_py_board, sizeof(__pyx_k_py_board), 0, 0, 1, 1},
+    {&__pyx_n_s_py_estimate_opponent_range, __pyx_k_py_estimate_opponent_range, sizeof(__pyx_k_py_estimate_opponent_range), 0, 0, 1, 1},
     {&__pyx_n_s_py_hand, __pyx_k_py_hand, sizeof(__pyx_k_py_hand), 0, 0, 1, 1},
     {&__pyx_n_s_py_hand_vs_weighted_range_monte, __pyx_k_py_hand_vs_weighted_range_monte, sizeof(__pyx_k_py_hand_vs_weighted_range_monte), 0, 0, 1, 1},
     {&__pyx_n_s_py_iterations, __pyx_k_py_iterations, sizeof(__pyx_k_py_iterations), 0, 0, 1, 1},
     {&__pyx_n_s_py_villain_dict, __pyx_k_py_villain_dict, sizeof(__pyx_k_py_villain_dict), 0, 0, 1, 1},
+    {&__pyx_n_s_raise, __pyx_k_raise, sizeof(__pyx_k_raise), 0, 0, 1, 1},
     {&__pyx_n_s_random, __pyx_k_random, sizeof(__pyx_k_random), 0, 0, 1, 1},
     {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
+    {&__pyx_n_s_rank, __pyx_k_rank, sizeof(__pyx_k_rank), 0, 0, 1, 1},
     {&__pyx_n_s_run, __pyx_k_run, sizeof(__pyx_k_run), 0, 0, 1, 1},
     {&__pyx_n_s_spec, __pyx_k_spec, sizeof(__pyx_k_spec), 0, 0, 1, 1},
+    {&__pyx_n_s_suit, __pyx_k_suit, sizeof(__pyx_k_suit), 0, 0, 1, 1},
     {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
     {&__pyx_n_s_total_weight, __pyx_k_total_weight, sizeof(__pyx_k_total_weight), 0, 0, 1, 1},
     {0, 0, 0, 0, 0, 0, 0}
@@ -4482,6 +6065,18 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
   __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(5, 0, 0, 23, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__4, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_bounty_equity_pyx, __pyx_n_s_py_hand_vs_weighted_range_monte, 212, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 212, __pyx_L1_error)
+
+  /* "bounty_equity.pyx":483
+ * # 4) The only Python-level wrapper
+ * #
+ * def py_estimate_opponent_range(my_hand, board_cards, action):             # <<<<<<<<<<<<<<
+ *     """
+ *     Python wrapper that calls the cdef function c_estimate_opponent_range().
+ */
+  __pyx_tuple__6 = PyTuple_Pack(3, __pyx_n_s_my_hand, __pyx_n_s_board_cards, __pyx_n_s_action); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 483, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__6);
+  __Pyx_GIVEREF(__pyx_tuple__6);
+  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__6, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_bounty_equity_pyx, __pyx_n_s_py_estimate_opponent_range, 483, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 483, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -4932,6 +6527,18 @@ if (!__Pyx_RefNanny) {
   __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_13bounty_equity_1py_hand_vs_weighted_range_monte_carlo, 0, __pyx_n_s_py_hand_vs_weighted_range_monte, NULL, __pyx_n_s_bounty_equity, __pyx_d, ((PyObject *)__pyx_codeobj__5)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 212, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_py_hand_vs_weighted_range_monte, __pyx_t_2) < 0) __PYX_ERR(0, 212, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "bounty_equity.pyx":483
+ * # 4) The only Python-level wrapper
+ * #
+ * def py_estimate_opponent_range(my_hand, board_cards, action):             # <<<<<<<<<<<<<<
+ *     """
+ *     Python wrapper that calls the cdef function c_estimate_opponent_range().
+ */
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_13bounty_equity_3py_estimate_opponent_range, 0, __pyx_n_s_py_estimate_opponent_range, NULL, __pyx_n_s_bounty_equity, __pyx_d, ((PyObject *)__pyx_codeobj__7)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 483, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_py_estimate_opponent_range, __pyx_t_2) < 0) __PYX_ERR(0, 483, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "bounty_equity.pyx":1
@@ -9015,22 +10622,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
     }
 }
 
-/* FormatTypeName */
-#if CYTHON_COMPILING_IN_LIMITED_API
-static __Pyx_TypeName
-__Pyx_PyType_GetName(PyTypeObject* tp)
-{
-    PyObject *name = __Pyx_PyObject_GetAttrStr((PyObject *)tp,
-                                               __pyx_n_s_name);
-    if (unlikely(name == NULL) || unlikely(!PyUnicode_Check(name))) {
-        PyErr_Clear();
-        Py_XDECREF(name);
-        name = __Pyx_NewRef(__pyx_n_s__6);
-    }
-    return name;
-}
-#endif
-
 /* CIntToPy */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
 #ifdef __Pyx_HAS_GCC_DIAGNOSTIC
@@ -9101,6 +10692,22 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
 #endif
     }
 }
+
+/* FormatTypeName */
+#if CYTHON_COMPILING_IN_LIMITED_API
+static __Pyx_TypeName
+__Pyx_PyType_GetName(PyTypeObject* tp)
+{
+    PyObject *name = __Pyx_PyObject_GetAttrStr((PyObject *)tp,
+                                               __pyx_n_s_name);
+    if (unlikely(name == NULL) || unlikely(!PyUnicode_Check(name))) {
+        PyErr_Clear();
+        Py_XDECREF(name);
+        name = __Pyx_NewRef(__pyx_n_s__8);
+    }
+    return name;
+}
+#endif
 
 /* CIntFromPy */
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *x) {

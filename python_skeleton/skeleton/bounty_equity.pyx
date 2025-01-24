@@ -110,7 +110,7 @@ cdef inline unsigned long long pick_weighted_combo(unsigned long long* combos,
     We'll do a random draw in [0, total), do a manual binary search.
     Return the chosen combo mask.
     """
-    cdef double r = random() * total
+    cdef double r = random.random() * total
     # or you could do a real floating random if you had it:
     #   r = random() * total
 
@@ -296,3 +296,193 @@ def py_hand_vs_weighted_range_monte_carlo(py_hand,
 
     global opp_bounty_hit
     return eq, opp_bounty_hit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+cdef double c_weight_hand(
+    unsigned int rank1, unsigned int suit1,
+    unsigned int rank2, unsigned int suit2,
+    list board_cards
+):
+    """
+    Compute the "weight" of a 2-card combo (rank1/suit1, rank2/suit2) 
+    given the partial 'board_cards'. 
+    This is your custom logic replicated in a cdef function for speed.
+    """
+    cdef double w = 1.0
+    cdef unsigned int i
+    cdef unsigned int r1 = rank1
+    cdef unsigned int r2 = rank2
+    cdef unsigned int s1 = suit1
+    cdef unsigned int s2 = suit2
+
+    # rank_count / suit_count
+    cdef int rank_count[13]
+    cdef int suit_count[4]
+
+    for i in range(13):
+        rank_count[i] = 0
+    for i in range(4):
+        suit_count[i] = 0
+
+    cdef int n = len(board_cards)
+    cdef unsigned int brank, bsuit
+    for i in range(n):
+        brank = board_cards[i].rank
+        bsuit = board_cards[i].suit
+        rank_count[brank] += 1
+        suit_count[bsuit] += 1
+
+    rank_count[r1] += 1
+    rank_count[r2] += 1
+    suit_count[s1] += 1
+    suit_count[s2] += 1
+
+    # pockets
+    cdef bint pocket = False
+    if r1 == r2:
+        w = 1.4 + r1 / 10.0
+        pocket = True
+
+    # quads
+    if rank_count[r1] == 4 or rank_count[r2] == 4:
+        w = 25.0
+
+    # trips logic
+    cdef bint trips = False
+    cdef int tripIndex = -1
+    if rank_count[r1] == 3 or rank_count[r2] == 3:
+        w = 4.5 if pocket else 4.0
+        trips = True
+        tripIndex = r1 if rank_count[r1] == 3 else r2
+
+    cdef int j
+    for j in range(n):
+        brank = board_cards[j].rank
+        # full house
+        if trips and rank_count[brank] >= 2 and brank != tripIndex:
+            w = 15.0
+            break
+        # pairs
+        if r1 == brank:
+            w *= (1.2 + r1 / 20.0)
+        if r2 == brank:
+            w *= (1.2 + r2 / 20.0)
+
+    # flush logic
+    cdef bint flush = False
+    for j in range(4):
+        if suit_count[j] == 4:
+            w *= 3.5 if n == 3 else 2.4
+        elif suit_count[j] == 5:
+            w = 10.0
+            flush = True
+
+    # straight logic
+    cdef int psums[14]
+    psums[0] = 0
+    for j in range(13):
+        psums[j+1] = psums[j] + min(1, rank_count[j])
+
+    cdef int val
+    for j in range(5, 14):
+        val = psums[j] - psums[j - 5]
+        if val == 4:
+            w *= 1.6 if n == 3 else 1.3
+        elif val == 5:
+            w = 8.0 if not flush else 35.0
+
+    return w
+
+
+#
+# 2) cdef function to generate a Python dict of combos -> weight
+#
+cdef dict c_generate_weighted_dict(
+    list deck,
+    list my_hand,
+    list board_cards
+):
+    """
+    Return a Python dict { (Card,Card): weight } for all combos in 'deck'
+    excluding 'my_hand'.
+    """
+    cdef dict result = {}
+    cdef int nd = len(deck)
+    cdef int i, j
+    cdef object c1, c2
+    cdef double w
+
+    for i in range(nd):
+        c1 = deck[i]
+        for j in range(i+1, nd):
+            c2 = deck[j]
+            if c1 not in my_hand and c2 not in my_hand:
+                w = c_weight_hand(
+                    c1.rank, c1.suit,
+                    c2.rank, c2.suit,
+                    board_cards
+                )
+                result[(c1, c2)] = w
+    return result
+
+
+#
+# 3) cdef function that prunes combos based on action
+#
+cdef dict c_estimate_opponent_range(
+    list my_hand,
+    list board_cards,
+    str action
+):
+    """
+    1) Build deck from eval7
+    2) generate combos/weights
+    3) prune based on action
+    4) return final { (Card,Card): weight }
+    """
+    cdef list deck = eval7.Deck().cards
+    cdef dict raw_dict = c_generate_weighted_dict(deck, my_hand, board_cards)
+
+    cdef dict final_dict = {}
+    cdef double min_threshold = 1.0
+    if action == 'raise':
+        min_threshold = 2.0
+    elif action == 'call':
+        min_threshold = 1.5
+    # else fold => empty
+
+    cdef object combo
+    cdef double w
+    for combo, w in raw_dict.items():
+        if w >= min_threshold:
+            final_dict[combo] = w
+
+    return final_dict
+
+
+#
+# 4) The only Python-level wrapper
+#
+def py_estimate_opponent_range(my_hand, board_cards, action):
+    """
+    Python wrapper that calls the cdef function c_estimate_opponent_range().
+    This is the only function directly visible at Python level.
+    """
+    return c_estimate_opponent_range(my_hand, board_cards, action)
