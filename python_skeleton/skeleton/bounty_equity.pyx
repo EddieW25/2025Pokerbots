@@ -1,5 +1,6 @@
 import eval7
 import cython
+import random
 from eval7.cards cimport cards_to_mask
 from eval7.evaluate cimport cy_evaluate
 from eval7.xorshift_rand cimport randint
@@ -99,8 +100,6 @@ cdef void build_weighted_arrays(dict range_dict,
     total_out[0] = running
 
 
-from libc.math cimport floor
-
 cdef inline unsigned long long pick_weighted_combo(unsigned long long* combos,
                                                    double* prefix,
                                                    int n,
@@ -111,7 +110,7 @@ cdef inline unsigned long long pick_weighted_combo(unsigned long long* combos,
     We'll do a random draw in [0, total), do a manual binary search.
     Return the chosen combo mask.
     """
-    cdef double r = (randint(10000000) / 10000000.0) * total
+    cdef double r = random() * total
     # or you could do a real floating random if you had it:
     #   r = random() * total
 
@@ -204,6 +203,7 @@ cdef double hand_vs_weighted_range_monte_carlo(unsigned long long hero,
     
     cdef double eq = 0.5 * count / iterations
     # average bounty hit probability
+    global opp_bounty_hit
     opp_bounty_hit = opp_bounty_hit_total / iterations
 
     return eq
@@ -294,4 +294,5 @@ def py_hand_vs_weighted_range_monte_carlo(py_hand,
     free(combos)
     free(prefix)
 
+    global opp_bounty_hit
     return eq, opp_bounty_hit

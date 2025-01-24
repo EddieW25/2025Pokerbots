@@ -3,6 +3,7 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
+        "depends": [],
         "name": "bounty_equity",
         "sources": [
             "bounty_equity.pyx"
@@ -1231,6 +1232,7 @@ static CYTHON_INLINE float __PYX_NAN() {
 #define __PYX_HAVE__bounty_equity
 #define __PYX_HAVE_API__bounty_equity
 /* Early includes */
+#include "stdlib.h"
 #ifdef _OPENMP
 #include <omp.h>
 #endif /* _OPENMP */
@@ -1480,6 +1482,7 @@ static const char *__pyx_filename;
 
 static const char *__pyx_f[] = {
   "bounty_equity.pyx",
+  "cards.pxd",
 };
 /* #### Code section: utility_code_proto_before_types ### */
 /* ForceInitThreads.proto */
@@ -1492,6 +1495,20 @@ static const char *__pyx_f[] = {
 /* #### Code section: type_declarations ### */
 
 /*--- Type declarations ---*/
+struct __pyx_obj_5eval7_5cards_Card;
+
+/* "eval7/cards.pxd":8
+ * import cython
+ * 
+ * cdef class Card:             # <<<<<<<<<<<<<<
+ *     cdef public unsigned long long mask
+ * 
+ */
+struct __pyx_obj_5eval7_5cards_Card {
+  PyObject_HEAD
+  unsigned PY_LONG_LONG mask;
+};
+
 /* #### Code section: utility_code_proto ### */
 
 /* --- Runtime support code (head) --- */
@@ -1737,6 +1754,12 @@ static CYTHON_INLINE PyObject* __Pyx_dict_iterator(PyObject* dict, int is_dict, 
 static CYTHON_INLINE int __Pyx_dict_iter_next(PyObject* dict_or_iter, Py_ssize_t orig_length, Py_ssize_t* ppos,
                                               PyObject** pkey, PyObject** pvalue, PyObject** pitem, int is_dict);
 
+/* SliceObject.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyObject_GetSlice(
+        PyObject* obj, Py_ssize_t cstart, Py_ssize_t cstop,
+        PyObject** py_start, PyObject** py_stop, PyObject** py_slice,
+        int has_cstart, int has_cstop, int wraparound);
+
 /* PyDictVersioning.proto */
 #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
 #define __PYX_DICT_VERSION_INIT  ((PY_UINT64_T) -1)
@@ -1784,83 +1807,8 @@ static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_ve
 static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name);
 #endif
 
-/* GetItemInt.proto */
-#define __Pyx_GetItemInt(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_GetItemInt_Fast(o, (Py_ssize_t)i, is_list, wraparound, boundscheck) :\
-    (is_list ? (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL) :\
-               __Pyx_GetItemInt_Generic(o, to_py_func(i))))
-#define __Pyx_GetItemInt_List(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_GetItemInt_List_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
-    (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL))
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
-                                                              int wraparound, int boundscheck);
-#define __Pyx_GetItemInt_Tuple(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_GetItemInt_Tuple_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
-    (PyErr_SetString(PyExc_IndexError, "tuple index out of range"), (PyObject*)NULL))
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
-                                                              int wraparound, int boundscheck);
-static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j);
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
-                                                     int is_list, int wraparound, int boundscheck);
-
-/* RaiseUnboundLocalError.proto */
-static CYTHON_INLINE void __Pyx_RaiseUnboundLocalError(const char *varname);
-
-/* UnpackUnboundCMethod.proto */
-typedef struct {
-    PyObject *type;
-    PyObject **method_name;
-    PyCFunction func;
-    PyObject *method;
-    int flag;
-} __Pyx_CachedCFunction;
-
-/* CallUnboundCMethod0.proto */
-static PyObject* __Pyx__CallUnboundCMethod0(__Pyx_CachedCFunction* cfunc, PyObject* self);
-#if CYTHON_COMPILING_IN_CPYTHON
-#define __Pyx_CallUnboundCMethod0(cfunc, self)\
-    (likely((cfunc)->func) ?\
-        (likely((cfunc)->flag == METH_NOARGS) ?  (*((cfunc)->func))(self, NULL) :\
-         (PY_VERSION_HEX >= 0x030600B1 && likely((cfunc)->flag == METH_FASTCALL) ?\
-            (PY_VERSION_HEX >= 0x030700A0 ?\
-                (*(__Pyx_PyCFunctionFast)(void*)(PyCFunction)(cfunc)->func)(self, &__pyx_empty_tuple, 0) :\
-                (*(__Pyx_PyCFunctionFastWithKeywords)(void*)(PyCFunction)(cfunc)->func)(self, &__pyx_empty_tuple, 0, NULL)) :\
-          (PY_VERSION_HEX >= 0x030700A0 && (cfunc)->flag == (METH_FASTCALL | METH_KEYWORDS) ?\
-            (*(__Pyx_PyCFunctionFastWithKeywords)(void*)(PyCFunction)(cfunc)->func)(self, &__pyx_empty_tuple, 0, NULL) :\
-            (likely((cfunc)->flag == (METH_VARARGS | METH_KEYWORDS)) ?  ((*(PyCFunctionWithKeywords)(void*)(PyCFunction)(cfunc)->func)(self, __pyx_empty_tuple, NULL)) :\
-               ((cfunc)->flag == METH_VARARGS ?  (*((cfunc)->func))(self, __pyx_empty_tuple) :\
-               __Pyx__CallUnboundCMethod0(cfunc, self)))))) :\
-        __Pyx__CallUnboundCMethod0(cfunc, self))
-#else
-#define __Pyx_CallUnboundCMethod0(cfunc, self)  __Pyx__CallUnboundCMethod0(cfunc, self)
-#endif
-
-/* RaiseUnexpectedTypeError.proto */
-static int __Pyx_RaiseUnexpectedTypeError(const char *expected, PyObject *obj);
-
-/* ListAppend.proto */
-#if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
-static CYTHON_INLINE int __Pyx_PyList_Append(PyObject* list, PyObject* x) {
-    PyListObject* L = (PyListObject*) list;
-    Py_ssize_t len = Py_SIZE(list);
-    if (likely(L->allocated > len) & likely(len > (L->allocated >> 1))) {
-        Py_INCREF(x);
-        #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030d0000
-        L->ob_item[len] = x;
-        #else
-        PyList_SET_ITEM(list, len, x);
-        #endif
-        __Pyx_SET_SIZE(list, len + 1);
-        return 0;
-    }
-    return PyList_Append(list, x);
-}
-#else
-#define __Pyx_PyList_Append(L,x) PyList_Append(L,x)
-#endif
+/* DivInt[long].proto */
+static CYTHON_INLINE long __Pyx_div_long(long, long);
 
 /* TupleAndListFromArray.proto */
 #if CYTHON_COMPILING_IN_CPYTHON
@@ -1939,17 +1887,52 @@ static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject *const *kwvalues
     PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args,
     const char* function_name);
 
-/* ArgTypeTest.proto */
-#define __Pyx_ArgTypeTest(obj, type, none_allowed, name, exact)\
-    ((likely(__Pyx_IS_TYPE(obj, type) | (none_allowed && (obj == Py_None)))) ? 1 :\
-        __Pyx__ArgTypeTest(obj, type, name, exact))
-static int __Pyx__ArgTypeTest(PyObject *obj, PyTypeObject *type, const char *name, int exact);
+/* RaiseUnexpectedTypeError.proto */
+static int __Pyx_RaiseUnexpectedTypeError(const char *expected, PyObject *obj);
+
+/* GetItemInt.proto */
+#define __Pyx_GetItemInt(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Fast(o, (Py_ssize_t)i, is_list, wraparound, boundscheck) :\
+    (is_list ? (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL) :\
+               __Pyx_GetItemInt_Generic(o, to_py_func(i))))
+#define __Pyx_GetItemInt_List(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_List_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+#define __Pyx_GetItemInt_Tuple(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Tuple_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "tuple index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j);
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
+                                                     int is_list, int wraparound, int boundscheck);
+
+/* TypeImport.proto */
+#ifndef __PYX_HAVE_RT_ImportType_proto_3_0_11
+#define __PYX_HAVE_RT_ImportType_proto_3_0_11
+#if defined (__STDC_VERSION__) && __STDC_VERSION__ >= 201112L
+#include <stdalign.h>
+#endif
+#if (defined (__STDC_VERSION__) && __STDC_VERSION__ >= 201112L) || __cplusplus >= 201103L
+#define __PYX_GET_STRUCT_ALIGNMENT_3_0_11(s) alignof(s)
+#else
+#define __PYX_GET_STRUCT_ALIGNMENT_3_0_11(s) sizeof(void*)
+#endif
+enum __Pyx_ImportType_CheckSize_3_0_11 {
+   __Pyx_ImportType_CheckSize_Error_3_0_11 = 0,
+   __Pyx_ImportType_CheckSize_Warn_3_0_11 = 1,
+   __Pyx_ImportType_CheckSize_Ignore_3_0_11 = 2
+};
+static PyTypeObject *__Pyx_ImportType_3_0_11(PyObject* module, const char *module_name, const char *class_name, size_t size, size_t alignment, enum __Pyx_ImportType_CheckSize_3_0_11 check_size);
+#endif
 
 /* Import.proto */
 static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
-
-/* ImportFrom.proto */
-static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name);
 
 /* ImportDottedModule.proto */
 static PyObject *__Pyx_ImportDottedModule(PyObject *name, PyObject *parts_tuple);
@@ -2142,7 +2125,10 @@ static void __Pyx_AddTraceback(const char *funcname, int c_line,
 static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
 
 /* CIntToPy.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_unsigned_int(unsigned int value);
+
+/* CIntFromPy.proto */
+static CYTHON_INLINE unsigned int __Pyx_PyInt_As_unsigned_int(PyObject *);
 
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
@@ -2159,6 +2145,9 @@ typedef const char *__Pyx_TypeName;
 #define __Pyx_PyType_GetName(tp) ((tp)->tp_name)
 #define __Pyx_DECREF_TypeName(obj)
 #endif
+
+/* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
 /* CIntFromPy.proto */
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
@@ -2184,14 +2173,33 @@ static CYTHON_INLINE int __Pyx_PyErr_GivenExceptionMatches2(PyObject *err, PyObj
 static unsigned long __Pyx_get_runtime_version(void);
 static int __Pyx_check_binary_version(unsigned long ct_version, unsigned long rt_version, int allow_newer);
 
+/* FunctionImport.proto */
+static int __Pyx_ImportFunction_3_0_11(PyObject *module, const char *funcname, void (**f)(void), const char *sig);
+
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 /* #### Code section: module_declarations ### */
 
+/* Module declarations from "cython" */
+
+/* Module declarations from "eval7.cards" */
+static unsigned PY_LONG_LONG (*__pyx_f_5eval7_5cards_cards_to_mask)(PyObject *); /*proto*/
+
+/* Module declarations from "eval7.evaluate" */
+static unsigned int (*__pyx_f_5eval7_8evaluate_cy_evaluate)(unsigned PY_LONG_LONG, unsigned int); /*proto*/
+
+/* Module declarations from "eval7.xorshift_rand" */
+static int (*__pyx_f_5eval7_13xorshift_rand_randint)(int, int __pyx_skip_dispatch); /*proto*/
+
 /* Module declarations from "bounty_equity" */
-static PyObject *__pyx_f_13bounty_equity_pick_weighted_two_card_hand(PyObject *); /*proto*/
-static PyObject *__pyx_f_13bounty_equity_get_equity_and_opp_bounty_prob(PyObject *, PyObject *, PyObject *, PyObject *, int, int __pyx_skip_dispatch); /*proto*/
+static unsigned PY_LONG_LONG __pyx_v_13bounty_equity_card_masks_table[52];
+static double __pyx_v_13bounty_equity_opp_bounty_hit;
+static unsigned int __pyx_f_13bounty_equity_load_card_masks(void); /*proto*/
+static unsigned PY_LONG_LONG __pyx_f_13bounty_equity_deal_card(unsigned PY_LONG_LONG); /*proto*/
+static void __pyx_f_13bounty_equity_build_weighted_arrays(PyObject *, unsigned PY_LONG_LONG **, double **, int *, double *); /*proto*/
+static CYTHON_INLINE unsigned PY_LONG_LONG __pyx_f_13bounty_equity_pick_weighted_combo(unsigned PY_LONG_LONG *, double *, int, double); /*proto*/
+static double __pyx_f_13bounty_equity_hand_vs_weighted_range_monte_carlo(unsigned PY_LONG_LONG, unsigned PY_LONG_LONG *, double *, int, double, unsigned PY_LONG_LONG, int, double *, int); /*proto*/
 /* #### Code section: typeinfo ### */
 /* #### Code section: before_global_var ### */
 #define __Pyx_MODULE_NAME "bounty_equity"
@@ -2202,40 +2210,49 @@ int __pyx_module_is_main_bounty_equity = 0;
 /* #### Code section: global_var ### */
 static PyObject *__pyx_builtin_range;
 /* #### Code section: string_decls ### */
-static const char __pyx_k_[] = ".";
-static const char __pyx_k__2[] = "*";
-static const char __pyx_k__5[] = "?";
-static const char __pyx_k_val[] = "val";
-static const char __pyx_k_Deck[] = "Deck";
-static const char __pyx_k_copy[] = "copy";
+static const char __pyx_k_i[] = "i";
+static const char __pyx_k_n[] = "n";
+static const char __pyx_k__3[] = "*";
+static const char __pyx_k__6[] = "?";
+static const char __pyx_k_eq[] = "eq";
+static const char __pyx_k_cnt[] = "cnt";
+static const char __pyx_k_idx[] = "idx";
+static const char __pyx_k_run[] = "run";
+static const char __pyx_k_dead[] = "dead";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
-static const char __pyx_k_rank[] = "rank";
+static const char __pyx_k_prev[] = "prev";
 static const char __pyx_k_spec[] = "__spec__";
 static const char __pyx_k_test[] = "__test__";
-static const char __pyx_k_cards[] = "cards";
 static const char __pyx_k_eval7[] = "eval7";
 static const char __pyx_k_items[] = "items";
 static const char __pyx_k_range[] = "range";
+static const char __pyx_k_ccombo[] = "ccombo";
+static const char __pyx_k_combos[] = "combos";
 static const char __pyx_k_import[] = "__import__";
+static const char __pyx_k_length[] = "length";
+static const char __pyx_k_prefix[] = "prefix";
 static const char __pyx_k_random[] = "random";
-static const char __pyx_k_shuffle[] = "shuffle";
-static const char __pyx_k_evaluate[] = "evaluate";
-static const char __pyx_k_my_cards[] = "my_cards";
-static const char __pyx_k_board_cards[] = "board_cards";
+static const char __pyx_k_py_hand[] = "py_hand";
+static const char __pyx_k_py_board[] = "py_board";
+static const char __pyx_k_array_ptr[] = "array_ptr";
+static const char __pyx_k_hero_mask[] = "hero_mask";
+static const char __pyx_k_num_board[] = "num_board";
+static const char __pyx_k_board_mask[] = "board_mask";
+static const char __pyx_k_iterations[] = "iterations";
 static const char __pyx_k_initializing[] = "_initializing";
 static const char __pyx_k_is_coroutine[] = "_is_coroutine";
+static const char __pyx_k_total_weight[] = "total_weight";
 static const char __pyx_k_bounty_equity[] = "bounty_equity";
-static const char __pyx_k_opponent_range[] = "opponent_range";
-static const char __pyx_k_NUM_SIMULATIONS[] = "NUM_SIMULATIONS";
+static const char __pyx_k_py_iterations[] = "py_iterations";
 static const char __pyx_k_opp_bounty_prob[] = "opp_bounty_prob";
+static const char __pyx_k_py_villain_dict[] = "py_villain_dict";
 static const char __pyx_k_bounty_equity_pyx[] = "bounty_equity.pyx";
 static const char __pyx_k_asyncio_coroutines[] = "asyncio.coroutines";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
-static const char __pyx_k_get_equity_and_opp_bounty_prob[] = "get_equity_and_opp_bounty_prob";
+static const char __pyx_k_py_hand_vs_weighted_range_monte[] = "py_hand_vs_weighted_range_monte_carlo";
 /* #### Code section: decls ### */
-static PyObject *__pyx_pf_13bounty_equity_get_equity_and_opp_bounty_prob(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_my_cards, PyObject *__pyx_v_opponent_range, PyObject *__pyx_v_board_cards, PyObject *__pyx_v_opp_bounty_prob, int __pyx_v_NUM_SIMULATIONS); /* proto */
-static __Pyx_CachedCFunction __pyx_umethod_PyList_Type_copy = {0, 0, 0, 0, 0};
+static PyObject *__pyx_pf_13bounty_equity_py_hand_vs_weighted_range_monte_carlo(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_py_hand, PyObject *__pyx_v_py_villain_dict, PyObject *__pyx_v_py_board, PyObject *__pyx_v_opp_bounty_prob, PyObject *__pyx_v_py_iterations); /* proto */
 /* #### Code section: late_includes ### */
 /* #### Code section: module_state ### */
 typedef struct {
@@ -2265,39 +2282,64 @@ typedef struct {
   #endif
   #if CYTHON_USE_MODULE_STATE
   #endif
-  PyObject *__pyx_kp_u_;
-  PyObject *__pyx_n_s_Deck;
-  PyObject *__pyx_n_s_NUM_SIMULATIONS;
-  PyObject *__pyx_n_s__2;
-  PyObject *__pyx_n_s__5;
+  #if CYTHON_USE_MODULE_STATE
+  #endif
+  PyTypeObject *__pyx_ptype_5eval7_5cards_Card;
+  #if CYTHON_USE_MODULE_STATE
+  #endif
+  #if CYTHON_USE_MODULE_STATE
+  #endif
+  #if CYTHON_USE_MODULE_STATE
+  #endif
+  PyObject *__pyx_n_s__3;
+  PyObject *__pyx_n_s__6;
+  PyObject *__pyx_n_s_array_ptr;
   PyObject *__pyx_n_s_asyncio_coroutines;
-  PyObject *__pyx_n_s_board_cards;
+  PyObject *__pyx_n_s_board_mask;
   PyObject *__pyx_n_s_bounty_equity;
   PyObject *__pyx_kp_s_bounty_equity_pyx;
-  PyObject *__pyx_n_s_cards;
+  PyObject *__pyx_n_s_ccombo;
   PyObject *__pyx_n_s_cline_in_traceback;
-  PyObject *__pyx_n_s_copy;
+  PyObject *__pyx_n_s_cnt;
+  PyObject *__pyx_n_s_combos;
+  PyObject *__pyx_n_s_dead;
+  PyObject *__pyx_n_s_eq;
   PyObject *__pyx_n_s_eval7;
-  PyObject *__pyx_n_s_evaluate;
-  PyObject *__pyx_n_s_get_equity_and_opp_bounty_prob;
+  PyObject *__pyx_n_s_hero_mask;
+  PyObject *__pyx_n_s_i;
+  PyObject *__pyx_n_s_idx;
   PyObject *__pyx_n_s_import;
   PyObject *__pyx_n_s_initializing;
   PyObject *__pyx_n_s_is_coroutine;
   PyObject *__pyx_n_s_items;
+  PyObject *__pyx_n_s_iterations;
+  PyObject *__pyx_n_s_length;
   PyObject *__pyx_n_s_main;
-  PyObject *__pyx_n_s_my_cards;
+  PyObject *__pyx_n_s_n;
   PyObject *__pyx_n_s_name;
+  PyObject *__pyx_n_s_num_board;
   PyObject *__pyx_n_s_opp_bounty_prob;
-  PyObject *__pyx_n_s_opponent_range;
+  PyObject *__pyx_n_s_prefix;
+  PyObject *__pyx_n_s_prev;
+  PyObject *__pyx_n_s_py_board;
+  PyObject *__pyx_n_s_py_hand;
+  PyObject *__pyx_n_s_py_hand_vs_weighted_range_monte;
+  PyObject *__pyx_n_s_py_iterations;
+  PyObject *__pyx_n_s_py_villain_dict;
   PyObject *__pyx_n_s_random;
   PyObject *__pyx_n_s_range;
-  PyObject *__pyx_n_s_rank;
-  PyObject *__pyx_n_s_shuffle;
+  PyObject *__pyx_n_s_run;
   PyObject *__pyx_n_s_spec;
   PyObject *__pyx_n_s_test;
-  PyObject *__pyx_n_s_val;
-  PyObject *__pyx_tuple__3;
-  PyObject *__pyx_codeobj__4;
+  PyObject *__pyx_n_s_total_weight;
+  PyObject *__pyx_float_1_0;
+  PyObject *__pyx_int_0;
+  PyObject *__pyx_int_1;
+  PyObject *__pyx_int_2;
+  PyObject *__pyx_slice_;
+  PyObject *__pyx_slice__2;
+  PyObject *__pyx_tuple__4;
+  PyObject *__pyx_codeobj__5;
 } __pyx_mstate;
 
 #if CYTHON_USE_MODULE_STATE
@@ -2340,39 +2382,56 @@ static int __pyx_m_clear(PyObject *m) {
   #ifdef __Pyx_FusedFunction_USED
   Py_CLEAR(clear_module_state->__pyx_FusedFunctionType);
   #endif
-  Py_CLEAR(clear_module_state->__pyx_kp_u_);
-  Py_CLEAR(clear_module_state->__pyx_n_s_Deck);
-  Py_CLEAR(clear_module_state->__pyx_n_s_NUM_SIMULATIONS);
-  Py_CLEAR(clear_module_state->__pyx_n_s__2);
-  Py_CLEAR(clear_module_state->__pyx_n_s__5);
+  Py_CLEAR(clear_module_state->__pyx_ptype_5eval7_5cards_Card);
+  Py_CLEAR(clear_module_state->__pyx_n_s__3);
+  Py_CLEAR(clear_module_state->__pyx_n_s__6);
+  Py_CLEAR(clear_module_state->__pyx_n_s_array_ptr);
   Py_CLEAR(clear_module_state->__pyx_n_s_asyncio_coroutines);
-  Py_CLEAR(clear_module_state->__pyx_n_s_board_cards);
+  Py_CLEAR(clear_module_state->__pyx_n_s_board_mask);
   Py_CLEAR(clear_module_state->__pyx_n_s_bounty_equity);
   Py_CLEAR(clear_module_state->__pyx_kp_s_bounty_equity_pyx);
-  Py_CLEAR(clear_module_state->__pyx_n_s_cards);
+  Py_CLEAR(clear_module_state->__pyx_n_s_ccombo);
   Py_CLEAR(clear_module_state->__pyx_n_s_cline_in_traceback);
-  Py_CLEAR(clear_module_state->__pyx_n_s_copy);
+  Py_CLEAR(clear_module_state->__pyx_n_s_cnt);
+  Py_CLEAR(clear_module_state->__pyx_n_s_combos);
+  Py_CLEAR(clear_module_state->__pyx_n_s_dead);
+  Py_CLEAR(clear_module_state->__pyx_n_s_eq);
   Py_CLEAR(clear_module_state->__pyx_n_s_eval7);
-  Py_CLEAR(clear_module_state->__pyx_n_s_evaluate);
-  Py_CLEAR(clear_module_state->__pyx_n_s_get_equity_and_opp_bounty_prob);
+  Py_CLEAR(clear_module_state->__pyx_n_s_hero_mask);
+  Py_CLEAR(clear_module_state->__pyx_n_s_i);
+  Py_CLEAR(clear_module_state->__pyx_n_s_idx);
   Py_CLEAR(clear_module_state->__pyx_n_s_import);
   Py_CLEAR(clear_module_state->__pyx_n_s_initializing);
   Py_CLEAR(clear_module_state->__pyx_n_s_is_coroutine);
   Py_CLEAR(clear_module_state->__pyx_n_s_items);
+  Py_CLEAR(clear_module_state->__pyx_n_s_iterations);
+  Py_CLEAR(clear_module_state->__pyx_n_s_length);
   Py_CLEAR(clear_module_state->__pyx_n_s_main);
-  Py_CLEAR(clear_module_state->__pyx_n_s_my_cards);
+  Py_CLEAR(clear_module_state->__pyx_n_s_n);
   Py_CLEAR(clear_module_state->__pyx_n_s_name);
+  Py_CLEAR(clear_module_state->__pyx_n_s_num_board);
   Py_CLEAR(clear_module_state->__pyx_n_s_opp_bounty_prob);
-  Py_CLEAR(clear_module_state->__pyx_n_s_opponent_range);
+  Py_CLEAR(clear_module_state->__pyx_n_s_prefix);
+  Py_CLEAR(clear_module_state->__pyx_n_s_prev);
+  Py_CLEAR(clear_module_state->__pyx_n_s_py_board);
+  Py_CLEAR(clear_module_state->__pyx_n_s_py_hand);
+  Py_CLEAR(clear_module_state->__pyx_n_s_py_hand_vs_weighted_range_monte);
+  Py_CLEAR(clear_module_state->__pyx_n_s_py_iterations);
+  Py_CLEAR(clear_module_state->__pyx_n_s_py_villain_dict);
   Py_CLEAR(clear_module_state->__pyx_n_s_random);
   Py_CLEAR(clear_module_state->__pyx_n_s_range);
-  Py_CLEAR(clear_module_state->__pyx_n_s_rank);
-  Py_CLEAR(clear_module_state->__pyx_n_s_shuffle);
+  Py_CLEAR(clear_module_state->__pyx_n_s_run);
   Py_CLEAR(clear_module_state->__pyx_n_s_spec);
   Py_CLEAR(clear_module_state->__pyx_n_s_test);
-  Py_CLEAR(clear_module_state->__pyx_n_s_val);
-  Py_CLEAR(clear_module_state->__pyx_tuple__3);
-  Py_CLEAR(clear_module_state->__pyx_codeobj__4);
+  Py_CLEAR(clear_module_state->__pyx_n_s_total_weight);
+  Py_CLEAR(clear_module_state->__pyx_float_1_0);
+  Py_CLEAR(clear_module_state->__pyx_int_0);
+  Py_CLEAR(clear_module_state->__pyx_int_1);
+  Py_CLEAR(clear_module_state->__pyx_int_2);
+  Py_CLEAR(clear_module_state->__pyx_slice_);
+  Py_CLEAR(clear_module_state->__pyx_slice__2);
+  Py_CLEAR(clear_module_state->__pyx_tuple__4);
+  Py_CLEAR(clear_module_state->__pyx_codeobj__5);
   return 0;
 }
 #endif
@@ -2393,39 +2452,56 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   #ifdef __Pyx_FusedFunction_USED
   Py_VISIT(traverse_module_state->__pyx_FusedFunctionType);
   #endif
-  Py_VISIT(traverse_module_state->__pyx_kp_u_);
-  Py_VISIT(traverse_module_state->__pyx_n_s_Deck);
-  Py_VISIT(traverse_module_state->__pyx_n_s_NUM_SIMULATIONS);
-  Py_VISIT(traverse_module_state->__pyx_n_s__2);
-  Py_VISIT(traverse_module_state->__pyx_n_s__5);
+  Py_VISIT(traverse_module_state->__pyx_ptype_5eval7_5cards_Card);
+  Py_VISIT(traverse_module_state->__pyx_n_s__3);
+  Py_VISIT(traverse_module_state->__pyx_n_s__6);
+  Py_VISIT(traverse_module_state->__pyx_n_s_array_ptr);
   Py_VISIT(traverse_module_state->__pyx_n_s_asyncio_coroutines);
-  Py_VISIT(traverse_module_state->__pyx_n_s_board_cards);
+  Py_VISIT(traverse_module_state->__pyx_n_s_board_mask);
   Py_VISIT(traverse_module_state->__pyx_n_s_bounty_equity);
   Py_VISIT(traverse_module_state->__pyx_kp_s_bounty_equity_pyx);
-  Py_VISIT(traverse_module_state->__pyx_n_s_cards);
+  Py_VISIT(traverse_module_state->__pyx_n_s_ccombo);
   Py_VISIT(traverse_module_state->__pyx_n_s_cline_in_traceback);
-  Py_VISIT(traverse_module_state->__pyx_n_s_copy);
+  Py_VISIT(traverse_module_state->__pyx_n_s_cnt);
+  Py_VISIT(traverse_module_state->__pyx_n_s_combos);
+  Py_VISIT(traverse_module_state->__pyx_n_s_dead);
+  Py_VISIT(traverse_module_state->__pyx_n_s_eq);
   Py_VISIT(traverse_module_state->__pyx_n_s_eval7);
-  Py_VISIT(traverse_module_state->__pyx_n_s_evaluate);
-  Py_VISIT(traverse_module_state->__pyx_n_s_get_equity_and_opp_bounty_prob);
+  Py_VISIT(traverse_module_state->__pyx_n_s_hero_mask);
+  Py_VISIT(traverse_module_state->__pyx_n_s_i);
+  Py_VISIT(traverse_module_state->__pyx_n_s_idx);
   Py_VISIT(traverse_module_state->__pyx_n_s_import);
   Py_VISIT(traverse_module_state->__pyx_n_s_initializing);
   Py_VISIT(traverse_module_state->__pyx_n_s_is_coroutine);
   Py_VISIT(traverse_module_state->__pyx_n_s_items);
+  Py_VISIT(traverse_module_state->__pyx_n_s_iterations);
+  Py_VISIT(traverse_module_state->__pyx_n_s_length);
   Py_VISIT(traverse_module_state->__pyx_n_s_main);
-  Py_VISIT(traverse_module_state->__pyx_n_s_my_cards);
+  Py_VISIT(traverse_module_state->__pyx_n_s_n);
   Py_VISIT(traverse_module_state->__pyx_n_s_name);
+  Py_VISIT(traverse_module_state->__pyx_n_s_num_board);
   Py_VISIT(traverse_module_state->__pyx_n_s_opp_bounty_prob);
-  Py_VISIT(traverse_module_state->__pyx_n_s_opponent_range);
+  Py_VISIT(traverse_module_state->__pyx_n_s_prefix);
+  Py_VISIT(traverse_module_state->__pyx_n_s_prev);
+  Py_VISIT(traverse_module_state->__pyx_n_s_py_board);
+  Py_VISIT(traverse_module_state->__pyx_n_s_py_hand);
+  Py_VISIT(traverse_module_state->__pyx_n_s_py_hand_vs_weighted_range_monte);
+  Py_VISIT(traverse_module_state->__pyx_n_s_py_iterations);
+  Py_VISIT(traverse_module_state->__pyx_n_s_py_villain_dict);
   Py_VISIT(traverse_module_state->__pyx_n_s_random);
   Py_VISIT(traverse_module_state->__pyx_n_s_range);
-  Py_VISIT(traverse_module_state->__pyx_n_s_rank);
-  Py_VISIT(traverse_module_state->__pyx_n_s_shuffle);
+  Py_VISIT(traverse_module_state->__pyx_n_s_run);
   Py_VISIT(traverse_module_state->__pyx_n_s_spec);
   Py_VISIT(traverse_module_state->__pyx_n_s_test);
-  Py_VISIT(traverse_module_state->__pyx_n_s_val);
-  Py_VISIT(traverse_module_state->__pyx_tuple__3);
-  Py_VISIT(traverse_module_state->__pyx_codeobj__4);
+  Py_VISIT(traverse_module_state->__pyx_n_s_total_weight);
+  Py_VISIT(traverse_module_state->__pyx_float_1_0);
+  Py_VISIT(traverse_module_state->__pyx_int_0);
+  Py_VISIT(traverse_module_state->__pyx_int_1);
+  Py_VISIT(traverse_module_state->__pyx_int_2);
+  Py_VISIT(traverse_module_state->__pyx_slice_);
+  Py_VISIT(traverse_module_state->__pyx_slice__2);
+  Py_VISIT(traverse_module_state->__pyx_tuple__4);
+  Py_VISIT(traverse_module_state->__pyx_codeobj__5);
   return 0;
 }
 #endif
@@ -2456,1048 +2532,1205 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #endif
 #if CYTHON_USE_MODULE_STATE
 #endif
-#define __pyx_kp_u_ __pyx_mstate_global->__pyx_kp_u_
-#define __pyx_n_s_Deck __pyx_mstate_global->__pyx_n_s_Deck
-#define __pyx_n_s_NUM_SIMULATIONS __pyx_mstate_global->__pyx_n_s_NUM_SIMULATIONS
-#define __pyx_n_s__2 __pyx_mstate_global->__pyx_n_s__2
-#define __pyx_n_s__5 __pyx_mstate_global->__pyx_n_s__5
+#if CYTHON_USE_MODULE_STATE
+#endif
+#define __pyx_ptype_5eval7_5cards_Card __pyx_mstate_global->__pyx_ptype_5eval7_5cards_Card
+#if CYTHON_USE_MODULE_STATE
+#endif
+#if CYTHON_USE_MODULE_STATE
+#endif
+#if CYTHON_USE_MODULE_STATE
+#endif
+#define __pyx_n_s__3 __pyx_mstate_global->__pyx_n_s__3
+#define __pyx_n_s__6 __pyx_mstate_global->__pyx_n_s__6
+#define __pyx_n_s_array_ptr __pyx_mstate_global->__pyx_n_s_array_ptr
 #define __pyx_n_s_asyncio_coroutines __pyx_mstate_global->__pyx_n_s_asyncio_coroutines
-#define __pyx_n_s_board_cards __pyx_mstate_global->__pyx_n_s_board_cards
+#define __pyx_n_s_board_mask __pyx_mstate_global->__pyx_n_s_board_mask
 #define __pyx_n_s_bounty_equity __pyx_mstate_global->__pyx_n_s_bounty_equity
 #define __pyx_kp_s_bounty_equity_pyx __pyx_mstate_global->__pyx_kp_s_bounty_equity_pyx
-#define __pyx_n_s_cards __pyx_mstate_global->__pyx_n_s_cards
+#define __pyx_n_s_ccombo __pyx_mstate_global->__pyx_n_s_ccombo
 #define __pyx_n_s_cline_in_traceback __pyx_mstate_global->__pyx_n_s_cline_in_traceback
-#define __pyx_n_s_copy __pyx_mstate_global->__pyx_n_s_copy
+#define __pyx_n_s_cnt __pyx_mstate_global->__pyx_n_s_cnt
+#define __pyx_n_s_combos __pyx_mstate_global->__pyx_n_s_combos
+#define __pyx_n_s_dead __pyx_mstate_global->__pyx_n_s_dead
+#define __pyx_n_s_eq __pyx_mstate_global->__pyx_n_s_eq
 #define __pyx_n_s_eval7 __pyx_mstate_global->__pyx_n_s_eval7
-#define __pyx_n_s_evaluate __pyx_mstate_global->__pyx_n_s_evaluate
-#define __pyx_n_s_get_equity_and_opp_bounty_prob __pyx_mstate_global->__pyx_n_s_get_equity_and_opp_bounty_prob
+#define __pyx_n_s_hero_mask __pyx_mstate_global->__pyx_n_s_hero_mask
+#define __pyx_n_s_i __pyx_mstate_global->__pyx_n_s_i
+#define __pyx_n_s_idx __pyx_mstate_global->__pyx_n_s_idx
 #define __pyx_n_s_import __pyx_mstate_global->__pyx_n_s_import
 #define __pyx_n_s_initializing __pyx_mstate_global->__pyx_n_s_initializing
 #define __pyx_n_s_is_coroutine __pyx_mstate_global->__pyx_n_s_is_coroutine
 #define __pyx_n_s_items __pyx_mstate_global->__pyx_n_s_items
+#define __pyx_n_s_iterations __pyx_mstate_global->__pyx_n_s_iterations
+#define __pyx_n_s_length __pyx_mstate_global->__pyx_n_s_length
 #define __pyx_n_s_main __pyx_mstate_global->__pyx_n_s_main
-#define __pyx_n_s_my_cards __pyx_mstate_global->__pyx_n_s_my_cards
+#define __pyx_n_s_n __pyx_mstate_global->__pyx_n_s_n
 #define __pyx_n_s_name __pyx_mstate_global->__pyx_n_s_name
+#define __pyx_n_s_num_board __pyx_mstate_global->__pyx_n_s_num_board
 #define __pyx_n_s_opp_bounty_prob __pyx_mstate_global->__pyx_n_s_opp_bounty_prob
-#define __pyx_n_s_opponent_range __pyx_mstate_global->__pyx_n_s_opponent_range
+#define __pyx_n_s_prefix __pyx_mstate_global->__pyx_n_s_prefix
+#define __pyx_n_s_prev __pyx_mstate_global->__pyx_n_s_prev
+#define __pyx_n_s_py_board __pyx_mstate_global->__pyx_n_s_py_board
+#define __pyx_n_s_py_hand __pyx_mstate_global->__pyx_n_s_py_hand
+#define __pyx_n_s_py_hand_vs_weighted_range_monte __pyx_mstate_global->__pyx_n_s_py_hand_vs_weighted_range_monte
+#define __pyx_n_s_py_iterations __pyx_mstate_global->__pyx_n_s_py_iterations
+#define __pyx_n_s_py_villain_dict __pyx_mstate_global->__pyx_n_s_py_villain_dict
 #define __pyx_n_s_random __pyx_mstate_global->__pyx_n_s_random
 #define __pyx_n_s_range __pyx_mstate_global->__pyx_n_s_range
-#define __pyx_n_s_rank __pyx_mstate_global->__pyx_n_s_rank
-#define __pyx_n_s_shuffle __pyx_mstate_global->__pyx_n_s_shuffle
+#define __pyx_n_s_run __pyx_mstate_global->__pyx_n_s_run
 #define __pyx_n_s_spec __pyx_mstate_global->__pyx_n_s_spec
 #define __pyx_n_s_test __pyx_mstate_global->__pyx_n_s_test
-#define __pyx_n_s_val __pyx_mstate_global->__pyx_n_s_val
-#define __pyx_tuple__3 __pyx_mstate_global->__pyx_tuple__3
-#define __pyx_codeobj__4 __pyx_mstate_global->__pyx_codeobj__4
+#define __pyx_n_s_total_weight __pyx_mstate_global->__pyx_n_s_total_weight
+#define __pyx_float_1_0 __pyx_mstate_global->__pyx_float_1_0
+#define __pyx_int_0 __pyx_mstate_global->__pyx_int_0
+#define __pyx_int_1 __pyx_mstate_global->__pyx_int_1
+#define __pyx_int_2 __pyx_mstate_global->__pyx_int_2
+#define __pyx_slice_ __pyx_mstate_global->__pyx_slice_
+#define __pyx_slice__2 __pyx_mstate_global->__pyx_slice__2
+#define __pyx_tuple__4 __pyx_mstate_global->__pyx_tuple__4
+#define __pyx_codeobj__5 __pyx_mstate_global->__pyx_codeobj__5
 /* #### Code section: module_code ### */
 
-/* "bounty_equity.pyx":15
- * # 1) Weighted pick of a two-card hand from opponent_range
- * #--------------------------------------------------------------------
- * cdef list pick_weighted_two_card_hand(dict opponent_range):             # <<<<<<<<<<<<<<
- *     """
- *     opponent_range is a dict where:
+/* "bounty_equity.pyx":18
+ * cdef unsigned long long card_masks_table[52]
+ * 
+ * cdef unsigned int load_card_masks():             # <<<<<<<<<<<<<<
+ *     cdef int i
+ *     for i in range(52):
  */
 
-static PyObject *__pyx_f_13bounty_equity_pick_weighted_two_card_hand(PyObject *__pyx_v_opponent_range) {
-  double __pyx_v_total_weight;
-  double __pyx_v_cumulative;
-  double __pyx_v_r;
-  PyObject *__pyx_v_key = 0;
+static unsigned int __pyx_f_13bounty_equity_load_card_masks(void) {
+  int __pyx_v_i;
+  unsigned int __pyx_r;
+  int __pyx_t_1;
+
+  /* "bounty_equity.pyx":20
+ * cdef unsigned int load_card_masks():
+ *     cdef int i
+ *     for i in range(52):             # <<<<<<<<<<<<<<
+ *         card_masks_table[i] = 1 << i
+ *     return 0
+ */
+  for (__pyx_t_1 = 0; __pyx_t_1 < 52; __pyx_t_1+=1) {
+    __pyx_v_i = __pyx_t_1;
+
+    /* "bounty_equity.pyx":21
+ *     cdef int i
+ *     for i in range(52):
+ *         card_masks_table[i] = 1 << i             # <<<<<<<<<<<<<<
+ *     return 0
+ * 
+ */
+    (__pyx_v_13bounty_equity_card_masks_table[__pyx_v_i]) = (1 << __pyx_v_i);
+  }
+
+  /* "bounty_equity.pyx":22
+ *     for i in range(52):
+ *         card_masks_table[i] = 1 << i
+ *     return 0             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_r = 0;
+  goto __pyx_L0;
+
+  /* "bounty_equity.pyx":18
+ * cdef unsigned long long card_masks_table[52]
+ * 
+ * cdef unsigned int load_card_masks():             # <<<<<<<<<<<<<<
+ *     cdef int i
+ *     for i in range(52):
+ */
+
+  /* function exit code */
+  __pyx_L0:;
+  return __pyx_r;
+}
+
+/* "bounty_equity.pyx":27
+ * load_card_masks()
+ * 
+ * cdef unsigned int filter_options(unsigned long long *source,             # <<<<<<<<<<<<<<
+ *         unsigned long long *target,
+ *         unsigned int num_options,
+ */
+
+static unsigned int __pyx_f_13bounty_equity_filter_options(unsigned PY_LONG_LONG *__pyx_v_source, unsigned PY_LONG_LONG *__pyx_v_target, unsigned int __pyx_v_num_options, unsigned PY_LONG_LONG __pyx_v_dead) {
+  unsigned PY_LONG_LONG __pyx_v_option;
+  unsigned int __pyx_v_total;
+  unsigned int __pyx_v_s;
+  unsigned int __pyx_r;
+  unsigned int __pyx_t_1;
+  unsigned int __pyx_t_2;
+  unsigned int __pyx_t_3;
+  int __pyx_t_4;
+
+  /* "bounty_equity.pyx":36
+ *     """
+ *     cdef unsigned long long option
+ *     cdef unsigned int total = 0             # <<<<<<<<<<<<<<
+ *     cdef unsigned int s
+ *     for s in range(num_options):
+ */
+  __pyx_v_total = 0;
+
+  /* "bounty_equity.pyx":38
+ *     cdef unsigned int total = 0
+ *     cdef unsigned int s
+ *     for s in range(num_options):             # <<<<<<<<<<<<<<
+ *         option = source[s]
+ *         # if it doesn't overlap with 'dead', we keep it
+ */
+  __pyx_t_1 = __pyx_v_num_options;
+  __pyx_t_2 = __pyx_t_1;
+  for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
+    __pyx_v_s = __pyx_t_3;
+
+    /* "bounty_equity.pyx":39
+ *     cdef unsigned int s
+ *     for s in range(num_options):
+ *         option = source[s]             # <<<<<<<<<<<<<<
+ *         # if it doesn't overlap with 'dead', we keep it
+ *         if (option & dead) == 0:
+ */
+    __pyx_v_option = (__pyx_v_source[__pyx_v_s]);
+
+    /* "bounty_equity.pyx":41
+ *         option = source[s]
+ *         # if it doesn't overlap with 'dead', we keep it
+ *         if (option & dead) == 0:             # <<<<<<<<<<<<<<
+ *             target[total] = option
+ *             total += 1
+ */
+    __pyx_t_4 = ((__pyx_v_option & __pyx_v_dead) == 0);
+    if (__pyx_t_4) {
+
+      /* "bounty_equity.pyx":42
+ *         # if it doesn't overlap with 'dead', we keep it
+ *         if (option & dead) == 0:
+ *             target[total] = option             # <<<<<<<<<<<<<<
+ *             total += 1
+ *     return total
+ */
+      (__pyx_v_target[__pyx_v_total]) = __pyx_v_option;
+
+      /* "bounty_equity.pyx":43
+ *         if (option & dead) == 0:
+ *             target[total] = option
+ *             total += 1             # <<<<<<<<<<<<<<
+ *     return total
+ * 
+ */
+      __pyx_v_total = (__pyx_v_total + 1);
+
+      /* "bounty_equity.pyx":41
+ *         option = source[s]
+ *         # if it doesn't overlap with 'dead', we keep it
+ *         if (option & dead) == 0:             # <<<<<<<<<<<<<<
+ *             target[total] = option
+ *             total += 1
+ */
+    }
+  }
+
+  /* "bounty_equity.pyx":44
+ *             target[total] = option
+ *             total += 1
+ *     return total             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_r = __pyx_v_total;
+  goto __pyx_L0;
+
+  /* "bounty_equity.pyx":27
+ * load_card_masks()
+ * 
+ * cdef unsigned int filter_options(unsigned long long *source,             # <<<<<<<<<<<<<<
+ *         unsigned long long *target,
+ *         unsigned int num_options,
+ */
+
+  /* function exit code */
+  __pyx_L0:;
+  return __pyx_r;
+}
+
+/* "bounty_equity.pyx":47
+ * 
+ * 
+ * cdef unsigned long long deal_card(unsigned long long dead):             # <<<<<<<<<<<<<<
+ *     cdef unsigned int cardex
+ *     cdef unsigned long long card
+ */
+
+static unsigned PY_LONG_LONG __pyx_f_13bounty_equity_deal_card(unsigned PY_LONG_LONG __pyx_v_dead) {
+  unsigned int __pyx_v_cardex;
+  unsigned PY_LONG_LONG __pyx_v_card;
+  unsigned PY_LONG_LONG __pyx_r;
+  int __pyx_t_1;
+  int __pyx_t_2;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+
+  /* "bounty_equity.pyx":50
+ *     cdef unsigned int cardex
+ *     cdef unsigned long long card
+ *     while True:             # <<<<<<<<<<<<<<
+ *         cardex = randint(52)   # 0..51
+ *         card = card_masks_table[cardex]
+ */
+  while (1) {
+
+    /* "bounty_equity.pyx":51
+ *     cdef unsigned long long card
+ *     while True:
+ *         cardex = randint(52)   # 0..51             # <<<<<<<<<<<<<<
+ *         card = card_masks_table[cardex]
+ *         if (dead & card) == 0:
+ */
+    __pyx_t_1 = __pyx_f_5eval7_13xorshift_rand_randint(52, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 51, __pyx_L1_error)
+    __pyx_v_cardex = __pyx_t_1;
+
+    /* "bounty_equity.pyx":52
+ *     while True:
+ *         cardex = randint(52)   # 0..51
+ *         card = card_masks_table[cardex]             # <<<<<<<<<<<<<<
+ *         if (dead & card) == 0:
+ *             return card
+ */
+    __pyx_v_card = (__pyx_v_13bounty_equity_card_masks_table[__pyx_v_cardex]);
+
+    /* "bounty_equity.pyx":53
+ *         cardex = randint(52)   # 0..51
+ *         card = card_masks_table[cardex]
+ *         if (dead & card) == 0:             # <<<<<<<<<<<<<<
+ *             return card
+ * 
+ */
+    __pyx_t_2 = ((__pyx_v_dead & __pyx_v_card) == 0);
+    if (__pyx_t_2) {
+
+      /* "bounty_equity.pyx":54
+ *         card = card_masks_table[cardex]
+ *         if (dead & card) == 0:
+ *             return card             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+      __pyx_r = __pyx_v_card;
+      goto __pyx_L0;
+
+      /* "bounty_equity.pyx":53
+ *         cardex = randint(52)   # 0..51
+ *         card = card_masks_table[cardex]
+ *         if (dead & card) == 0:             # <<<<<<<<<<<<<<
+ *             return card
+ * 
+ */
+    }
+  }
+
+  /* "bounty_equity.pyx":47
+ * 
+ * 
+ * cdef unsigned long long deal_card(unsigned long long dead):             # <<<<<<<<<<<<<<
+ *     cdef unsigned int cardex
+ *     cdef unsigned long long card
+ */
+
+  /* function exit code */
+  __pyx_r = 0;
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_AddTraceback("bounty_equity.deal_card", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
+  __pyx_L0:;
+  return __pyx_r;
+}
+
+/* "bounty_equity.pyx":57
+ * 
+ * 
+ * cdef void build_weighted_arrays(dict range_dict,             # <<<<<<<<<<<<<<
+ *                                 unsigned long long** combos_out,
+ *                                 double** prefix_out,
+ */
+
+static void __pyx_f_13bounty_equity_build_weighted_arrays(PyObject *__pyx_v_range_dict, unsigned PY_LONG_LONG **__pyx_v_combos_out, double **__pyx_v_prefix_out, int *__pyx_v_n_out, double *__pyx_v_total_out) {
+  int __pyx_v_n;
+  unsigned PY_LONG_LONG *__pyx_v_combos;
+  double *__pyx_v_prefix;
+  double __pyx_v_running;
+  int __pyx_v_i;
+  unsigned PY_LONG_LONG __pyx_v_mask;
   double __pyx_v_w;
-  PyObject *__pyx_r = NULL;
+  PyObject *__pyx_v_combo = NULL;
+  PyObject *__pyx_v_weight = NULL;
   __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  Py_ssize_t __pyx_t_2;
+  Py_ssize_t __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
   Py_ssize_t __pyx_t_3;
   int __pyx_t_4;
   PyObject *__pyx_t_5 = NULL;
   PyObject *__pyx_t_6 = NULL;
   int __pyx_t_7;
-  double __pyx_t_8;
-  int __pyx_t_9;
-  unsigned int __pyx_t_10;
-  PyObject *__pyx_t_11 = NULL;
+  unsigned PY_LONG_LONG __pyx_t_8;
+  double __pyx_t_9;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("pick_weighted_two_card_hand", 1);
+  __Pyx_RefNannySetupContext("build_weighted_arrays", 1);
 
-  /* "bounty_equity.pyx":24
+  /* "bounty_equity.pyx":74
+ *       total_out -> final total weight
  *     """
- * 
- *     cdef double total_weight = 0.0             # <<<<<<<<<<<<<<
- *     cdef double cumulative = 0.0
- *     cdef double r
+ *     cdef int n = len(range_dict)             # <<<<<<<<<<<<<<
+ *     cdef unsigned long long* combos = <unsigned long long*> malloc(n * sizeof(unsigned long long))
+ *     cdef double* prefix = <double*> malloc(n * sizeof(double))
  */
-  __pyx_v_total_weight = 0.0;
-
-  /* "bounty_equity.pyx":25
- * 
- *     cdef double total_weight = 0.0
- *     cdef double cumulative = 0.0             # <<<<<<<<<<<<<<
- *     cdef double r
- *     cdef object key   # the key in the dict
- */
-  __pyx_v_cumulative = 0.0;
-
-  /* "bounty_equity.pyx":31
- * 
- *     # 1) Sum up all weights
- *     for key, w in opponent_range.items():             # <<<<<<<<<<<<<<
- *         total_weight += w
- * 
- */
-  __pyx_t_2 = 0;
-  if (unlikely(__pyx_v_opponent_range == Py_None)) {
-    PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "items");
-    __PYX_ERR(0, 31, __pyx_L1_error)
+  if (unlikely(__pyx_v_range_dict == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    __PYX_ERR(0, 74, __pyx_L1_error)
   }
-  __pyx_t_5 = __Pyx_dict_iterator(__pyx_v_opponent_range, 1, __pyx_n_s_items, (&__pyx_t_3), (&__pyx_t_4)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_1 = PyDict_Size(__pyx_v_range_dict); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_v_n = __pyx_t_1;
+
+  /* "bounty_equity.pyx":75
+ *     """
+ *     cdef int n = len(range_dict)
+ *     cdef unsigned long long* combos = <unsigned long long*> malloc(n * sizeof(unsigned long long))             # <<<<<<<<<<<<<<
+ *     cdef double* prefix = <double*> malloc(n * sizeof(double))
+ * 
+ */
+  __pyx_v_combos = ((unsigned PY_LONG_LONG *)malloc((__pyx_v_n * (sizeof(unsigned PY_LONG_LONG)))));
+
+  /* "bounty_equity.pyx":76
+ *     cdef int n = len(range_dict)
+ *     cdef unsigned long long* combos = <unsigned long long*> malloc(n * sizeof(unsigned long long))
+ *     cdef double* prefix = <double*> malloc(n * sizeof(double))             # <<<<<<<<<<<<<<
+ * 
+ *     cdef double running = 0.0
+ */
+  __pyx_v_prefix = ((double *)malloc((__pyx_v_n * (sizeof(double)))));
+
+  /* "bounty_equity.pyx":78
+ *     cdef double* prefix = <double*> malloc(n * sizeof(double))
+ * 
+ *     cdef double running = 0.0             # <<<<<<<<<<<<<<
+ *     cdef int i = 0
+ * 
+ */
+  __pyx_v_running = 0.0;
+
+  /* "bounty_equity.pyx":79
+ * 
+ *     cdef double running = 0.0
+ *     cdef int i = 0             # <<<<<<<<<<<<<<
+ * 
+ *     cdef unsigned long long mask
+ */
+  __pyx_v_i = 0;
+
+  /* "bounty_equity.pyx":85
+ * 
+ *     # We'll iterate over the dictionary items
+ *     for combo, weight in range_dict.items():             # <<<<<<<<<<<<<<
+ *         mask = 0
+ *         # e.g. combo[0] is the first Card
+ */
+  __pyx_t_1 = 0;
+  if (unlikely(__pyx_v_range_dict == Py_None)) {
+    PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "items");
+    __PYX_ERR(0, 85, __pyx_L1_error)
+  }
+  __pyx_t_5 = __Pyx_dict_iterator(__pyx_v_range_dict, 1, __pyx_n_s_items, (&__pyx_t_3), (&__pyx_t_4)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 85, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_1);
-  __pyx_t_1 = __pyx_t_5;
+  __Pyx_XDECREF(__pyx_t_2);
+  __pyx_t_2 = __pyx_t_5;
   __pyx_t_5 = 0;
   while (1) {
-    __pyx_t_7 = __Pyx_dict_iter_next(__pyx_t_1, __pyx_t_3, &__pyx_t_2, &__pyx_t_5, &__pyx_t_6, NULL, __pyx_t_4);
+    __pyx_t_7 = __Pyx_dict_iter_next(__pyx_t_2, __pyx_t_3, &__pyx_t_1, &__pyx_t_5, &__pyx_t_6, NULL, __pyx_t_4);
     if (unlikely(__pyx_t_7 == 0)) break;
-    if (unlikely(__pyx_t_7 == -1)) __PYX_ERR(0, 31, __pyx_L1_error)
+    if (unlikely(__pyx_t_7 == -1)) __PYX_ERR(0, 85, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_6); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 31, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __Pyx_XDECREF_SET(__pyx_v_key, __pyx_t_5);
+    __Pyx_XDECREF_SET(__pyx_v_combo, __pyx_t_5);
     __pyx_t_5 = 0;
-    __pyx_v_w = __pyx_t_8;
+    __Pyx_XDECREF_SET(__pyx_v_weight, __pyx_t_6);
+    __pyx_t_6 = 0;
 
-    /* "bounty_equity.pyx":32
- *     # 1) Sum up all weights
- *     for key, w in opponent_range.items():
- *         total_weight += w             # <<<<<<<<<<<<<<
- * 
- *     # Edge case: if total_weight is 0 or negative, just fallback
+    /* "bounty_equity.pyx":86
+ *     # We'll iterate over the dictionary items
+ *     for combo, weight in range_dict.items():
+ *         mask = 0             # <<<<<<<<<<<<<<
+ *         # e.g. combo[0] is the first Card
+ *         mask |= cards_to_mask(combo[0:1])  # mask for single card
  */
-    __pyx_v_total_weight = (__pyx_v_total_weight + __pyx_v_w);
+    __pyx_v_mask = 0;
+
+    /* "bounty_equity.pyx":88
+ *         mask = 0
+ *         # e.g. combo[0] is the first Card
+ *         mask |= cards_to_mask(combo[0:1])  # mask for single card             # <<<<<<<<<<<<<<
+ *         mask |= cards_to_mask(combo[1:2])  # combine
+ * 
+ */
+    __pyx_t_6 = __Pyx_PyObject_GetSlice(__pyx_v_combo, 0, 1, NULL, NULL, &__pyx_slice_, 1, 1, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_8 = __pyx_f_5eval7_5cards_cards_to_mask(__pyx_t_6); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 88, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_v_mask = (__pyx_v_mask | __pyx_t_8);
+
+    /* "bounty_equity.pyx":89
+ *         # e.g. combo[0] is the first Card
+ *         mask |= cards_to_mask(combo[0:1])  # mask for single card
+ *         mask |= cards_to_mask(combo[1:2])  # combine             # <<<<<<<<<<<<<<
+ * 
+ *         w = weight
+ */
+    __pyx_t_6 = __Pyx_PyObject_GetSlice(__pyx_v_combo, 1, 2, NULL, NULL, &__pyx_slice__2, 1, 1, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_8 = __pyx_f_5eval7_5cards_cards_to_mask(__pyx_t_6); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 89, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_v_mask = (__pyx_v_mask | __pyx_t_8);
+
+    /* "bounty_equity.pyx":91
+ *         mask |= cards_to_mask(combo[1:2])  # combine
+ * 
+ *         w = weight             # <<<<<<<<<<<<<<
+ *         running += w
+ *         prefix[i] = running
+ */
+    __pyx_t_9 = __pyx_PyFloat_AsDouble(__pyx_v_weight); if (unlikely((__pyx_t_9 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 91, __pyx_L1_error)
+    __pyx_v_w = __pyx_t_9;
+
+    /* "bounty_equity.pyx":92
+ * 
+ *         w = weight
+ *         running += w             # <<<<<<<<<<<<<<
+ *         prefix[i] = running
+ *         combos[i] = mask
+ */
+    __pyx_v_running = (__pyx_v_running + __pyx_v_w);
+
+    /* "bounty_equity.pyx":93
+ *         w = weight
+ *         running += w
+ *         prefix[i] = running             # <<<<<<<<<<<<<<
+ *         combos[i] = mask
+ *         i += 1
+ */
+    (__pyx_v_prefix[__pyx_v_i]) = __pyx_v_running;
+
+    /* "bounty_equity.pyx":94
+ *         running += w
+ *         prefix[i] = running
+ *         combos[i] = mask             # <<<<<<<<<<<<<<
+ *         i += 1
+ * 
+ */
+    (__pyx_v_combos[__pyx_v_i]) = __pyx_v_mask;
+
+    /* "bounty_equity.pyx":95
+ *         prefix[i] = running
+ *         combos[i] = mask
+ *         i += 1             # <<<<<<<<<<<<<<
+ * 
+ *     combos_out[0] = combos
+ */
+    __pyx_v_i = (__pyx_v_i + 1);
   }
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "bounty_equity.pyx":36
- *     # Edge case: if total_weight is 0 or negative, just fallback
- *     # to any random key. Usually means an empty or invalid range.
- *     if total_weight <= 0.0:             # <<<<<<<<<<<<<<
- *         # Return an empty list or raise an exception
- *         return []
- */
-  __pyx_t_9 = (__pyx_v_total_weight <= 0.0);
-  if (__pyx_t_9) {
-
-    /* "bounty_equity.pyx":38
- *     if total_weight <= 0.0:
- *         # Return an empty list or raise an exception
- *         return []             # <<<<<<<<<<<<<<
+  /* "bounty_equity.pyx":97
+ *         i += 1
  * 
- *     # 2) Generate a random float in [0, total_weight)
+ *     combos_out[0] = combos             # <<<<<<<<<<<<<<
+ *     prefix_out[0] = prefix
+ *     n_out[0] = n
  */
-    __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 38, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_r = ((PyObject*)__pyx_t_1);
-    __pyx_t_1 = 0;
-    goto __pyx_L0;
+  (__pyx_v_combos_out[0]) = __pyx_v_combos;
 
-    /* "bounty_equity.pyx":36
- *     # Edge case: if total_weight is 0 or negative, just fallback
- *     # to any random key. Usually means an empty or invalid range.
- *     if total_weight <= 0.0:             # <<<<<<<<<<<<<<
- *         # Return an empty list or raise an exception
- *         return []
+  /* "bounty_equity.pyx":98
+ * 
+ *     combos_out[0] = combos
+ *     prefix_out[0] = prefix             # <<<<<<<<<<<<<<
+ *     n_out[0] = n
+ *     total_out[0] = running
  */
-  }
+  (__pyx_v_prefix_out[0]) = __pyx_v_prefix;
 
-  /* "bounty_equity.pyx":41
+  /* "bounty_equity.pyx":99
+ *     combos_out[0] = combos
+ *     prefix_out[0] = prefix
+ *     n_out[0] = n             # <<<<<<<<<<<<<<
+ *     total_out[0] = running
  * 
- *     # 2) Generate a random float in [0, total_weight)
- *     r = random() * total_weight             # <<<<<<<<<<<<<<
- * 
- *     # 3) Walk through opponent_range until we cross r
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_random); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 41, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_5 = NULL;
-  __pyx_t_10 = 0;
+  (__pyx_v_n_out[0]) = __pyx_v_n;
+
+  /* "bounty_equity.pyx":100
+ *     prefix_out[0] = prefix
+ *     n_out[0] = n
+ *     total_out[0] = running             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  (__pyx_v_total_out[0]) = __pyx_v_running;
+
+  /* "bounty_equity.pyx":57
+ * 
+ * 
+ * cdef void build_weighted_arrays(dict range_dict,             # <<<<<<<<<<<<<<
+ *                                 unsigned long long** combos_out,
+ *                                 double** prefix_out,
+ */
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_AddTraceback("bounty_equity.build_weighted_arrays", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_combo);
+  __Pyx_XDECREF(__pyx_v_weight);
+  __Pyx_RefNannyFinishContext();
+}
+
+/* "bounty_equity.pyx":103
+ * 
+ * 
+ * cdef inline unsigned long long pick_weighted_combo(unsigned long long* combos,             # <<<<<<<<<<<<<<
+ *                                                    double* prefix,
+ *                                                    int n,
+ */
+
+static CYTHON_INLINE unsigned PY_LONG_LONG __pyx_f_13bounty_equity_pick_weighted_combo(unsigned PY_LONG_LONG *__pyx_v_combos, double *__pyx_v_prefix, int __pyx_v_n, double __pyx_v_total) {
+  double __pyx_v_r;
+  int __pyx_v_left;
+  int __pyx_v_right;
+  int __pyx_v_mid;
+  double __pyx_v_val;
+  unsigned PY_LONG_LONG __pyx_r;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  unsigned int __pyx_t_4;
+  double __pyx_t_5;
+  int __pyx_t_6;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("pick_weighted_combo", 1);
+
+  /* "bounty_equity.pyx":113
+ *     Return the chosen combo mask.
+ *     """
+ *     cdef double r = random() * total             # <<<<<<<<<<<<<<
+ *     # or you could do a real floating random if you had it:
+ *     #   r = random() * total
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_random); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  __pyx_t_4 = 0;
   #if CYTHON_UNPACK_METHODS
-  if (unlikely(PyMethod_Check(__pyx_t_6))) {
-    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_6);
-    if (likely(__pyx_t_5)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
-      __Pyx_INCREF(__pyx_t_5);
+  if (unlikely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_6, function);
-      __pyx_t_10 = 1;
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+      __pyx_t_4 = 1;
     }
   }
   #endif
   {
-    PyObject *__pyx_callargs[2] = {__pyx_t_5, NULL};
-    __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+1-__pyx_t_10, 0+__pyx_t_10);
-    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
+    PyObject *__pyx_callargs[2] = {__pyx_t_3, NULL};
+    __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+1-__pyx_t_4, 0+__pyx_t_4);
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   }
-  __pyx_t_6 = PyFloat_FromDouble(__pyx_v_total_weight); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 41, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_5 = PyNumber_Multiply(__pyx_t_1, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 41, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_total); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = PyNumber_Multiply(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_5); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 41, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_v_r = __pyx_t_8;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_t_3); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_v_r = __pyx_t_5;
 
-  /* "bounty_equity.pyx":44
+  /* "bounty_equity.pyx":117
+ *     #   r = random() * total
  * 
- *     # 3) Walk through opponent_range until we cross r
- *     cumulative = 0.0             # <<<<<<<<<<<<<<
- *     for key, w in opponent_range.items():
- *         cumulative += w
+ *     cdef int left = 0             # <<<<<<<<<<<<<<
+ *     cdef int right = n - 1
+ *     cdef int mid
  */
-  __pyx_v_cumulative = 0.0;
+  __pyx_v_left = 0;
 
-  /* "bounty_equity.pyx":45
- *     # 3) Walk through opponent_range until we cross r
- *     cumulative = 0.0
- *     for key, w in opponent_range.items():             # <<<<<<<<<<<<<<
- *         cumulative += w
- *         if r <= cumulative:
+  /* "bounty_equity.pyx":118
+ * 
+ *     cdef int left = 0
+ *     cdef int right = n - 1             # <<<<<<<<<<<<<<
+ *     cdef int mid
+ *     cdef double val
  */
-  __pyx_t_3 = 0;
-  if (unlikely(__pyx_v_opponent_range == Py_None)) {
-    PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "items");
-    __PYX_ERR(0, 45, __pyx_L1_error)
-  }
-  __pyx_t_6 = __Pyx_dict_iterator(__pyx_v_opponent_range, 1, __pyx_n_s_items, (&__pyx_t_2), (&__pyx_t_4)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 45, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_XDECREF(__pyx_t_5);
-  __pyx_t_5 = __pyx_t_6;
-  __pyx_t_6 = 0;
+  __pyx_v_right = (__pyx_v_n - 1);
+
+  /* "bounty_equity.pyx":121
+ *     cdef int mid
+ *     cdef double val
+ *     while left < right:             # <<<<<<<<<<<<<<
+ *         mid = (left + right) >> 1
+ *         val = prefix[mid]
+ */
   while (1) {
-    __pyx_t_7 = __Pyx_dict_iter_next(__pyx_t_5, __pyx_t_2, &__pyx_t_3, &__pyx_t_6, &__pyx_t_1, NULL, __pyx_t_4);
-    if (unlikely(__pyx_t_7 == 0)) break;
-    if (unlikely(__pyx_t_7 == -1)) __PYX_ERR(0, 45, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 45, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_XDECREF_SET(__pyx_v_key, __pyx_t_6);
-    __pyx_t_6 = 0;
-    __pyx_v_w = __pyx_t_8;
+    __pyx_t_6 = (__pyx_v_left < __pyx_v_right);
+    if (!__pyx_t_6) break;
 
-    /* "bounty_equity.pyx":46
- *     cumulative = 0.0
- *     for key, w in opponent_range.items():
- *         cumulative += w             # <<<<<<<<<<<<<<
- *         if r <= cumulative:
- *             # 'key' should be a tuple of two Cards: (Card, Card)
+    /* "bounty_equity.pyx":122
+ *     cdef double val
+ *     while left < right:
+ *         mid = (left + right) >> 1             # <<<<<<<<<<<<<<
+ *         val = prefix[mid]
+ *         if r <= val:
  */
-    __pyx_v_cumulative = (__pyx_v_cumulative + __pyx_v_w);
+    __pyx_v_mid = ((__pyx_v_left + __pyx_v_right) >> 1);
 
-    /* "bounty_equity.pyx":47
- *     for key, w in opponent_range.items():
- *         cumulative += w
- *         if r <= cumulative:             # <<<<<<<<<<<<<<
- *             # 'key' should be a tuple of two Cards: (Card, Card)
- *             # We'll return them as a Python list
+    /* "bounty_equity.pyx":123
+ *     while left < right:
+ *         mid = (left + right) >> 1
+ *         val = prefix[mid]             # <<<<<<<<<<<<<<
+ *         if r <= val:
+ *             right = mid
  */
-    __pyx_t_9 = (__pyx_v_r <= __pyx_v_cumulative);
-    if (__pyx_t_9) {
+    __pyx_v_val = (__pyx_v_prefix[__pyx_v_mid]);
 
-      /* "bounty_equity.pyx":50
- *             # 'key' should be a tuple of two Cards: (Card, Card)
- *             # We'll return them as a Python list
- *             return [key[0], key[1]]             # <<<<<<<<<<<<<<
- * 
- *     # In case of any floating rounding issues, fallback to the last one
+    /* "bounty_equity.pyx":124
+ *         mid = (left + right) >> 1
+ *         val = prefix[mid]
+ *         if r <= val:             # <<<<<<<<<<<<<<
+ *             right = mid
+ *         else:
  */
-      __Pyx_XDECREF(__pyx_r);
-      __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_key, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 50, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_6 = __Pyx_GetItemInt(__pyx_v_key, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 50, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_11 = PyList_New(2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 50, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_11);
-      __Pyx_GIVEREF(__pyx_t_1);
-      if (__Pyx_PyList_SET_ITEM(__pyx_t_11, 0, __pyx_t_1)) __PYX_ERR(0, 50, __pyx_L1_error);
-      __Pyx_GIVEREF(__pyx_t_6);
-      if (__Pyx_PyList_SET_ITEM(__pyx_t_11, 1, __pyx_t_6)) __PYX_ERR(0, 50, __pyx_L1_error);
-      __pyx_t_1 = 0;
-      __pyx_t_6 = 0;
-      __pyx_r = ((PyObject*)__pyx_t_11);
-      __pyx_t_11 = 0;
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      goto __pyx_L0;
+    __pyx_t_6 = (__pyx_v_r <= __pyx_v_val);
+    if (__pyx_t_6) {
 
-      /* "bounty_equity.pyx":47
- *     for key, w in opponent_range.items():
- *         cumulative += w
- *         if r <= cumulative:             # <<<<<<<<<<<<<<
- *             # 'key' should be a tuple of two Cards: (Card, Card)
- *             # We'll return them as a Python list
+      /* "bounty_equity.pyx":125
+ *         val = prefix[mid]
+ *         if r <= val:
+ *             right = mid             # <<<<<<<<<<<<<<
+ *         else:
+ *             left = mid + 1
  */
+      __pyx_v_right = __pyx_v_mid;
+
+      /* "bounty_equity.pyx":124
+ *         mid = (left + right) >> 1
+ *         val = prefix[mid]
+ *         if r <= val:             # <<<<<<<<<<<<<<
+ *             right = mid
+ *         else:
+ */
+      goto __pyx_L5;
     }
-  }
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "bounty_equity.pyx":53
- * 
- *     # In case of any floating rounding issues, fallback to the last one
- *     return [key[0], key[1]]             # <<<<<<<<<<<<<<
- * 
+    /* "bounty_equity.pyx":127
+ *             right = mid
+ *         else:
+ *             left = mid + 1             # <<<<<<<<<<<<<<
+ *     return combos[left]
  * 
  */
-  __Pyx_XDECREF(__pyx_r);
-  if (unlikely(!__pyx_v_key)) { __Pyx_RaiseUnboundLocalError("key"); __PYX_ERR(0, 53, __pyx_L1_error) }
-  __pyx_t_5 = __Pyx_GetItemInt(__pyx_v_key, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 53, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  if (unlikely(!__pyx_v_key)) { __Pyx_RaiseUnboundLocalError("key"); __PYX_ERR(0, 53, __pyx_L1_error) }
-  __pyx_t_11 = __Pyx_GetItemInt(__pyx_v_key, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 53, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_11);
-  __pyx_t_6 = PyList_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 53, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GIVEREF(__pyx_t_5);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_6, 0, __pyx_t_5)) __PYX_ERR(0, 53, __pyx_L1_error);
-  __Pyx_GIVEREF(__pyx_t_11);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_6, 1, __pyx_t_11)) __PYX_ERR(0, 53, __pyx_L1_error);
-  __pyx_t_5 = 0;
-  __pyx_t_11 = 0;
-  __pyx_r = ((PyObject*)__pyx_t_6);
-  __pyx_t_6 = 0;
+    /*else*/ {
+      __pyx_v_left = (__pyx_v_mid + 1);
+    }
+    __pyx_L5:;
+  }
+
+  /* "bounty_equity.pyx":128
+ *         else:
+ *             left = mid + 1
+ *     return combos[left]             # <<<<<<<<<<<<<<
+ * 
+ * cdef double opp_bounty_hit = 0.0
+ */
+  __pyx_r = (__pyx_v_combos[__pyx_v_left]);
   goto __pyx_L0;
 
-  /* "bounty_equity.pyx":15
- * # 1) Weighted pick of a two-card hand from opponent_range
- * #--------------------------------------------------------------------
- * cdef list pick_weighted_two_card_hand(dict opponent_range):             # <<<<<<<<<<<<<<
- *     """
- *     opponent_range is a dict where:
+  /* "bounty_equity.pyx":103
+ * 
+ * 
+ * cdef inline unsigned long long pick_weighted_combo(unsigned long long* combos,             # <<<<<<<<<<<<<<
+ *                                                    double* prefix,
+ *                                                    int n,
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_XDECREF(__pyx_t_11);
-  __Pyx_AddTraceback("bounty_equity.pick_weighted_two_card_hand", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = 0;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("bounty_equity.pick_weighted_combo", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
   __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_key);
-  __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "bounty_equity.pyx":59
- * # 2) Main Monte Carlo equity function
- * #--------------------------------------------------------------------
- * cpdef tuple get_equity_and_opp_bounty_prob(             # <<<<<<<<<<<<<<
- *         list my_cards,
- *         dict opponent_range,      # e.g. {(Card('2c'), Card('2h')): 0.0013, ...}
+/* "bounty_equity.pyx":132
+ * cdef double opp_bounty_hit = 0.0
+ * 
+ * cdef double hand_vs_weighted_range_monte_carlo(unsigned long long hero,             # <<<<<<<<<<<<<<
+ *                                               unsigned long long* combos,
+ *                                               double* prefix,
  */
 
-static PyObject *__pyx_pw_13bounty_equity_1get_equity_and_opp_bounty_prob(PyObject *__pyx_self, 
-#if CYTHON_METH_FASTCALL
-PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
-#else
-PyObject *__pyx_args, PyObject *__pyx_kwds
-#endif
-); /*proto*/
-static PyObject *__pyx_f_13bounty_equity_get_equity_and_opp_bounty_prob(PyObject *__pyx_v_my_cards, PyObject *__pyx_v_opponent_range, PyObject *__pyx_v_board_cards, PyObject *__pyx_v_opp_bounty_prob, int __pyx_v_NUM_SIMULATIONS, CYTHON_UNUSED int __pyx_skip_dispatch) {
-  int __pyx_v_wins;
-  int __pyx_v_ties;
+static double __pyx_f_13bounty_equity_hand_vs_weighted_range_monte_carlo(unsigned PY_LONG_LONG __pyx_v_hero, unsigned PY_LONG_LONG *__pyx_v_combos, double *__pyx_v_prefix, int __pyx_v_n, double __pyx_v_total_weight, unsigned PY_LONG_LONG __pyx_v_start_board, int __pyx_v_num_board, double *__pyx_v_array_ptr, int __pyx_v_iterations) {
+  unsigned int __pyx_v_count;
   double __pyx_v_opp_bounty_hit_total;
-  int __pyx_v_needed_board_cards;
-  CYTHON_UNUSED int __pyx_v_i;
-  int __pyx_v_j;
+  CYTHON_UNUSED unsigned int __pyx_v_i;
+  unsigned int __pyx_v_j;
+  unsigned PY_LONG_LONG __pyx_v_villain_combo;
+  unsigned PY_LONG_LONG __pyx_v_dealt;
+  unsigned PY_LONG_LONG __pyx_v_board;
+  unsigned int __pyx_v_hero_val;
+  unsigned int __pyx_v_vill_val;
+  int __pyx_v_needed;
+  unsigned PY_LONG_LONG __pyx_v_villain_final;
+  int __pyx_v_rank_used[13];
   double __pyx_v_opp_bounty_hit_prob;
-  PyObject *__pyx_v_opp_cards = 0;
-  PyObject *__pyx_v_board = 0;
-  PyObject *__pyx_v_my_hand = 0;
-  PyObject *__pyx_v_opp_hand = 0;
-  int __pyx_v_my_eval;
-  int __pyx_v_opp_eval;
-  int __pyx_v_rank_i;
-  int __pyx_v_opp_rank_counts[13];
-  PyObject *__pyx_v_deck = NULL;
-  PyObject *__pyx_v_c = NULL;
-  double __pyx_v_equity;
-  double __pyx_v_opp_bounty_hit;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  Py_ssize_t __pyx_t_1;
+  int __pyx_v_card_idx;
+  int __pyx_v_rank_idx;
+  double __pyx_v_eq;
+  double __pyx_r;
+  int __pyx_t_1;
   int __pyx_t_2;
   int __pyx_t_3;
-  int __pyx_t_4;
-  PyObject *__pyx_t_5 = NULL;
+  unsigned int __pyx_t_4;
+  unsigned PY_LONG_LONG __pyx_t_5;
   int __pyx_t_6;
   int __pyx_t_7;
-  PyObject *__pyx_t_8 = NULL;
-  PyObject *__pyx_t_9 = NULL;
-  unsigned int __pyx_t_10;
-  int __pyx_t_11;
-  int __pyx_t_12;
-  int __pyx_t_13;
-  int __pyx_t_14;
-  PyObject *__pyx_t_15 = NULL;
-  double __pyx_t_16;
+  unsigned int __pyx_t_8;
+  double __pyx_t_9;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("get_equity_and_opp_bounty_prob", 1);
 
-  /* "bounty_equity.pyx":83
- *       2) Return final average
+  /* "bounty_equity.pyx":145
+ *     We'll sample from combos[] prefix-sums each iteration, then deal out the board.
  *     """
- *     cdef int wins = 0             # <<<<<<<<<<<<<<
- *     cdef int ties = 0
+ *     cdef unsigned int count = 0             # <<<<<<<<<<<<<<
  *     cdef double opp_bounty_hit_total = 0.0
+ *     cdef unsigned int i, j
  */
-  __pyx_v_wins = 0;
+  __pyx_v_count = 0;
 
-  /* "bounty_equity.pyx":84
+  /* "bounty_equity.pyx":146
  *     """
- *     cdef int wins = 0
- *     cdef int ties = 0             # <<<<<<<<<<<<<<
- *     cdef double opp_bounty_hit_total = 0.0
- *     cdef int needed_board_cards = 5 - len(board_cards)
- */
-  __pyx_v_ties = 0;
-
-  /* "bounty_equity.pyx":85
- *     cdef int wins = 0
- *     cdef int ties = 0
+ *     cdef unsigned int count = 0
  *     cdef double opp_bounty_hit_total = 0.0             # <<<<<<<<<<<<<<
- *     cdef int needed_board_cards = 5 - len(board_cards)
- *     cdef int i, j
+ *     cdef unsigned int i, j
+ * 
  */
   __pyx_v_opp_bounty_hit_total = 0.0;
 
-  /* "bounty_equity.pyx":86
- *     cdef int ties = 0
- *     cdef double opp_bounty_hit_total = 0.0
- *     cdef int needed_board_cards = 5 - len(board_cards)             # <<<<<<<<<<<<<<
- *     cdef int i, j
- *     cdef double opp_bounty_hit_prob
- */
-  if (unlikely(__pyx_v_board_cards == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 86, __pyx_L1_error)
-  }
-  __pyx_t_1 = __Pyx_PyList_GET_SIZE(__pyx_v_board_cards); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 86, __pyx_L1_error)
-  __pyx_v_needed_board_cards = (5 - __pyx_t_1);
-
-  /* "bounty_equity.pyx":99
- *     cdef int opp_rank_counts[13]  # track which ranks appear in opp_hand
+  /* "bounty_equity.pyx":155
+ *     cdef unsigned int vill_val
  * 
- *     for i in range(NUM_SIMULATIONS):             # <<<<<<<<<<<<<<
- *         # 1) Pick villain's 2-card combo from distribution
- *         opp_cards = pick_weighted_two_card_hand(opponent_range)
+ *     cdef int needed = 5 - num_board             # <<<<<<<<<<<<<<
+ *     if needed < 0:
+ *         needed = 0
  */
-  __pyx_t_2 = __pyx_v_NUM_SIMULATIONS;
+  __pyx_v_needed = (5 - __pyx_v_num_board);
+
+  /* "bounty_equity.pyx":156
+ * 
+ *     cdef int needed = 5 - num_board
+ *     if needed < 0:             # <<<<<<<<<<<<<<
+ *         needed = 0
+ * 
+ */
+  __pyx_t_1 = (__pyx_v_needed < 0);
+  if (__pyx_t_1) {
+
+    /* "bounty_equity.pyx":157
+ *     cdef int needed = 5 - num_board
+ *     if needed < 0:
+ *         needed = 0             # <<<<<<<<<<<<<<
+ * 
+ *     cdef unsigned long long villain_final  # bitmask for villain's 7 cards
+ */
+    __pyx_v_needed = 0;
+
+    /* "bounty_equity.pyx":156
+ * 
+ *     cdef int needed = 5 - num_board
+ *     if needed < 0:             # <<<<<<<<<<<<<<
+ *         needed = 0
+ * 
+ */
+  }
+
+  /* "bounty_equity.pyx":166
+ *     cdef int card_idx, rank_idx
+ * 
+ *     for i in range(iterations):             # <<<<<<<<<<<<<<
+ *         # 1) pick random villain combo from weighted prefix
+ *         villain_combo = pick_weighted_combo(combos, prefix, n, total_weight)
+ */
+  __pyx_t_2 = __pyx_v_iterations;
   __pyx_t_3 = __pyx_t_2;
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_i = __pyx_t_4;
 
-    /* "bounty_equity.pyx":101
- *     for i in range(NUM_SIMULATIONS):
- *         # 1) Pick villain's 2-card combo from distribution
- *         opp_cards = pick_weighted_two_card_hand(opponent_range)             # <<<<<<<<<<<<<<
- *         if not opp_cards:
- *             # If empty => no valid pick, skip or break
- */
-    __pyx_t_5 = __pyx_f_13bounty_equity_pick_weighted_two_card_hand(__pyx_v_opponent_range); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 101, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_XDECREF_SET(__pyx_v_opp_cards, ((PyObject*)__pyx_t_5));
-    __pyx_t_5 = 0;
-
-    /* "bounty_equity.pyx":102
- *         # 1) Pick villain's 2-card combo from distribution
- *         opp_cards = pick_weighted_two_card_hand(opponent_range)
- *         if not opp_cards:             # <<<<<<<<<<<<<<
- *             # If empty => no valid pick, skip or break
- *             continue
- */
-    __pyx_t_6 = (__pyx_v_opp_cards != Py_None)&&(PyList_GET_SIZE(__pyx_v_opp_cards) != 0);
-    __pyx_t_7 = (!__pyx_t_6);
-    if (__pyx_t_7) {
-
-      /* "bounty_equity.pyx":104
- *         if not opp_cards:
- *             # If empty => no valid pick, skip or break
- *             continue             # <<<<<<<<<<<<<<
+    /* "bounty_equity.pyx":168
+ *     for i in range(iterations):
+ *         # 1) pick random villain combo from weighted prefix
+ *         villain_combo = pick_weighted_combo(combos, prefix, n, total_weight)             # <<<<<<<<<<<<<<
  * 
- *         # 2) Create deck & shuffle
+ *         # 2) deal the rest of the board
  */
-      goto __pyx_L3_continue;
+    __pyx_t_5 = __pyx_f_13bounty_equity_pick_weighted_combo(__pyx_v_combos, __pyx_v_prefix, __pyx_v_n, __pyx_v_total_weight); if (unlikely(__pyx_t_5 == ((unsigned PY_LONG_LONG)-1) && PyErr_Occurred())) __PYX_ERR(0, 168, __pyx_L1_error)
+    __pyx_v_villain_combo = __pyx_t_5;
 
-      /* "bounty_equity.pyx":102
- *         # 1) Pick villain's 2-card combo from distribution
- *         opp_cards = pick_weighted_two_card_hand(opponent_range)
- *         if not opp_cards:             # <<<<<<<<<<<<<<
- *             # If empty => no valid pick, skip or break
- *             continue
+    /* "bounty_equity.pyx":171
+ * 
+ *         # 2) deal the rest of the board
+ *         dealt = hero | villain_combo             # <<<<<<<<<<<<<<
+ *         board = start_board
+ *         for j in range(needed):
  */
+    __pyx_v_dealt = (__pyx_v_hero | __pyx_v_villain_combo);
+
+    /* "bounty_equity.pyx":172
+ *         # 2) deal the rest of the board
+ *         dealt = hero | villain_combo
+ *         board = start_board             # <<<<<<<<<<<<<<
+ *         for j in range(needed):
+ *             board |= deal_card(board | dealt)
+ */
+    __pyx_v_board = __pyx_v_start_board;
+
+    /* "bounty_equity.pyx":173
+ *         dealt = hero | villain_combo
+ *         board = start_board
+ *         for j in range(needed):             # <<<<<<<<<<<<<<
+ *             board |= deal_card(board | dealt)
+ * 
+ */
+    __pyx_t_6 = __pyx_v_needed;
+    __pyx_t_7 = __pyx_t_6;
+    for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
+      __pyx_v_j = __pyx_t_8;
+
+      /* "bounty_equity.pyx":174
+ *         board = start_board
+ *         for j in range(needed):
+ *             board |= deal_card(board | dealt)             # <<<<<<<<<<<<<<
+ * 
+ *         # 3) Evaluate
+ */
+      __pyx_t_5 = __pyx_f_13bounty_equity_deal_card((__pyx_v_board | __pyx_v_dealt)); if (unlikely(__pyx_t_5 == ((unsigned PY_LONG_LONG)-1) && PyErr_Occurred())) __PYX_ERR(0, 174, __pyx_L1_error)
+      __pyx_v_board = (__pyx_v_board | __pyx_t_5);
     }
 
-    /* "bounty_equity.pyx":107
+    /* "bounty_equity.pyx":177
  * 
- *         # 2) Create deck & shuffle
- *         deck = val.Deck()             # <<<<<<<<<<<<<<
- *         deck.shuffle()
+ *         # 3) Evaluate
+ *         hero_val = cy_evaluate(board | hero, 7)             # <<<<<<<<<<<<<<
+ *         vill_val = cy_evaluate(board | villain_combo, 7)
  * 
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_val); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 107, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_Deck); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 107, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_8 = NULL;
-    __pyx_t_10 = 0;
-    #if CYTHON_UNPACK_METHODS
-    if (unlikely(PyMethod_Check(__pyx_t_9))) {
-      __pyx_t_8 = PyMethod_GET_SELF(__pyx_t_9);
-      if (likely(__pyx_t_8)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_9);
-        __Pyx_INCREF(__pyx_t_8);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_9, function);
-        __pyx_t_10 = 1;
-      }
-    }
-    #endif
-    {
-      PyObject *__pyx_callargs[2] = {__pyx_t_8, NULL};
-      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_9, __pyx_callargs+1-__pyx_t_10, 0+__pyx_t_10);
-      __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 107, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
-      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    }
-    __Pyx_XDECREF_SET(__pyx_v_deck, __pyx_t_5);
-    __pyx_t_5 = 0;
+    __pyx_t_8 = __pyx_f_5eval7_8evaluate_cy_evaluate((__pyx_v_board | __pyx_v_hero), 7); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 177, __pyx_L1_error)
+    __pyx_v_hero_val = __pyx_t_8;
 
-    /* "bounty_equity.pyx":108
- *         # 2) Create deck & shuffle
- *         deck = val.Deck()
- *         deck.shuffle()             # <<<<<<<<<<<<<<
+    /* "bounty_equity.pyx":178
+ *         # 3) Evaluate
+ *         hero_val = cy_evaluate(board | hero, 7)
+ *         vill_val = cy_evaluate(board | villain_combo, 7)             # <<<<<<<<<<<<<<
  * 
- *         # 3) Build final board.
+ *         if hero_val > vill_val:
  */
-    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_deck, __pyx_n_s_shuffle); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 108, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_8 = NULL;
-    __pyx_t_10 = 0;
-    #if CYTHON_UNPACK_METHODS
-    if (likely(PyMethod_Check(__pyx_t_9))) {
-      __pyx_t_8 = PyMethod_GET_SELF(__pyx_t_9);
-      if (likely(__pyx_t_8)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_9);
-        __Pyx_INCREF(__pyx_t_8);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_9, function);
-        __pyx_t_10 = 1;
-      }
-    }
-    #endif
-    {
-      PyObject *__pyx_callargs[2] = {__pyx_t_8, NULL};
-      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_9, __pyx_callargs+1-__pyx_t_10, 0+__pyx_t_10);
-      __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 108, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
-      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    }
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_8 = __pyx_f_5eval7_8evaluate_cy_evaluate((__pyx_v_board | __pyx_v_villain_combo), 7); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 178, __pyx_L1_error)
+    __pyx_v_vill_val = __pyx_t_8;
 
-    /* "bounty_equity.pyx":113
- *         #    The original code snippet does NOT remove known cards from the deck;
- *         #    We replicate that logic literally here.
- *         board = board_cards.copy()             # <<<<<<<<<<<<<<
- *         for j in range(needed_board_cards):
- *             board.append(deck.cards[j])
- */
-    __pyx_t_5 = __Pyx_CallUnboundCMethod0(&__pyx_umethod_PyList_Type_copy, __pyx_v_board_cards); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 113, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    if (!(likely(PyList_CheckExact(__pyx_t_5))||((__pyx_t_5) == Py_None) || __Pyx_RaiseUnexpectedTypeError("list", __pyx_t_5))) __PYX_ERR(0, 113, __pyx_L1_error)
-    __Pyx_XDECREF_SET(__pyx_v_board, ((PyObject*)__pyx_t_5));
-    __pyx_t_5 = 0;
-
-    /* "bounty_equity.pyx":114
- *         #    We replicate that logic literally here.
- *         board = board_cards.copy()
- *         for j in range(needed_board_cards):             # <<<<<<<<<<<<<<
- *             board.append(deck.cards[j])
+    /* "bounty_equity.pyx":180
+ *         vill_val = cy_evaluate(board | villain_combo, 7)
  * 
+ *         if hero_val > vill_val:             # <<<<<<<<<<<<<<
+ *             count += 2
+ *         elif hero_val == vill_val:
  */
-    __pyx_t_11 = __pyx_v_needed_board_cards;
-    __pyx_t_12 = __pyx_t_11;
-    for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
-      __pyx_v_j = __pyx_t_13;
+    __pyx_t_1 = (__pyx_v_hero_val > __pyx_v_vill_val);
+    if (__pyx_t_1) {
 
-      /* "bounty_equity.pyx":115
- *         board = board_cards.copy()
- *         for j in range(needed_board_cards):
- *             board.append(deck.cards[j])             # <<<<<<<<<<<<<<
+      /* "bounty_equity.pyx":181
  * 
- *         # 4) Combine for each player's final 7 cards
+ *         if hero_val > vill_val:
+ *             count += 2             # <<<<<<<<<<<<<<
+ *         elif hero_val == vill_val:
+ *             count += 1
  */
-      if (unlikely(__pyx_v_board == Py_None)) {
-        PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "append");
-        __PYX_ERR(0, 115, __pyx_L1_error)
-      }
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_deck, __pyx_n_s_cards); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 115, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_9 = __Pyx_GetItemInt(__pyx_t_5, __pyx_v_j, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 115, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_9);
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_14 = __Pyx_PyList_Append(__pyx_v_board, __pyx_t_9); if (unlikely(__pyx_t_14 == ((int)-1))) __PYX_ERR(0, 115, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+      __pyx_v_count = (__pyx_v_count + 2);
+
+      /* "bounty_equity.pyx":180
+ *         vill_val = cy_evaluate(board | villain_combo, 7)
+ * 
+ *         if hero_val > vill_val:             # <<<<<<<<<<<<<<
+ *             count += 2
+ *         elif hero_val == vill_val:
+ */
+      goto __pyx_L8;
     }
 
-    /* "bounty_equity.pyx":118
- * 
- *         # 4) Combine for each player's final 7 cards
- *         my_hand = my_cards + board             # <<<<<<<<<<<<<<
- *         opp_hand = opp_cards + board
+    /* "bounty_equity.pyx":182
+ *         if hero_val > vill_val:
+ *             count += 2
+ *         elif hero_val == vill_val:             # <<<<<<<<<<<<<<
+ *             count += 1
  * 
  */
-    __pyx_t_9 = PyNumber_Add(__pyx_v_my_cards, __pyx_v_board); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 118, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __Pyx_XDECREF_SET(__pyx_v_my_hand, ((PyObject*)__pyx_t_9));
-    __pyx_t_9 = 0;
+    __pyx_t_1 = (__pyx_v_hero_val == __pyx_v_vill_val);
+    if (__pyx_t_1) {
 
-    /* "bounty_equity.pyx":119
- *         # 4) Combine for each player's final 7 cards
- *         my_hand = my_cards + board
- *         opp_hand = opp_cards + board             # <<<<<<<<<<<<<<
+      /* "bounty_equity.pyx":183
+ *             count += 2
+ *         elif hero_val == vill_val:
+ *             count += 1             # <<<<<<<<<<<<<<
  * 
- *         # 5) Calculate probability of hitting the bounty rank
+ *         # 4) Calulate opp_bounty_hit
  */
-    __pyx_t_9 = PyNumber_Add(__pyx_v_opp_cards, __pyx_v_board); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 119, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __Pyx_XDECREF_SET(__pyx_v_opp_hand, ((PyObject*)__pyx_t_9));
-    __pyx_t_9 = 0;
+      __pyx_v_count = (__pyx_v_count + 1);
 
-    /* "bounty_equity.pyx":122
+      /* "bounty_equity.pyx":182
+ *         if hero_val > vill_val:
+ *             count += 2
+ *         elif hero_val == vill_val:             # <<<<<<<<<<<<<<
+ *             count += 1
  * 
- *         # 5) Calculate probability of hitting the bounty rank
- *         opp_bounty_hit_prob = 0.0             # <<<<<<<<<<<<<<
+ */
+    }
+    __pyx_L8:;
+
+    /* "bounty_equity.pyx":186
+ * 
+ *         # 4) Calulate opp_bounty_hit
+ *         villain_final = villain_combo | board             # <<<<<<<<<<<<<<
  *         for j in range(13):
- *             opp_rank_counts[j] = 0
+ *             rank_used[j] = 0
+ */
+    __pyx_v_villain_final = (__pyx_v_villain_combo | __pyx_v_board);
+
+    /* "bounty_equity.pyx":187
+ *         # 4) Calulate opp_bounty_hit
+ *         villain_final = villain_combo | board
+ *         for j in range(13):             # <<<<<<<<<<<<<<
+ *             rank_used[j] = 0
+ * 
+ */
+    for (__pyx_t_8 = 0; __pyx_t_8 < 13; __pyx_t_8+=1) {
+      __pyx_v_j = __pyx_t_8;
+
+      /* "bounty_equity.pyx":188
+ *         villain_final = villain_combo | board
+ *         for j in range(13):
+ *             rank_used[j] = 0             # <<<<<<<<<<<<<<
+ * 
+ *         opp_bounty_hit_prob = 0.0
+ */
+      (__pyx_v_rank_used[__pyx_v_j]) = 0;
+    }
+
+    /* "bounty_equity.pyx":190
+ *             rank_used[j] = 0
+ * 
+ *         opp_bounty_hit_prob = 0.0             # <<<<<<<<<<<<<<
+ * 
+ *         # For each card index 0..51, check if that bit is set
  */
     __pyx_v_opp_bounty_hit_prob = 0.0;
 
-    /* "bounty_equity.pyx":123
- *         # 5) Calculate probability of hitting the bounty rank
- *         opp_bounty_hit_prob = 0.0
- *         for j in range(13):             # <<<<<<<<<<<<<<
- *             opp_rank_counts[j] = 0
+    /* "bounty_equity.pyx":195
+ *         # If set, find rank => card_idx // 4 => 0..12
+ *         # If rank not used yet, add array_ptr[rank_idx]
+ *         for card_idx in range(52):             # <<<<<<<<<<<<<<
+ *             if (villain_final & (1 << card_idx)) != 0:
+ *                 rank_idx = card_idx // 4
+ */
+    for (__pyx_t_6 = 0; __pyx_t_6 < 52; __pyx_t_6+=1) {
+      __pyx_v_card_idx = __pyx_t_6;
+
+      /* "bounty_equity.pyx":196
+ *         # If rank not used yet, add array_ptr[rank_idx]
+ *         for card_idx in range(52):
+ *             if (villain_final & (1 << card_idx)) != 0:             # <<<<<<<<<<<<<<
+ *                 rank_idx = card_idx // 4
+ *                 if rank_used[rank_idx] == 0:
+ */
+      __pyx_t_1 = ((__pyx_v_villain_final & (1 << __pyx_v_card_idx)) != 0);
+      if (__pyx_t_1) {
+
+        /* "bounty_equity.pyx":197
+ *         for card_idx in range(52):
+ *             if (villain_final & (1 << card_idx)) != 0:
+ *                 rank_idx = card_idx // 4             # <<<<<<<<<<<<<<
+ *                 if rank_used[rank_idx] == 0:
+ *                     rank_used[rank_idx] = 1
+ */
+        __pyx_v_rank_idx = __Pyx_div_long(__pyx_v_card_idx, 4);
+
+        /* "bounty_equity.pyx":198
+ *             if (villain_final & (1 << card_idx)) != 0:
+ *                 rank_idx = card_idx // 4
+ *                 if rank_used[rank_idx] == 0:             # <<<<<<<<<<<<<<
+ *                     rank_used[rank_idx] = 1
+ *                     opp_bounty_hit_prob += array_ptr[rank_idx]
+ */
+        __pyx_t_1 = ((__pyx_v_rank_used[__pyx_v_rank_idx]) == 0);
+        if (__pyx_t_1) {
+
+          /* "bounty_equity.pyx":199
+ *                 rank_idx = card_idx // 4
+ *                 if rank_used[rank_idx] == 0:
+ *                     rank_used[rank_idx] = 1             # <<<<<<<<<<<<<<
+ *                     opp_bounty_hit_prob += array_ptr[rank_idx]
  * 
  */
-    for (__pyx_t_11 = 0; __pyx_t_11 < 13; __pyx_t_11+=1) {
-      __pyx_v_j = __pyx_t_11;
+          (__pyx_v_rank_used[__pyx_v_rank_idx]) = 1;
 
-      /* "bounty_equity.pyx":124
- *         opp_bounty_hit_prob = 0.0
- *         for j in range(13):
- *             opp_rank_counts[j] = 0             # <<<<<<<<<<<<<<
- * 
- *         # Go through each card in opp_hand
- */
-      (__pyx_v_opp_rank_counts[__pyx_v_j]) = 0;
-    }
-
-    /* "bounty_equity.pyx":129
- *         # We assume card.rank is an int in 0..12 or 1..13
- *         # If it's 2..14, adapt as needed (e.g. "r = card.rank - 2").
- *         for c in opp_hand:             # <<<<<<<<<<<<<<
- *             rank_i = c.rank   # c is a Card object
- *             # if ranks are 2..14, do: rank_i = c.rank - 2
- */
-    __pyx_t_9 = __pyx_v_opp_hand; __Pyx_INCREF(__pyx_t_9);
-    __pyx_t_1 = 0;
-    for (;;) {
-      {
-        Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_9);
-        #if !CYTHON_ASSUME_SAFE_MACROS
-        if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 129, __pyx_L1_error)
-        #endif
-        if (__pyx_t_1 >= __pyx_temp) break;
-      }
-      #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-      __pyx_t_5 = PyList_GET_ITEM(__pyx_t_9, __pyx_t_1); __Pyx_INCREF(__pyx_t_5); __pyx_t_1++; if (unlikely((0 < 0))) __PYX_ERR(0, 129, __pyx_L1_error)
-      #else
-      __pyx_t_5 = __Pyx_PySequence_ITEM(__pyx_t_9, __pyx_t_1); __pyx_t_1++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 129, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
-      #endif
-      __Pyx_XDECREF_SET(__pyx_v_c, __pyx_t_5);
-      __pyx_t_5 = 0;
-
-      /* "bounty_equity.pyx":130
- *         # If it's 2..14, adapt as needed (e.g. "r = card.rank - 2").
- *         for c in opp_hand:
- *             rank_i = c.rank   # c is a Card object             # <<<<<<<<<<<<<<
- *             # if ranks are 2..14, do: rank_i = c.rank - 2
- *             if opp_rank_counts[rank_i] == 0:
- */
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_c, __pyx_n_s_rank); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 130, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_11 = __Pyx_PyInt_As_int(__pyx_t_5); if (unlikely((__pyx_t_11 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 130, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_v_rank_i = __pyx_t_11;
-
-      /* "bounty_equity.pyx":132
- *             rank_i = c.rank   # c is a Card object
- *             # if ranks are 2..14, do: rank_i = c.rank - 2
- *             if opp_rank_counts[rank_i] == 0:             # <<<<<<<<<<<<<<
- *                 opp_rank_counts[rank_i] = 1
- *                 opp_bounty_hit_prob += opp_bounty_prob[rank_i]
- */
-      __pyx_t_7 = ((__pyx_v_opp_rank_counts[__pyx_v_rank_i]) == 0);
-      if (__pyx_t_7) {
-
-        /* "bounty_equity.pyx":133
- *             # if ranks are 2..14, do: rank_i = c.rank - 2
- *             if opp_rank_counts[rank_i] == 0:
- *                 opp_rank_counts[rank_i] = 1             # <<<<<<<<<<<<<<
- *                 opp_bounty_hit_prob += opp_bounty_prob[rank_i]
- * 
- */
-        (__pyx_v_opp_rank_counts[__pyx_v_rank_i]) = 1;
-
-        /* "bounty_equity.pyx":134
- *             if opp_rank_counts[rank_i] == 0:
- *                 opp_rank_counts[rank_i] = 1
- *                 opp_bounty_hit_prob += opp_bounty_prob[rank_i]             # <<<<<<<<<<<<<<
+          /* "bounty_equity.pyx":200
+ *                 if rank_used[rank_idx] == 0:
+ *                     rank_used[rank_idx] = 1
+ *                     opp_bounty_hit_prob += array_ptr[rank_idx]             # <<<<<<<<<<<<<<
  * 
  *         opp_bounty_hit_total += opp_bounty_hit_prob
  */
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_opp_bounty_hit_prob); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 134, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_5);
-        if (unlikely(__pyx_v_opp_bounty_prob == Py_None)) {
-          PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-          __PYX_ERR(0, 134, __pyx_L1_error)
-        }
-        __pyx_t_8 = __Pyx_GetItemInt_List(__pyx_v_opp_bounty_prob, __pyx_v_rank_i, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 134, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_8);
-        __pyx_t_15 = PyNumber_InPlaceAdd(__pyx_t_5, __pyx_t_8); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 134, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_15);
-        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-        __pyx_t_16 = __pyx_PyFloat_AsDouble(__pyx_t_15); if (unlikely((__pyx_t_16 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 134, __pyx_L1_error)
-        __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
-        __pyx_v_opp_bounty_hit_prob = __pyx_t_16;
+          __pyx_v_opp_bounty_hit_prob = (__pyx_v_opp_bounty_hit_prob + (__pyx_v_array_ptr[__pyx_v_rank_idx]));
 
-        /* "bounty_equity.pyx":132
- *             rank_i = c.rank   # c is a Card object
- *             # if ranks are 2..14, do: rank_i = c.rank - 2
- *             if opp_rank_counts[rank_i] == 0:             # <<<<<<<<<<<<<<
- *                 opp_rank_counts[rank_i] = 1
- *                 opp_bounty_hit_prob += opp_bounty_prob[rank_i]
+          /* "bounty_equity.pyx":198
+ *             if (villain_final & (1 << card_idx)) != 0:
+ *                 rank_idx = card_idx // 4
+ *                 if rank_used[rank_idx] == 0:             # <<<<<<<<<<<<<<
+ *                     rank_used[rank_idx] = 1
+ *                     opp_bounty_hit_prob += array_ptr[rank_idx]
+ */
+        }
+
+        /* "bounty_equity.pyx":196
+ *         # If rank not used yet, add array_ptr[rank_idx]
+ *         for card_idx in range(52):
+ *             if (villain_final & (1 << card_idx)) != 0:             # <<<<<<<<<<<<<<
+ *                 rank_idx = card_idx // 4
+ *                 if rank_used[rank_idx] == 0:
  */
       }
-
-      /* "bounty_equity.pyx":129
- *         # We assume card.rank is an int in 0..12 or 1..13
- *         # If it's 2..14, adapt as needed (e.g. "r = card.rank - 2").
- *         for c in opp_hand:             # <<<<<<<<<<<<<<
- *             rank_i = c.rank   # c is a Card object
- *             # if ranks are 2..14, do: rank_i = c.rank - 2
- */
     }
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-    /* "bounty_equity.pyx":136
- *                 opp_bounty_hit_prob += opp_bounty_prob[rank_i]
+    /* "bounty_equity.pyx":202
+ *                     opp_bounty_hit_prob += array_ptr[rank_idx]
  * 
  *         opp_bounty_hit_total += opp_bounty_hit_prob             # <<<<<<<<<<<<<<
  * 
- *         # 6) Evaluate each hand (7 cards).
+ *     cdef double eq = 0.5 * count / iterations
  */
     __pyx_v_opp_bounty_hit_total = (__pyx_v_opp_bounty_hit_total + __pyx_v_opp_bounty_hit_prob);
-
-    /* "bounty_equity.pyx":140
- *         # 6) Evaluate each hand (7 cards).
- *         #    We assume val.evaluate(...) returns an integer strength
- *         my_eval = val.evaluate(my_hand)             # <<<<<<<<<<<<<<
- *         opp_eval = val.evaluate(opp_hand)
- * 
- */
-    __Pyx_GetModuleGlobalName(__pyx_t_15, __pyx_n_s_val); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 140, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_15);
-    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_15, __pyx_n_s_evaluate); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 140, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
-    __pyx_t_15 = NULL;
-    __pyx_t_10 = 0;
-    #if CYTHON_UNPACK_METHODS
-    if (unlikely(PyMethod_Check(__pyx_t_8))) {
-      __pyx_t_15 = PyMethod_GET_SELF(__pyx_t_8);
-      if (likely(__pyx_t_15)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
-        __Pyx_INCREF(__pyx_t_15);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_8, function);
-        __pyx_t_10 = 1;
-      }
-    }
-    #endif
-    {
-      PyObject *__pyx_callargs[2] = {__pyx_t_15, __pyx_v_my_hand};
-      __pyx_t_9 = __Pyx_PyObject_FastCall(__pyx_t_8, __pyx_callargs+1-__pyx_t_10, 1+__pyx_t_10);
-      __Pyx_XDECREF(__pyx_t_15); __pyx_t_15 = 0;
-      if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 140, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_9);
-      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    }
-    __pyx_t_11 = __Pyx_PyInt_As_int(__pyx_t_9); if (unlikely((__pyx_t_11 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 140, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_v_my_eval = __pyx_t_11;
-
-    /* "bounty_equity.pyx":141
- *         #    We assume val.evaluate(...) returns an integer strength
- *         my_eval = val.evaluate(my_hand)
- *         opp_eval = val.evaluate(opp_hand)             # <<<<<<<<<<<<<<
- * 
- *         if my_eval > opp_eval:
- */
-    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_val); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 141, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_15 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_evaluate); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 141, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_15);
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_8 = NULL;
-    __pyx_t_10 = 0;
-    #if CYTHON_UNPACK_METHODS
-    if (unlikely(PyMethod_Check(__pyx_t_15))) {
-      __pyx_t_8 = PyMethod_GET_SELF(__pyx_t_15);
-      if (likely(__pyx_t_8)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_15);
-        __Pyx_INCREF(__pyx_t_8);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_15, function);
-        __pyx_t_10 = 1;
-      }
-    }
-    #endif
-    {
-      PyObject *__pyx_callargs[2] = {__pyx_t_8, __pyx_v_opp_hand};
-      __pyx_t_9 = __Pyx_PyObject_FastCall(__pyx_t_15, __pyx_callargs+1-__pyx_t_10, 1+__pyx_t_10);
-      __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
-      if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 141, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_9);
-      __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
-    }
-    __pyx_t_11 = __Pyx_PyInt_As_int(__pyx_t_9); if (unlikely((__pyx_t_11 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 141, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_v_opp_eval = __pyx_t_11;
-
-    /* "bounty_equity.pyx":143
- *         opp_eval = val.evaluate(opp_hand)
- * 
- *         if my_eval > opp_eval:             # <<<<<<<<<<<<<<
- *             wins += 1
- *         elif my_eval == opp_eval:
- */
-    __pyx_t_7 = (__pyx_v_my_eval > __pyx_v_opp_eval);
-    if (__pyx_t_7) {
-
-      /* "bounty_equity.pyx":144
- * 
- *         if my_eval > opp_eval:
- *             wins += 1             # <<<<<<<<<<<<<<
- *         elif my_eval == opp_eval:
- *             ties += 1
- */
-      __pyx_v_wins = (__pyx_v_wins + 1);
-
-      /* "bounty_equity.pyx":143
- *         opp_eval = val.evaluate(opp_hand)
- * 
- *         if my_eval > opp_eval:             # <<<<<<<<<<<<<<
- *             wins += 1
- *         elif my_eval == opp_eval:
- */
-      goto __pyx_L14;
-    }
-
-    /* "bounty_equity.pyx":145
- *         if my_eval > opp_eval:
- *             wins += 1
- *         elif my_eval == opp_eval:             # <<<<<<<<<<<<<<
- *             ties += 1
- * 
- */
-    __pyx_t_7 = (__pyx_v_my_eval == __pyx_v_opp_eval);
-    if (__pyx_t_7) {
-
-      /* "bounty_equity.pyx":146
- *             wins += 1
- *         elif my_eval == opp_eval:
- *             ties += 1             # <<<<<<<<<<<<<<
- * 
- *     # Compute final metrics
- */
-      __pyx_v_ties = (__pyx_v_ties + 1);
-
-      /* "bounty_equity.pyx":145
- *         if my_eval > opp_eval:
- *             wins += 1
- *         elif my_eval == opp_eval:             # <<<<<<<<<<<<<<
- *             ties += 1
- * 
- */
-    }
-    __pyx_L14:;
-    __pyx_L3_continue:;
   }
 
-  /* "bounty_equity.pyx":149
+  /* "bounty_equity.pyx":204
+ *         opp_bounty_hit_total += opp_bounty_hit_prob
  * 
- *     # Compute final metrics
- *     cdef double equity = 0.0             # <<<<<<<<<<<<<<
- *     cdef double opp_bounty_hit = 0.0
- *     if NUM_SIMULATIONS > 0:
+ *     cdef double eq = 0.5 * count / iterations             # <<<<<<<<<<<<<<
+ *     # average bounty hit probability
+ *     global opp_bounty_hit
  */
-  __pyx_v_equity = 0.0;
-
-  /* "bounty_equity.pyx":150
- *     # Compute final metrics
- *     cdef double equity = 0.0
- *     cdef double opp_bounty_hit = 0.0             # <<<<<<<<<<<<<<
- *     if NUM_SIMULATIONS > 0:
- *         equity = (wins + 0.5 * ties) / NUM_SIMULATIONS
- */
-  __pyx_v_opp_bounty_hit = 0.0;
-
-  /* "bounty_equity.pyx":151
- *     cdef double equity = 0.0
- *     cdef double opp_bounty_hit = 0.0
- *     if NUM_SIMULATIONS > 0:             # <<<<<<<<<<<<<<
- *         equity = (wins + 0.5 * ties) / NUM_SIMULATIONS
- *         opp_bounty_hit = opp_bounty_hit_total / NUM_SIMULATIONS
- */
-  __pyx_t_7 = (__pyx_v_NUM_SIMULATIONS > 0);
-  if (__pyx_t_7) {
-
-    /* "bounty_equity.pyx":152
- *     cdef double opp_bounty_hit = 0.0
- *     if NUM_SIMULATIONS > 0:
- *         equity = (wins + 0.5 * ties) / NUM_SIMULATIONS             # <<<<<<<<<<<<<<
- *         opp_bounty_hit = opp_bounty_hit_total / NUM_SIMULATIONS
- * 
- */
-    __pyx_t_16 = (__pyx_v_wins + (0.5 * __pyx_v_ties));
-    if (unlikely(__pyx_v_NUM_SIMULATIONS == 0)) {
-      PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-      __PYX_ERR(0, 152, __pyx_L1_error)
-    }
-    __pyx_v_equity = (__pyx_t_16 / ((double)__pyx_v_NUM_SIMULATIONS));
-
-    /* "bounty_equity.pyx":153
- *     if NUM_SIMULATIONS > 0:
- *         equity = (wins + 0.5 * ties) / NUM_SIMULATIONS
- *         opp_bounty_hit = opp_bounty_hit_total / NUM_SIMULATIONS             # <<<<<<<<<<<<<<
- * 
- *     return (equity, opp_bounty_hit)
- */
-    if (unlikely(__pyx_v_NUM_SIMULATIONS == 0)) {
-      PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-      __PYX_ERR(0, 153, __pyx_L1_error)
-    }
-    __pyx_v_opp_bounty_hit = (__pyx_v_opp_bounty_hit_total / ((double)__pyx_v_NUM_SIMULATIONS));
-
-    /* "bounty_equity.pyx":151
- *     cdef double equity = 0.0
- *     cdef double opp_bounty_hit = 0.0
- *     if NUM_SIMULATIONS > 0:             # <<<<<<<<<<<<<<
- *         equity = (wins + 0.5 * ties) / NUM_SIMULATIONS
- *         opp_bounty_hit = opp_bounty_hit_total / NUM_SIMULATIONS
- */
+  __pyx_t_9 = (0.5 * __pyx_v_count);
+  if (unlikely(__pyx_v_iterations == 0)) {
+    PyErr_SetString(PyExc_ZeroDivisionError, "float division");
+    __PYX_ERR(0, 204, __pyx_L1_error)
   }
+  __pyx_v_eq = (__pyx_t_9 / ((double)__pyx_v_iterations));
 
-  /* "bounty_equity.pyx":155
- *         opp_bounty_hit = opp_bounty_hit_total / NUM_SIMULATIONS
+  /* "bounty_equity.pyx":207
+ *     # average bounty hit probability
+ *     global opp_bounty_hit
+ *     opp_bounty_hit = opp_bounty_hit_total / iterations             # <<<<<<<<<<<<<<
  * 
- *     return (equity, opp_bounty_hit)             # <<<<<<<<<<<<<<
+ *     return eq
  */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_9 = PyFloat_FromDouble(__pyx_v_equity); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 155, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_15 = PyFloat_FromDouble(__pyx_v_opp_bounty_hit); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 155, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_15);
-  __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 155, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
-  __Pyx_GIVEREF(__pyx_t_9);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_9)) __PYX_ERR(0, 155, __pyx_L1_error);
-  __Pyx_GIVEREF(__pyx_t_15);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_15)) __PYX_ERR(0, 155, __pyx_L1_error);
-  __pyx_t_9 = 0;
-  __pyx_t_15 = 0;
-  __pyx_r = ((PyObject*)__pyx_t_8);
-  __pyx_t_8 = 0;
+  if (unlikely(__pyx_v_iterations == 0)) {
+    PyErr_SetString(PyExc_ZeroDivisionError, "float division");
+    __PYX_ERR(0, 207, __pyx_L1_error)
+  }
+  __pyx_v_13bounty_equity_opp_bounty_hit = (__pyx_v_opp_bounty_hit_total / ((double)__pyx_v_iterations));
+
+  /* "bounty_equity.pyx":209
+ *     opp_bounty_hit = opp_bounty_hit_total / iterations
+ * 
+ *     return eq             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_r = __pyx_v_eq;
   goto __pyx_L0;
 
-  /* "bounty_equity.pyx":59
- * # 2) Main Monte Carlo equity function
- * #--------------------------------------------------------------------
- * cpdef tuple get_equity_and_opp_bounty_prob(             # <<<<<<<<<<<<<<
- *         list my_cards,
- *         dict opponent_range,      # e.g. {(Card('2c'), Card('2h')): 0.0013, ...}
+  /* "bounty_equity.pyx":132
+ * cdef double opp_bounty_hit = 0.0
+ * 
+ * cdef double hand_vs_weighted_range_monte_carlo(unsigned long long hero,             # <<<<<<<<<<<<<<
+ *                                               unsigned long long* combos,
+ *                                               double* prefix,
  */
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_XDECREF(__pyx_t_15);
-  __Pyx_AddTraceback("bounty_equity.get_equity_and_opp_bounty_prob", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = 0;
+  __Pyx_AddTraceback("bounty_equity.hand_vs_weighted_range_monte_carlo", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
   __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_opp_cards);
-  __Pyx_XDECREF(__pyx_v_board);
-  __Pyx_XDECREF(__pyx_v_my_hand);
-  __Pyx_XDECREF(__pyx_v_opp_hand);
-  __Pyx_XDECREF(__pyx_v_deck);
-  __Pyx_XDECREF(__pyx_v_c);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
+/* "bounty_equity.pyx":212
+ * 
+ * 
+ * def py_hand_vs_weighted_range_monte_carlo(py_hand,             # <<<<<<<<<<<<<<
+ *                                           py_villain_dict,  # dict of {(Card,Card) : weight}
+ *                                           py_board,
+ */
+
 /* Python wrapper */
-static PyObject *__pyx_pw_13bounty_equity_1get_equity_and_opp_bounty_prob(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_13bounty_equity_1py_hand_vs_weighted_range_monte_carlo(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_13bounty_equity_get_equity_and_opp_bounty_prob, "\n    Returns (equity, opp_bounty_hit) after a Monte Carlo simulation.\n\n    * equity = (wins + 0.5 * ties) / NUM_SIMULATIONS\n    * opp_bounty_hit = average probability that the opponent's bounty rank\n                       appears in opp_hand + final board\n\n    Steps:\n      1) For each simulation:\n         (a) Pick a 2-card hand for the opponent from the weighted distribution\n         (b) Create a shuffled deck, pick needed_board_cards from the top\n         (c) Combine to get my 7 cards vs. opp's 7 cards\n         (d) Evaluate each\n         (e) Tally wins/ties for hero\n         (f) Compute partial 'opp_bounty_hit_prob' for this sim\n      2) Return final average\n    ");
-static PyMethodDef __pyx_mdef_13bounty_equity_1get_equity_and_opp_bounty_prob = {"get_equity_and_opp_bounty_prob", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13bounty_equity_1get_equity_and_opp_bounty_prob, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_13bounty_equity_get_equity_and_opp_bounty_prob};
-static PyObject *__pyx_pw_13bounty_equity_1get_equity_and_opp_bounty_prob(PyObject *__pyx_self, 
+PyDoc_STRVAR(__pyx_doc_13bounty_equity_py_hand_vs_weighted_range_monte_carlo, "\n    Python entry for Weighted Range Monte Carlo.\n    1) Build c-arrays of combos + prefix sums.\n    2) filter out combos that conflict with hero or start_board\n    3) run hand_vs_weighted_range_monte_carlo\n    4) free memory\n    ");
+static PyMethodDef __pyx_mdef_13bounty_equity_1py_hand_vs_weighted_range_monte_carlo = {"py_hand_vs_weighted_range_monte_carlo", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13bounty_equity_1py_hand_vs_weighted_range_monte_carlo, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_13bounty_equity_py_hand_vs_weighted_range_monte_carlo};
+static PyObject *__pyx_pw_13bounty_equity_1py_hand_vs_weighted_range_monte_carlo(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ) {
-  PyObject *__pyx_v_my_cards = 0;
-  PyObject *__pyx_v_opponent_range = 0;
-  PyObject *__pyx_v_board_cards = 0;
+  PyObject *__pyx_v_py_hand = 0;
+  PyObject *__pyx_v_py_villain_dict = 0;
+  PyObject *__pyx_v_py_board = 0;
   PyObject *__pyx_v_opp_bounty_prob = 0;
-  int __pyx_v_NUM_SIMULATIONS;
+  PyObject *__pyx_v_py_iterations = 0;
   #if !CYTHON_METH_FASTCALL
   CYTHON_UNUSED Py_ssize_t __pyx_nargs;
   #endif
@@ -3508,7 +3741,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("get_equity_and_opp_bounty_prob (wrapper)", 0);
+  __Pyx_RefNannySetupContext("py_hand_vs_weighted_range_monte_carlo (wrapper)", 0);
   #if !CYTHON_METH_FASTCALL
   #if CYTHON_ASSUME_SAFE_MACROS
   __pyx_nargs = PyTuple_GET_SIZE(__pyx_args);
@@ -3518,7 +3751,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   #endif
   __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
   {
-    PyObject **__pyx_pyargnames[] = {&__pyx_n_s_my_cards,&__pyx_n_s_opponent_range,&__pyx_n_s_board_cards,&__pyx_n_s_opp_bounty_prob,&__pyx_n_s_NUM_SIMULATIONS,0};
+    PyObject **__pyx_pyargnames[] = {&__pyx_n_s_py_hand,&__pyx_n_s_py_villain_dict,&__pyx_n_s_py_board,&__pyx_n_s_opp_bounty_prob,&__pyx_n_s_py_iterations,0};
     if (__pyx_kwds) {
       Py_ssize_t kw_args;
       switch (__pyx_nargs) {
@@ -3538,31 +3771,31 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       kw_args = __Pyx_NumKwargs_FASTCALL(__pyx_kwds);
       switch (__pyx_nargs) {
         case  0:
-        if (likely((values[0] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_my_cards)) != 0)) {
+        if (likely((values[0] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_py_hand)) != 0)) {
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 59, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 212, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
-        if (likely((values[1] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_opponent_range)) != 0)) {
+        if (likely((values[1] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_py_villain_dict)) != 0)) {
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 59, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 212, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("get_equity_and_opp_bounty_prob", 1, 5, 5, 1); __PYX_ERR(0, 59, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("py_hand_vs_weighted_range_monte_carlo", 1, 5, 5, 1); __PYX_ERR(0, 212, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
-        if (likely((values[2] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_board_cards)) != 0)) {
+        if (likely((values[2] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_py_board)) != 0)) {
           (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 59, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 212, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("get_equity_and_opp_bounty_prob", 1, 5, 5, 2); __PYX_ERR(0, 59, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("py_hand_vs_weighted_range_monte_carlo", 1, 5, 5, 2); __PYX_ERR(0, 212, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
@@ -3570,24 +3803,24 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[3]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 59, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 212, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("get_equity_and_opp_bounty_prob", 1, 5, 5, 3); __PYX_ERR(0, 59, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("py_hand_vs_weighted_range_monte_carlo", 1, 5, 5, 3); __PYX_ERR(0, 212, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
-        if (likely((values[4] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_NUM_SIMULATIONS)) != 0)) {
+        if (likely((values[4] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_py_iterations)) != 0)) {
           (void)__Pyx_Arg_NewRef_FASTCALL(values[4]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 59, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 212, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("get_equity_and_opp_bounty_prob", 1, 5, 5, 4); __PYX_ERR(0, 59, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("py_hand_vs_weighted_range_monte_carlo", 1, 5, 5, 4); __PYX_ERR(0, 212, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "get_equity_and_opp_bounty_prob") < 0)) __PYX_ERR(0, 59, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "py_hand_vs_weighted_range_monte_carlo") < 0)) __PYX_ERR(0, 212, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 5)) {
       goto __pyx_L5_argtuple_error;
@@ -3598,15 +3831,15 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       values[3] = __Pyx_Arg_FASTCALL(__pyx_args, 3);
       values[4] = __Pyx_Arg_FASTCALL(__pyx_args, 4);
     }
-    __pyx_v_my_cards = ((PyObject*)values[0]);
-    __pyx_v_opponent_range = ((PyObject*)values[1]);
-    __pyx_v_board_cards = ((PyObject*)values[2]);
-    __pyx_v_opp_bounty_prob = ((PyObject*)values[3]);
-    __pyx_v_NUM_SIMULATIONS = __Pyx_PyInt_As_int(values[4]); if (unlikely((__pyx_v_NUM_SIMULATIONS == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 64, __pyx_L3_error)
+    __pyx_v_py_hand = values[0];
+    __pyx_v_py_villain_dict = values[1];
+    __pyx_v_py_board = values[2];
+    __pyx_v_opp_bounty_prob = values[3];
+    __pyx_v_py_iterations = values[4];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_equity_and_opp_bounty_prob", 1, 5, 5, __pyx_nargs); __PYX_ERR(0, 59, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("py_hand_vs_weighted_range_monte_carlo", 1, 5, 5, __pyx_nargs); __PYX_ERR(0, 212, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -3616,21 +3849,13 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       __Pyx_Arg_XDECREF_FASTCALL(values[__pyx_temp]);
     }
   }
-  __Pyx_AddTraceback("bounty_equity.get_equity_and_opp_bounty_prob", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("bounty_equity.py_hand_vs_weighted_range_monte_carlo", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_my_cards), (&PyList_Type), 1, "my_cards", 1))) __PYX_ERR(0, 60, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_opponent_range), (&PyDict_Type), 1, "opponent_range", 1))) __PYX_ERR(0, 61, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_board_cards), (&PyList_Type), 1, "board_cards", 1))) __PYX_ERR(0, 62, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_opp_bounty_prob), (&PyList_Type), 1, "opp_bounty_prob", 1))) __PYX_ERR(0, 63, __pyx_L1_error)
-  __pyx_r = __pyx_pf_13bounty_equity_get_equity_and_opp_bounty_prob(__pyx_self, __pyx_v_my_cards, __pyx_v_opponent_range, __pyx_v_board_cards, __pyx_v_opp_bounty_prob, __pyx_v_NUM_SIMULATIONS);
+  __pyx_r = __pyx_pf_13bounty_equity_py_hand_vs_weighted_range_monte_carlo(__pyx_self, __pyx_v_py_hand, __pyx_v_py_villain_dict, __pyx_v_py_board, __pyx_v_opp_bounty_prob, __pyx_v_py_iterations);
 
   /* function exit code */
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __pyx_r = NULL;
-  __pyx_L0:;
   {
     Py_ssize_t __pyx_temp;
     for (__pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -3641,25 +3866,508 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_13bounty_equity_get_equity_and_opp_bounty_prob(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_my_cards, PyObject *__pyx_v_opponent_range, PyObject *__pyx_v_board_cards, PyObject *__pyx_v_opp_bounty_prob, int __pyx_v_NUM_SIMULATIONS) {
+static PyObject *__pyx_pf_13bounty_equity_py_hand_vs_weighted_range_monte_carlo(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_py_hand, PyObject *__pyx_v_py_villain_dict, PyObject *__pyx_v_py_board, PyObject *__pyx_v_opp_bounty_prob, PyObject *__pyx_v_py_iterations) {
+  unsigned PY_LONG_LONG __pyx_v_hero_mask;
+  unsigned PY_LONG_LONG __pyx_v_board_mask;
+  int __pyx_v_num_board;
+  int __pyx_v_iterations;
+  unsigned PY_LONG_LONG *__pyx_v_combos;
+  double *__pyx_v_prefix;
+  int __pyx_v_n;
+  double __pyx_v_total_weight;
+  unsigned PY_LONG_LONG __pyx_v_dead;
+  int __pyx_v_cnt;
+  int __pyx_v_idx;
+  unsigned PY_LONG_LONG __pyx_v_ccombo;
+  double __pyx_v_run;
+  double __pyx_v_prev;
+  Py_ssize_t __pyx_v_length;
+  double *__pyx_v_array_ptr;
+  int __pyx_v_i;
+  double __pyx_v_eq;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
+  unsigned PY_LONG_LONG __pyx_t_1;
+  Py_ssize_t __pyx_t_2;
+  int __pyx_t_3;
+  int __pyx_t_4;
+  int __pyx_t_5;
+  int __pyx_t_6;
+  int __pyx_t_7;
+  Py_ssize_t __pyx_t_8;
+  PyObject *__pyx_t_9 = NULL;
+  double __pyx_t_10;
+  PyObject *__pyx_t_11 = NULL;
+  PyObject *__pyx_t_12 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("get_equity_and_opp_bounty_prob", 1);
+  __Pyx_RefNannySetupContext("py_hand_vs_weighted_range_monte_carlo", 1);
+
+  /* "bounty_equity.pyx":224
+ *     4) free memory
+ *     """
+ *     cdef unsigned long long hero_mask = cards_to_mask(py_hand)             # <<<<<<<<<<<<<<
+ *     cdef unsigned long long board_mask = cards_to_mask(py_board)
+ *     cdef int num_board = len(py_board)
+ */
+  __pyx_t_1 = __pyx_f_5eval7_5cards_cards_to_mask(__pyx_v_py_hand); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 224, __pyx_L1_error)
+  __pyx_v_hero_mask = __pyx_t_1;
+
+  /* "bounty_equity.pyx":225
+ *     """
+ *     cdef unsigned long long hero_mask = cards_to_mask(py_hand)
+ *     cdef unsigned long long board_mask = cards_to_mask(py_board)             # <<<<<<<<<<<<<<
+ *     cdef int num_board = len(py_board)
+ *     cdef int iterations = py_iterations
+ */
+  __pyx_t_1 = __pyx_f_5eval7_5cards_cards_to_mask(__pyx_v_py_board); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_v_board_mask = __pyx_t_1;
+
+  /* "bounty_equity.pyx":226
+ *     cdef unsigned long long hero_mask = cards_to_mask(py_hand)
+ *     cdef unsigned long long board_mask = cards_to_mask(py_board)
+ *     cdef int num_board = len(py_board)             # <<<<<<<<<<<<<<
+ *     cdef int iterations = py_iterations
+ * 
+ */
+  __pyx_t_2 = PyObject_Length(__pyx_v_py_board); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 226, __pyx_L1_error)
+  __pyx_v_num_board = __pyx_t_2;
+
+  /* "bounty_equity.pyx":227
+ *     cdef unsigned long long board_mask = cards_to_mask(py_board)
+ *     cdef int num_board = len(py_board)
+ *     cdef int iterations = py_iterations             # <<<<<<<<<<<<<<
+ * 
+ *     cdef unsigned long long* combos = NULL
+ */
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_py_iterations); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 227, __pyx_L1_error)
+  __pyx_v_iterations = __pyx_t_3;
+
+  /* "bounty_equity.pyx":229
+ *     cdef int iterations = py_iterations
+ * 
+ *     cdef unsigned long long* combos = NULL             # <<<<<<<<<<<<<<
+ *     cdef double* prefix = NULL
+ *     cdef int n = 0
+ */
+  __pyx_v_combos = NULL;
+
+  /* "bounty_equity.pyx":230
+ * 
+ *     cdef unsigned long long* combos = NULL
+ *     cdef double* prefix = NULL             # <<<<<<<<<<<<<<
+ *     cdef int n = 0
+ *     cdef double total_weight = 0.0
+ */
+  __pyx_v_prefix = NULL;
+
+  /* "bounty_equity.pyx":231
+ *     cdef unsigned long long* combos = NULL
+ *     cdef double* prefix = NULL
+ *     cdef int n = 0             # <<<<<<<<<<<<<<
+ *     cdef double total_weight = 0.0
+ * 
+ */
+  __pyx_v_n = 0;
+
+  /* "bounty_equity.pyx":232
+ *     cdef double* prefix = NULL
+ *     cdef int n = 0
+ *     cdef double total_weight = 0.0             # <<<<<<<<<<<<<<
+ * 
+ *     # (A) Build arrays
+ */
+  __pyx_v_total_weight = 0.0;
+
+  /* "bounty_equity.pyx":235
+ * 
+ *     # (A) Build arrays
+ *     build_weighted_arrays(py_villain_dict, &combos, &prefix, &n, &total_weight)             # <<<<<<<<<<<<<<
+ *     if n == 0 or total_weight <= 0:
+ *         # no valid combos, trivially
+ */
+  if (!(likely(PyDict_CheckExact(__pyx_v_py_villain_dict))||((__pyx_v_py_villain_dict) == Py_None) || __Pyx_RaiseUnexpectedTypeError("dict", __pyx_v_py_villain_dict))) __PYX_ERR(0, 235, __pyx_L1_error)
+  __pyx_f_13bounty_equity_build_weighted_arrays(((PyObject*)__pyx_v_py_villain_dict), (&__pyx_v_combos), (&__pyx_v_prefix), (&__pyx_v_n), (&__pyx_v_total_weight)); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 235, __pyx_L1_error)
+
+  /* "bounty_equity.pyx":236
+ *     # (A) Build arrays
+ *     build_weighted_arrays(py_villain_dict, &combos, &prefix, &n, &total_weight)
+ *     if n == 0 or total_weight <= 0:             # <<<<<<<<<<<<<<
+ *         # no valid combos, trivially
+ *         return 1.0  # or 0.0, your choice
+ */
+  __pyx_t_5 = (__pyx_v_n == 0);
+  if (!__pyx_t_5) {
+  } else {
+    __pyx_t_4 = __pyx_t_5;
+    goto __pyx_L4_bool_binop_done;
+  }
+  __pyx_t_5 = (__pyx_v_total_weight <= 0.0);
+  __pyx_t_4 = __pyx_t_5;
+  __pyx_L4_bool_binop_done:;
+  if (__pyx_t_4) {
+
+    /* "bounty_equity.pyx":238
+ *     if n == 0 or total_weight <= 0:
+ *         # no valid combos, trivially
+ *         return 1.0  # or 0.0, your choice             # <<<<<<<<<<<<<<
+ * 
+ *     # (B) filter out combos that overlap with hero or known board
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __Pyx_INCREF(__pyx_float_1_0);
+    __pyx_r = __pyx_float_1_0;
+    goto __pyx_L0;
+
+    /* "bounty_equity.pyx":236
+ *     # (A) Build arrays
+ *     build_weighted_arrays(py_villain_dict, &combos, &prefix, &n, &total_weight)
+ *     if n == 0 or total_weight <= 0:             # <<<<<<<<<<<<<<
+ *         # no valid combos, trivially
+ *         return 1.0  # or 0.0, your choice
+ */
+  }
+
+  /* "bounty_equity.pyx":241
+ * 
+ *     # (B) filter out combos that overlap with hero or known board
+ *     cdef unsigned long long dead = hero_mask | board_mask             # <<<<<<<<<<<<<<
+ * 
+ *     # We'll do in-place filter in combos + prefix:
+ */
+  __pyx_v_dead = (__pyx_v_hero_mask | __pyx_v_board_mask);
+
+  /* "bounty_equity.pyx":245
+ *     # We'll do in-place filter in combos + prefix:
+ *     # We'll just move combos/prefix that are valid to the front, track 'cnt'
+ *     cdef int cnt = 0             # <<<<<<<<<<<<<<
+ *     cdef int idx
+ *     cdef unsigned long long ccombo
+ */
+  __pyx_v_cnt = 0;
+
+  /* "bounty_equity.pyx":248
+ *     cdef int idx
+ *     cdef unsigned long long ccombo
+ *     cdef double run = 0.0             # <<<<<<<<<<<<<<
+ *     cdef double prev = 0.0
+ *     for idx in range(n):
+ */
+  __pyx_v_run = 0.0;
+
+  /* "bounty_equity.pyx":249
+ *     cdef unsigned long long ccombo
+ *     cdef double run = 0.0
+ *     cdef double prev = 0.0             # <<<<<<<<<<<<<<
+ *     for idx in range(n):
+ *         ccombo = combos[idx]
+ */
+  __pyx_v_prev = 0.0;
+
+  /* "bounty_equity.pyx":250
+ *     cdef double run = 0.0
+ *     cdef double prev = 0.0
+ *     for idx in range(n):             # <<<<<<<<<<<<<<
+ *         ccombo = combos[idx]
+ *         if (ccombo & dead) == 0:  # no overlap
+ */
+  __pyx_t_3 = __pyx_v_n;
+  __pyx_t_6 = __pyx_t_3;
+  for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
+    __pyx_v_idx = __pyx_t_7;
+
+    /* "bounty_equity.pyx":251
+ *     cdef double prev = 0.0
+ *     for idx in range(n):
+ *         ccombo = combos[idx]             # <<<<<<<<<<<<<<
+ *         if (ccombo & dead) == 0:  # no overlap
+ *             # keep it
+ */
+    __pyx_v_ccombo = (__pyx_v_combos[__pyx_v_idx]);
+
+    /* "bounty_equity.pyx":252
+ *     for idx in range(n):
+ *         ccombo = combos[idx]
+ *         if (ccombo & dead) == 0:  # no overlap             # <<<<<<<<<<<<<<
+ *             # keep it
+ *             combos[cnt] = ccombo
+ */
+    __pyx_t_4 = ((__pyx_v_ccombo & __pyx_v_dead) == 0);
+    if (__pyx_t_4) {
+
+      /* "bounty_equity.pyx":254
+ *         if (ccombo & dead) == 0:  # no overlap
+ *             # keep it
+ *             combos[cnt] = ccombo             # <<<<<<<<<<<<<<
+ *             run = prefix[idx]  # the cumulative sum at idx
+ *             # We want the "increment" from the previous. If idx==0 => prefix=some val.
+ */
+      (__pyx_v_combos[__pyx_v_cnt]) = __pyx_v_ccombo;
+
+      /* "bounty_equity.pyx":255
+ *             # keep it
+ *             combos[cnt] = ccombo
+ *             run = prefix[idx]  # the cumulative sum at idx             # <<<<<<<<<<<<<<
+ *             # We want the "increment" from the previous. If idx==0 => prefix=some val.
+ *             # But simpler is to do prefix of the new array from scratch:
+ */
+      __pyx_v_run = (__pyx_v_prefix[__pyx_v_idx]);
+
+      /* "bounty_equity.pyx":258
+ *             # We want the "increment" from the previous. If idx==0 => prefix=some val.
+ *             # But simpler is to do prefix of the new array from scratch:
+ *             if cnt == 0:             # <<<<<<<<<<<<<<
+ *                 prefix[cnt] = run - 0.0
+ *             else:
+ */
+      __pyx_t_4 = (__pyx_v_cnt == 0);
+      if (__pyx_t_4) {
+
+        /* "bounty_equity.pyx":259
+ *             # But simpler is to do prefix of the new array from scratch:
+ *             if cnt == 0:
+ *                 prefix[cnt] = run - 0.0             # <<<<<<<<<<<<<<
+ *             else:
+ *                 prefix[cnt] = prefix[cnt - 1] + (run - prev)
+ */
+        (__pyx_v_prefix[__pyx_v_cnt]) = (__pyx_v_run - 0.0);
+
+        /* "bounty_equity.pyx":258
+ *             # We want the "increment" from the previous. If idx==0 => prefix=some val.
+ *             # But simpler is to do prefix of the new array from scratch:
+ *             if cnt == 0:             # <<<<<<<<<<<<<<
+ *                 prefix[cnt] = run - 0.0
+ *             else:
+ */
+        goto __pyx_L9;
+      }
+
+      /* "bounty_equity.pyx":261
+ *                 prefix[cnt] = run - 0.0
+ *             else:
+ *                 prefix[cnt] = prefix[cnt - 1] + (run - prev)             # <<<<<<<<<<<<<<
+ *             prev = run
+ *             cnt += 1
+ */
+      /*else*/ {
+        (__pyx_v_prefix[__pyx_v_cnt]) = ((__pyx_v_prefix[(__pyx_v_cnt - 1)]) + (__pyx_v_run - __pyx_v_prev));
+      }
+      __pyx_L9:;
+
+      /* "bounty_equity.pyx":262
+ *             else:
+ *                 prefix[cnt] = prefix[cnt - 1] + (run - prev)
+ *             prev = run             # <<<<<<<<<<<<<<
+ *             cnt += 1
+ * 
+ */
+      __pyx_v_prev = __pyx_v_run;
+
+      /* "bounty_equity.pyx":263
+ *                 prefix[cnt] = prefix[cnt - 1] + (run - prev)
+ *             prev = run
+ *             cnt += 1             # <<<<<<<<<<<<<<
+ * 
+ *     n = cnt
+ */
+      __pyx_v_cnt = (__pyx_v_cnt + 1);
+
+      /* "bounty_equity.pyx":252
+ *     for idx in range(n):
+ *         ccombo = combos[idx]
+ *         if (ccombo & dead) == 0:  # no overlap             # <<<<<<<<<<<<<<
+ *             # keep it
+ *             combos[cnt] = ccombo
+ */
+    }
+  }
+
+  /* "bounty_equity.pyx":265
+ *             cnt += 1
+ * 
+ *     n = cnt             # <<<<<<<<<<<<<<
+ *     if n == 0:
+ *         free(combos)
+ */
+  __pyx_v_n = __pyx_v_cnt;
+
+  /* "bounty_equity.pyx":266
+ * 
+ *     n = cnt
+ *     if n == 0:             # <<<<<<<<<<<<<<
+ *         free(combos)
+ *         free(prefix)
+ */
+  __pyx_t_4 = (__pyx_v_n == 0);
+  if (__pyx_t_4) {
+
+    /* "bounty_equity.pyx":267
+ *     n = cnt
+ *     if n == 0:
+ *         free(combos)             # <<<<<<<<<<<<<<
+ *         free(prefix)
+ *         return 1.0  # or 0.0
+ */
+    free(__pyx_v_combos);
+
+    /* "bounty_equity.pyx":268
+ *     if n == 0:
+ *         free(combos)
+ *         free(prefix)             # <<<<<<<<<<<<<<
+ *         return 1.0  # or 0.0
+ * 
+ */
+    free(__pyx_v_prefix);
+
+    /* "bounty_equity.pyx":269
+ *         free(combos)
+ *         free(prefix)
+ *         return 1.0  # or 0.0             # <<<<<<<<<<<<<<
+ * 
+ *     total_weight = prefix[n - 1]  # final prefix sum
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __Pyx_INCREF(__pyx_float_1_0);
+    __pyx_r = __pyx_float_1_0;
+    goto __pyx_L0;
+
+    /* "bounty_equity.pyx":266
+ * 
+ *     n = cnt
+ *     if n == 0:             # <<<<<<<<<<<<<<
+ *         free(combos)
+ *         free(prefix)
+ */
+  }
+
+  /* "bounty_equity.pyx":271
+ *         return 1.0  # or 0.0
+ * 
+ *     total_weight = prefix[n - 1]  # final prefix sum             # <<<<<<<<<<<<<<
+ * 
+ *     # (C) run the weighted Monte Carlo
+ */
+  __pyx_v_total_weight = (__pyx_v_prefix[(__pyx_v_n - 1)]);
+
+  /* "bounty_equity.pyx":275
+ *     # (C) run the weighted Monte Carlo
+ *     cdef:
+ *         Py_ssize_t length = len(opp_bounty_prob)  # get size from python container             # <<<<<<<<<<<<<<
+ *         double* array_ptr
+ *         int i
+ */
+  __pyx_t_2 = PyObject_Length(__pyx_v_opp_bounty_prob); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 275, __pyx_L1_error)
+  __pyx_v_length = __pyx_t_2;
+
+  /* "bounty_equity.pyx":278
+ *         double* array_ptr
+ *         int i
+ *     array_ptr = <double*> malloc(length * cython.sizeof(double))             # <<<<<<<<<<<<<<
+ *     # manually copy
+ *     for i in range(length):
+ */
+  __pyx_v_array_ptr = ((double *)malloc((__pyx_v_length * (sizeof(double)))));
+
+  /* "bounty_equity.pyx":280
+ *     array_ptr = <double*> malloc(length * cython.sizeof(double))
+ *     # manually copy
+ *     for i in range(length):             # <<<<<<<<<<<<<<
+ *         array_ptr[i] = <double> opp_bounty_prob[i]
+ *     free(array_ptr)
+ */
+  __pyx_t_2 = __pyx_v_length;
+  __pyx_t_8 = __pyx_t_2;
+  for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_8; __pyx_t_3+=1) {
+    __pyx_v_i = __pyx_t_3;
+
+    /* "bounty_equity.pyx":281
+ *     # manually copy
+ *     for i in range(length):
+ *         array_ptr[i] = <double> opp_bounty_prob[i]             # <<<<<<<<<<<<<<
+ *     free(array_ptr)
+ *     cdef double eq
+ */
+    __pyx_t_9 = __Pyx_GetItemInt(__pyx_v_opp_bounty_prob, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 281, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
+    __pyx_t_10 = __pyx_PyFloat_AsDouble(__pyx_t_9); if (unlikely((__pyx_t_10 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 281, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    (__pyx_v_array_ptr[__pyx_v_i]) = ((double)__pyx_t_10);
+  }
+
+  /* "bounty_equity.pyx":282
+ *     for i in range(length):
+ *         array_ptr[i] = <double> opp_bounty_prob[i]
+ *     free(array_ptr)             # <<<<<<<<<<<<<<
+ *     cdef double eq
+ *     eq= hand_vs_weighted_range_monte_carlo(hero_mask,
+ */
+  free(__pyx_v_array_ptr);
+
+  /* "bounty_equity.pyx":284
+ *     free(array_ptr)
+ *     cdef double eq
+ *     eq= hand_vs_weighted_range_monte_carlo(hero_mask,             # <<<<<<<<<<<<<<
+ *                                                        combos,
+ *                                                        prefix,
+ */
+  __pyx_t_10 = __pyx_f_13bounty_equity_hand_vs_weighted_range_monte_carlo(__pyx_v_hero_mask, __pyx_v_combos, __pyx_v_prefix, __pyx_v_n, __pyx_v_total_weight, __pyx_v_board_mask, __pyx_v_num_board, __pyx_v_array_ptr, __pyx_v_iterations); if (unlikely(__pyx_t_10 == ((double)-1) && PyErr_Occurred())) __PYX_ERR(0, 284, __pyx_L1_error)
+  __pyx_v_eq = __pyx_t_10;
+
+  /* "bounty_equity.pyx":294
+ *                                                        iterations)
+ *     # (D) free
+ *     free(combos)             # <<<<<<<<<<<<<<
+ *     free(prefix)
+ * 
+ */
+  free(__pyx_v_combos);
+
+  /* "bounty_equity.pyx":295
+ *     # (D) free
+ *     free(combos)
+ *     free(prefix)             # <<<<<<<<<<<<<<
+ * 
+ *     global opp_bounty_hit
+ */
+  free(__pyx_v_prefix);
+
+  /* "bounty_equity.pyx":298
+ * 
+ *     global opp_bounty_hit
+ *     return eq, opp_bounty_hit             # <<<<<<<<<<<<<<
+ */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_13bounty_equity_get_equity_and_opp_bounty_prob(__pyx_v_my_cards, __pyx_v_opponent_range, __pyx_v_board_cards, __pyx_v_opp_bounty_prob, __pyx_v_NUM_SIMULATIONS, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
+  __pyx_t_9 = PyFloat_FromDouble(__pyx_v_eq); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 298, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_9);
+  __pyx_t_11 = PyFloat_FromDouble(__pyx_v_13bounty_equity_opp_bounty_hit); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 298, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_11);
+  __pyx_t_12 = PyTuple_New(2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 298, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_12);
+  __Pyx_GIVEREF(__pyx_t_9);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_9)) __PYX_ERR(0, 298, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_11);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_12, 1, __pyx_t_11)) __PYX_ERR(0, 298, __pyx_L1_error);
+  __pyx_t_9 = 0;
+  __pyx_t_11 = 0;
+  __pyx_r = __pyx_t_12;
+  __pyx_t_12 = 0;
   goto __pyx_L0;
+
+  /* "bounty_equity.pyx":212
+ * 
+ * 
+ * def py_hand_vs_weighted_range_monte_carlo(py_hand,             # <<<<<<<<<<<<<<
+ *                                           py_villain_dict,  # dict of {(Card,Card) : weight}
+ *                                           py_board,
+ */
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("bounty_equity.get_equity_and_opp_bounty_prob", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_XDECREF(__pyx_t_11);
+  __Pyx_XDECREF(__pyx_t_12);
+  __Pyx_AddTraceback("bounty_equity.py_hand_vs_weighted_range_monte_carlo", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3683,44 +4391,54 @@ static PyMethodDef __pyx_methods[] = {
 
 static int __Pyx_CreateStringTabAndInitStrings(void) {
   __Pyx_StringTabEntry __pyx_string_tab[] = {
-    {&__pyx_kp_u_, __pyx_k_, sizeof(__pyx_k_), 0, 1, 0, 0},
-    {&__pyx_n_s_Deck, __pyx_k_Deck, sizeof(__pyx_k_Deck), 0, 0, 1, 1},
-    {&__pyx_n_s_NUM_SIMULATIONS, __pyx_k_NUM_SIMULATIONS, sizeof(__pyx_k_NUM_SIMULATIONS), 0, 0, 1, 1},
-    {&__pyx_n_s__2, __pyx_k__2, sizeof(__pyx_k__2), 0, 0, 1, 1},
-    {&__pyx_n_s__5, __pyx_k__5, sizeof(__pyx_k__5), 0, 0, 1, 1},
+    {&__pyx_n_s__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 0, 1, 1},
+    {&__pyx_n_s__6, __pyx_k__6, sizeof(__pyx_k__6), 0, 0, 1, 1},
+    {&__pyx_n_s_array_ptr, __pyx_k_array_ptr, sizeof(__pyx_k_array_ptr), 0, 0, 1, 1},
     {&__pyx_n_s_asyncio_coroutines, __pyx_k_asyncio_coroutines, sizeof(__pyx_k_asyncio_coroutines), 0, 0, 1, 1},
-    {&__pyx_n_s_board_cards, __pyx_k_board_cards, sizeof(__pyx_k_board_cards), 0, 0, 1, 1},
+    {&__pyx_n_s_board_mask, __pyx_k_board_mask, sizeof(__pyx_k_board_mask), 0, 0, 1, 1},
     {&__pyx_n_s_bounty_equity, __pyx_k_bounty_equity, sizeof(__pyx_k_bounty_equity), 0, 0, 1, 1},
     {&__pyx_kp_s_bounty_equity_pyx, __pyx_k_bounty_equity_pyx, sizeof(__pyx_k_bounty_equity_pyx), 0, 0, 1, 0},
-    {&__pyx_n_s_cards, __pyx_k_cards, sizeof(__pyx_k_cards), 0, 0, 1, 1},
+    {&__pyx_n_s_ccombo, __pyx_k_ccombo, sizeof(__pyx_k_ccombo), 0, 0, 1, 1},
     {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
-    {&__pyx_n_s_copy, __pyx_k_copy, sizeof(__pyx_k_copy), 0, 0, 1, 1},
+    {&__pyx_n_s_cnt, __pyx_k_cnt, sizeof(__pyx_k_cnt), 0, 0, 1, 1},
+    {&__pyx_n_s_combos, __pyx_k_combos, sizeof(__pyx_k_combos), 0, 0, 1, 1},
+    {&__pyx_n_s_dead, __pyx_k_dead, sizeof(__pyx_k_dead), 0, 0, 1, 1},
+    {&__pyx_n_s_eq, __pyx_k_eq, sizeof(__pyx_k_eq), 0, 0, 1, 1},
     {&__pyx_n_s_eval7, __pyx_k_eval7, sizeof(__pyx_k_eval7), 0, 0, 1, 1},
-    {&__pyx_n_s_evaluate, __pyx_k_evaluate, sizeof(__pyx_k_evaluate), 0, 0, 1, 1},
-    {&__pyx_n_s_get_equity_and_opp_bounty_prob, __pyx_k_get_equity_and_opp_bounty_prob, sizeof(__pyx_k_get_equity_and_opp_bounty_prob), 0, 0, 1, 1},
+    {&__pyx_n_s_hero_mask, __pyx_k_hero_mask, sizeof(__pyx_k_hero_mask), 0, 0, 1, 1},
+    {&__pyx_n_s_i, __pyx_k_i, sizeof(__pyx_k_i), 0, 0, 1, 1},
+    {&__pyx_n_s_idx, __pyx_k_idx, sizeof(__pyx_k_idx), 0, 0, 1, 1},
     {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
     {&__pyx_n_s_initializing, __pyx_k_initializing, sizeof(__pyx_k_initializing), 0, 0, 1, 1},
     {&__pyx_n_s_is_coroutine, __pyx_k_is_coroutine, sizeof(__pyx_k_is_coroutine), 0, 0, 1, 1},
     {&__pyx_n_s_items, __pyx_k_items, sizeof(__pyx_k_items), 0, 0, 1, 1},
+    {&__pyx_n_s_iterations, __pyx_k_iterations, sizeof(__pyx_k_iterations), 0, 0, 1, 1},
+    {&__pyx_n_s_length, __pyx_k_length, sizeof(__pyx_k_length), 0, 0, 1, 1},
     {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
-    {&__pyx_n_s_my_cards, __pyx_k_my_cards, sizeof(__pyx_k_my_cards), 0, 0, 1, 1},
+    {&__pyx_n_s_n, __pyx_k_n, sizeof(__pyx_k_n), 0, 0, 1, 1},
     {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
+    {&__pyx_n_s_num_board, __pyx_k_num_board, sizeof(__pyx_k_num_board), 0, 0, 1, 1},
     {&__pyx_n_s_opp_bounty_prob, __pyx_k_opp_bounty_prob, sizeof(__pyx_k_opp_bounty_prob), 0, 0, 1, 1},
-    {&__pyx_n_s_opponent_range, __pyx_k_opponent_range, sizeof(__pyx_k_opponent_range), 0, 0, 1, 1},
+    {&__pyx_n_s_prefix, __pyx_k_prefix, sizeof(__pyx_k_prefix), 0, 0, 1, 1},
+    {&__pyx_n_s_prev, __pyx_k_prev, sizeof(__pyx_k_prev), 0, 0, 1, 1},
+    {&__pyx_n_s_py_board, __pyx_k_py_board, sizeof(__pyx_k_py_board), 0, 0, 1, 1},
+    {&__pyx_n_s_py_hand, __pyx_k_py_hand, sizeof(__pyx_k_py_hand), 0, 0, 1, 1},
+    {&__pyx_n_s_py_hand_vs_weighted_range_monte, __pyx_k_py_hand_vs_weighted_range_monte, sizeof(__pyx_k_py_hand_vs_weighted_range_monte), 0, 0, 1, 1},
+    {&__pyx_n_s_py_iterations, __pyx_k_py_iterations, sizeof(__pyx_k_py_iterations), 0, 0, 1, 1},
+    {&__pyx_n_s_py_villain_dict, __pyx_k_py_villain_dict, sizeof(__pyx_k_py_villain_dict), 0, 0, 1, 1},
     {&__pyx_n_s_random, __pyx_k_random, sizeof(__pyx_k_random), 0, 0, 1, 1},
     {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
-    {&__pyx_n_s_rank, __pyx_k_rank, sizeof(__pyx_k_rank), 0, 0, 1, 1},
-    {&__pyx_n_s_shuffle, __pyx_k_shuffle, sizeof(__pyx_k_shuffle), 0, 0, 1, 1},
+    {&__pyx_n_s_run, __pyx_k_run, sizeof(__pyx_k_run), 0, 0, 1, 1},
     {&__pyx_n_s_spec, __pyx_k_spec, sizeof(__pyx_k_spec), 0, 0, 1, 1},
     {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
-    {&__pyx_n_s_val, __pyx_k_val, sizeof(__pyx_k_val), 0, 0, 1, 1},
+    {&__pyx_n_s_total_weight, __pyx_k_total_weight, sizeof(__pyx_k_total_weight), 0, 0, 1, 1},
     {0, 0, 0, 0, 0, 0, 0}
   };
   return __Pyx_InitStrings(__pyx_string_tab);
 }
 /* #### Code section: cached_builtins ### */
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 20, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -3731,17 +4449,39 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "bounty_equity.pyx":59
- * # 2) Main Monte Carlo equity function
- * #--------------------------------------------------------------------
- * cpdef tuple get_equity_and_opp_bounty_prob(             # <<<<<<<<<<<<<<
- *         list my_cards,
- *         dict opponent_range,      # e.g. {(Card('2c'), Card('2h')): 0.0013, ...}
+  /* "bounty_equity.pyx":88
+ *         mask = 0
+ *         # e.g. combo[0] is the first Card
+ *         mask |= cards_to_mask(combo[0:1])  # mask for single card             # <<<<<<<<<<<<<<
+ *         mask |= cards_to_mask(combo[1:2])  # combine
+ * 
  */
-  __pyx_tuple__3 = PyTuple_Pack(5, __pyx_n_s_my_cards, __pyx_n_s_opponent_range, __pyx_n_s_board_cards, __pyx_n_s_opp_bounty_prob, __pyx_n_s_NUM_SIMULATIONS); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 59, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__3);
-  __Pyx_GIVEREF(__pyx_tuple__3);
-  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(5, 0, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_bounty_equity_pyx, __pyx_n_s_get_equity_and_opp_bounty_prob, 59, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_slice_ = PySlice_New(__pyx_int_0, __pyx_int_1, Py_None); if (unlikely(!__pyx_slice_)) __PYX_ERR(0, 88, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_slice_);
+  __Pyx_GIVEREF(__pyx_slice_);
+
+  /* "bounty_equity.pyx":89
+ *         # e.g. combo[0] is the first Card
+ *         mask |= cards_to_mask(combo[0:1])  # mask for single card
+ *         mask |= cards_to_mask(combo[1:2])  # combine             # <<<<<<<<<<<<<<
+ * 
+ *         w = weight
+ */
+  __pyx_slice__2 = PySlice_New(__pyx_int_1, __pyx_int_2, Py_None); if (unlikely(!__pyx_slice__2)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_slice__2);
+  __Pyx_GIVEREF(__pyx_slice__2);
+
+  /* "bounty_equity.pyx":212
+ * 
+ * 
+ * def py_hand_vs_weighted_range_monte_carlo(py_hand,             # <<<<<<<<<<<<<<
+ *                                           py_villain_dict,  # dict of {(Card,Card) : weight}
+ *                                           py_board,
+ */
+  __pyx_tuple__4 = PyTuple_Pack(23, __pyx_n_s_py_hand, __pyx_n_s_py_villain_dict, __pyx_n_s_py_board, __pyx_n_s_opp_bounty_prob, __pyx_n_s_py_iterations, __pyx_n_s_hero_mask, __pyx_n_s_board_mask, __pyx_n_s_num_board, __pyx_n_s_iterations, __pyx_n_s_combos, __pyx_n_s_prefix, __pyx_n_s_n, __pyx_n_s_total_weight, __pyx_n_s_dead, __pyx_n_s_cnt, __pyx_n_s_idx, __pyx_n_s_ccombo, __pyx_n_s_run, __pyx_n_s_prev, __pyx_n_s_length, __pyx_n_s_array_ptr, __pyx_n_s_i, __pyx_n_s_eq); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__4);
+  __Pyx_GIVEREF(__pyx_tuple__4);
+  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(5, 0, 0, 23, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__4, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_bounty_equity_pyx, __pyx_n_s_py_hand_vs_weighted_range_monte, 212, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 212, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -3751,9 +4491,11 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
 /* #### Code section: init_constants ### */
 
 static CYTHON_SMALL_CODE int __Pyx_InitConstants(void) {
-  __pyx_umethod_PyList_Type_copy.type = (PyObject*)&PyList_Type;
-  __pyx_umethod_PyList_Type_copy.method_name = &__pyx_n_s_copy;
   if (__Pyx_CreateStringTabAndInitStrings() < 0) __PYX_ERR(0, 1, __pyx_L1_error);
+  __pyx_float_1_0 = PyFloat_FromDouble(1.0); if (unlikely(!__pyx_float_1_0)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_2 = PyInt_FromLong(2); if (unlikely(!__pyx_int_2)) __PYX_ERR(0, 1, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -3807,10 +4549,22 @@ static int __Pyx_modinit_type_init_code(void) {
 
 static int __Pyx_modinit_type_import_code(void) {
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_import_code", 0);
   /*--- Type import code ---*/
+  __pyx_t_1 = PyImport_ImportModule("eval7.cards"); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 8, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_ptype_5eval7_5cards_Card = __Pyx_ImportType_3_0_11(__pyx_t_1, "eval7.cards", "Card", sizeof(struct __pyx_obj_5eval7_5cards_Card), __PYX_GET_STRUCT_ALIGNMENT_3_0_11(struct __pyx_obj_5eval7_5cards_Card),__Pyx_ImportType_CheckSize_Warn_3_0_11); if (!__pyx_ptype_5eval7_5cards_Card) __PYX_ERR(1, 8, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_RefNannyFinishContext();
+  return -1;
 }
 
 static int __Pyx_modinit_variable_import_code(void) {
@@ -3823,10 +4577,30 @@ static int __Pyx_modinit_variable_import_code(void) {
 
 static int __Pyx_modinit_function_import_code(void) {
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_function_import_code", 0);
   /*--- Function import code ---*/
+  __pyx_t_1 = PyImport_ImportModule("eval7.cards"); if (!__pyx_t_1) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (__Pyx_ImportFunction_3_0_11(__pyx_t_1, "cards_to_mask", (void (**)(void))&__pyx_f_5eval7_5cards_cards_to_mask, "unsigned PY_LONG_LONG (PyObject *)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = PyImport_ImportModule("eval7.evaluate"); if (!__pyx_t_1) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (__Pyx_ImportFunction_3_0_11(__pyx_t_1, "cy_evaluate", (void (**)(void))&__pyx_f_5eval7_8evaluate_cy_evaluate, "unsigned int (unsigned PY_LONG_LONG, unsigned int)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = PyImport_ImportModule("eval7.xorshift_rand"); if (!__pyx_t_1) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (__Pyx_ImportFunction_3_0_11(__pyx_t_1, "randint", (void (**)(void))&__pyx_f_5eval7_13xorshift_rand_randint, "int (int, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_RefNannyFinishContext();
+  return -1;
 }
 
 
@@ -3992,7 +4766,7 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec_bounty_equity(PyObject *__pyx_pyin
   #endif
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
+  unsigned int __pyx_t_3;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -4100,75 +4874,81 @@ if (!__Pyx_RefNanny) {
   (void)__Pyx_modinit_variable_export_code();
   (void)__Pyx_modinit_function_export_code();
   (void)__Pyx_modinit_type_init_code();
-  (void)__Pyx_modinit_type_import_code();
+  if (unlikely((__Pyx_modinit_type_import_code() < 0))) __PYX_ERR(0, 1, __pyx_L1_error)
   (void)__Pyx_modinit_variable_import_code();
-  (void)__Pyx_modinit_function_import_code();
+  if (unlikely((__Pyx_modinit_function_import_code() < 0))) __PYX_ERR(0, 1, __pyx_L1_error)
   /*--- Execution code ---*/
   #if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "bounty_equity.pyx":7
- * #cython: language_level=3
- * 
- * from random import random             # <<<<<<<<<<<<<<
- * import eval7 as val
- * # If "Card" is a cdef class or python class from val, you might need:
+  /* "bounty_equity.pyx":1
+ * import eval7             # <<<<<<<<<<<<<<
+ * import cython
+ * import random
  */
-  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 7, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_ImportDottedModule(__pyx_n_s_eval7, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_INCREF(__pyx_n_s_random);
-  __Pyx_GIVEREF(__pyx_n_s_random);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_random)) __PYX_ERR(0, 7, __pyx_L1_error);
-  __pyx_t_3 = __Pyx_Import(__pyx_n_s_random, __pyx_t_2, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 7, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_eval7, __pyx_t_2) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_3, __pyx_n_s_random); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 7, __pyx_L1_error)
+
+  /* "bounty_equity.pyx":3
+ * import eval7
+ * import cython
+ * import random             # <<<<<<<<<<<<<<
+ * from eval7.cards cimport cards_to_mask
+ * from eval7.evaluate cimport cy_evaluate
+ */
+  __pyx_t_2 = __Pyx_ImportDottedModule(__pyx_n_s_random, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 3, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_random, __pyx_t_2) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_random, __pyx_t_2) < 0) __PYX_ERR(0, 3, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "bounty_equity.pyx":8
+  /* "bounty_equity.pyx":25
  * 
- * from random import random
- * import eval7 as val             # <<<<<<<<<<<<<<
- * # If "Card" is a cdef class or python class from val, you might need:
- * # cimport val  # if val has cdef classes you want to access at the C level
+ * 
+ * load_card_masks()             # <<<<<<<<<<<<<<
+ * 
+ * cdef unsigned int filter_options(unsigned long long *source,
  */
-  __pyx_t_3 = __Pyx_ImportDottedModule(__pyx_n_s_eval7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 8, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_val, __pyx_t_3) < 0) __PYX_ERR(0, 8, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __pyx_f_13bounty_equity_load_card_masks(); if (unlikely(__pyx_t_3 == ((unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 25, __pyx_L1_error)
 
-  /* "bounty_equity.pyx":59
- * # 2) Main Monte Carlo equity function
- * #--------------------------------------------------------------------
- * cpdef tuple get_equity_and_opp_bounty_prob(             # <<<<<<<<<<<<<<
- *         list my_cards,
- *         dict opponent_range,      # e.g. {(Card('2c'), Card('2h')): 0.0013, ...}
+  /* "bounty_equity.pyx":130
+ *     return combos[left]
+ * 
+ * cdef double opp_bounty_hit = 0.0             # <<<<<<<<<<<<<<
+ * 
+ * cdef double hand_vs_weighted_range_monte_carlo(unsigned long long hero,
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_13bounty_equity_1get_equity_and_opp_bounty_prob, 0, __pyx_n_s_get_equity_and_opp_bounty_prob, NULL, __pyx_n_s_bounty_equity, __pyx_d, ((PyObject *)__pyx_codeobj__4)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 59, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_get_equity_and_opp_bounty_prob, __pyx_t_3) < 0) __PYX_ERR(0, 59, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_v_13bounty_equity_opp_bounty_hit = 0.0;
+
+  /* "bounty_equity.pyx":212
+ * 
+ * 
+ * def py_hand_vs_weighted_range_monte_carlo(py_hand,             # <<<<<<<<<<<<<<
+ *                                           py_villain_dict,  # dict of {(Card,Card) : weight}
+ *                                           py_board,
+ */
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_13bounty_equity_1py_hand_vs_weighted_range_monte_carlo, 0, __pyx_n_s_py_hand_vs_weighted_range_monte, NULL, __pyx_n_s_bounty_equity, __pyx_d, ((PyObject *)__pyx_codeobj__5)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_py_hand_vs_weighted_range_monte, __pyx_t_2) < 0) __PYX_ERR(0, 212, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "bounty_equity.pyx":1
- * # bounty_equity.pyx             # <<<<<<<<<<<<<<
- * # (You will compile this with setup.py or a similar mechanism.)
- * 
+ * import eval7             # <<<<<<<<<<<<<<
+ * import cython
+ * import random
  */
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_3) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_2) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /*--- Wrapped vars code ---*/
 
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
   if (__pyx_m) {
     if (__pyx_d && stringtab_initialized) {
       __Pyx_AddTraceback("init bounty_equity", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -4993,6 +5773,110 @@ static CYTHON_INLINE int __Pyx_dict_iter_next(
     return 1;
 }
 
+/* SliceObject */
+static CYTHON_INLINE PyObject* __Pyx_PyObject_GetSlice(PyObject* obj,
+        Py_ssize_t cstart, Py_ssize_t cstop,
+        PyObject** _py_start, PyObject** _py_stop, PyObject** _py_slice,
+        int has_cstart, int has_cstop, int wraparound) {
+    __Pyx_TypeName obj_type_name;
+#if CYTHON_USE_TYPE_SLOTS
+    PyMappingMethods* mp;
+#if PY_MAJOR_VERSION < 3
+    PySequenceMethods* ms = Py_TYPE(obj)->tp_as_sequence;
+    if (likely(ms && ms->sq_slice)) {
+        if (!has_cstart) {
+            if (_py_start && (*_py_start != Py_None)) {
+                cstart = __Pyx_PyIndex_AsSsize_t(*_py_start);
+                if ((cstart == (Py_ssize_t)-1) && PyErr_Occurred()) goto bad;
+            } else
+                cstart = 0;
+        }
+        if (!has_cstop) {
+            if (_py_stop && (*_py_stop != Py_None)) {
+                cstop = __Pyx_PyIndex_AsSsize_t(*_py_stop);
+                if ((cstop == (Py_ssize_t)-1) && PyErr_Occurred()) goto bad;
+            } else
+                cstop = PY_SSIZE_T_MAX;
+        }
+        if (wraparound && unlikely((cstart < 0) | (cstop < 0)) && likely(ms->sq_length)) {
+            Py_ssize_t l = ms->sq_length(obj);
+            if (likely(l >= 0)) {
+                if (cstop < 0) {
+                    cstop += l;
+                    if (cstop < 0) cstop = 0;
+                }
+                if (cstart < 0) {
+                    cstart += l;
+                    if (cstart < 0) cstart = 0;
+                }
+            } else {
+                if (!PyErr_ExceptionMatches(PyExc_OverflowError))
+                    goto bad;
+                PyErr_Clear();
+            }
+        }
+        return ms->sq_slice(obj, cstart, cstop);
+    }
+#else
+    CYTHON_UNUSED_VAR(wraparound);
+#endif
+    mp = Py_TYPE(obj)->tp_as_mapping;
+    if (likely(mp && mp->mp_subscript))
+#else
+    CYTHON_UNUSED_VAR(wraparound);
+#endif
+    {
+        PyObject* result;
+        PyObject *py_slice, *py_start, *py_stop;
+        if (_py_slice) {
+            py_slice = *_py_slice;
+        } else {
+            PyObject* owned_start = NULL;
+            PyObject* owned_stop = NULL;
+            if (_py_start) {
+                py_start = *_py_start;
+            } else {
+                if (has_cstart) {
+                    owned_start = py_start = PyInt_FromSsize_t(cstart);
+                    if (unlikely(!py_start)) goto bad;
+                } else
+                    py_start = Py_None;
+            }
+            if (_py_stop) {
+                py_stop = *_py_stop;
+            } else {
+                if (has_cstop) {
+                    owned_stop = py_stop = PyInt_FromSsize_t(cstop);
+                    if (unlikely(!py_stop)) {
+                        Py_XDECREF(owned_start);
+                        goto bad;
+                    }
+                } else
+                    py_stop = Py_None;
+            }
+            py_slice = PySlice_New(py_start, py_stop, Py_None);
+            Py_XDECREF(owned_start);
+            Py_XDECREF(owned_stop);
+            if (unlikely(!py_slice)) goto bad;
+        }
+#if CYTHON_USE_TYPE_SLOTS
+        result = mp->mp_subscript(obj, py_slice);
+#else
+        result = PyObject_GetItem(obj, py_slice);
+#endif
+        if (!_py_slice) {
+            Py_DECREF(py_slice);
+        }
+        return result;
+    }
+    obj_type_name = __Pyx_PyType_GetName(Py_TYPE(obj));
+    PyErr_Format(PyExc_TypeError,
+        "'" __Pyx_FMT_TYPENAME "' object is unsliceable", obj_type_name);
+    __Pyx_DECREF_TypeName(obj_type_name);
+bad:
+    return NULL;
+}
+
 /* PyDictVersioning */
 #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
 static CYTHON_INLINE PY_UINT64_T __Pyx_get_tp_dict_version(PyObject *obj) {
@@ -5062,196 +5946,12 @@ static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name)
     return __Pyx_GetBuiltinName(name);
 }
 
-/* GetItemInt */
-static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j) {
-    PyObject *r;
-    if (unlikely(!j)) return NULL;
-    r = PyObject_GetItem(o, j);
-    Py_DECREF(j);
-    return r;
-}
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
-                                                              CYTHON_NCP_UNUSED int wraparound,
-                                                              CYTHON_NCP_UNUSED int boundscheck) {
-#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    Py_ssize_t wrapped_i = i;
-    if (wraparound & unlikely(i < 0)) {
-        wrapped_i += PyList_GET_SIZE(o);
-    }
-    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyList_GET_SIZE(o)))) {
-        PyObject *r = PyList_GET_ITEM(o, wrapped_i);
-        Py_INCREF(r);
-        return r;
-    }
-    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
-#else
-    return PySequence_GetItem(o, i);
-#endif
-}
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
-                                                              CYTHON_NCP_UNUSED int wraparound,
-                                                              CYTHON_NCP_UNUSED int boundscheck) {
-#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    Py_ssize_t wrapped_i = i;
-    if (wraparound & unlikely(i < 0)) {
-        wrapped_i += PyTuple_GET_SIZE(o);
-    }
-    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyTuple_GET_SIZE(o)))) {
-        PyObject *r = PyTuple_GET_ITEM(o, wrapped_i);
-        Py_INCREF(r);
-        return r;
-    }
-    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
-#else
-    return PySequence_GetItem(o, i);
-#endif
-}
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i, int is_list,
-                                                     CYTHON_NCP_UNUSED int wraparound,
-                                                     CYTHON_NCP_UNUSED int boundscheck) {
-#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS && CYTHON_USE_TYPE_SLOTS
-    if (is_list || PyList_CheckExact(o)) {
-        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyList_GET_SIZE(o);
-        if ((!boundscheck) || (likely(__Pyx_is_valid_index(n, PyList_GET_SIZE(o))))) {
-            PyObject *r = PyList_GET_ITEM(o, n);
-            Py_INCREF(r);
-            return r;
-        }
-    }
-    else if (PyTuple_CheckExact(o)) {
-        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyTuple_GET_SIZE(o);
-        if ((!boundscheck) || likely(__Pyx_is_valid_index(n, PyTuple_GET_SIZE(o)))) {
-            PyObject *r = PyTuple_GET_ITEM(o, n);
-            Py_INCREF(r);
-            return r;
-        }
-    } else {
-        PyMappingMethods *mm = Py_TYPE(o)->tp_as_mapping;
-        PySequenceMethods *sm = Py_TYPE(o)->tp_as_sequence;
-        if (mm && mm->mp_subscript) {
-            PyObject *r, *key = PyInt_FromSsize_t(i);
-            if (unlikely(!key)) return NULL;
-            r = mm->mp_subscript(o, key);
-            Py_DECREF(key);
-            return r;
-        }
-        if (likely(sm && sm->sq_item)) {
-            if (wraparound && unlikely(i < 0) && likely(sm->sq_length)) {
-                Py_ssize_t l = sm->sq_length(o);
-                if (likely(l >= 0)) {
-                    i += l;
-                } else {
-                    if (!PyErr_ExceptionMatches(PyExc_OverflowError))
-                        return NULL;
-                    PyErr_Clear();
-                }
-            }
-            return sm->sq_item(o, i);
-        }
-    }
-#else
-    if (is_list || !PyMapping_Check(o)) {
-        return PySequence_GetItem(o, i);
-    }
-#endif
-    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
-}
-
-/* RaiseUnboundLocalError */
-static CYTHON_INLINE void __Pyx_RaiseUnboundLocalError(const char *varname) {
-    PyErr_Format(PyExc_UnboundLocalError, "local variable '%s' referenced before assignment", varname);
-}
-
-/* UnpackUnboundCMethod */
-static PyObject *__Pyx_SelflessCall(PyObject *method, PyObject *args, PyObject *kwargs) {
-    PyObject *result;
-    PyObject *selfless_args = PyTuple_GetSlice(args, 1, PyTuple_Size(args));
-    if (unlikely(!selfless_args)) return NULL;
-    result = PyObject_Call(method, selfless_args, kwargs);
-    Py_DECREF(selfless_args);
-    return result;
-}
-static PyMethodDef __Pyx_UnboundCMethod_Def = {
-     "CythonUnboundCMethod",
-     __PYX_REINTERPRET_FUNCION(PyCFunction, __Pyx_SelflessCall),
-     METH_VARARGS | METH_KEYWORDS,
-     NULL
-};
-static int __Pyx_TryUnpackUnboundCMethod(__Pyx_CachedCFunction* target) {
-    PyObject *method;
-    method = __Pyx_PyObject_GetAttrStr(target->type, *target->method_name);
-    if (unlikely(!method))
-        return -1;
-    target->method = method;
-#if CYTHON_COMPILING_IN_CPYTHON
-    #if PY_MAJOR_VERSION >= 3
-    if (likely(__Pyx_TypeCheck(method, &PyMethodDescr_Type)))
-    #else
-    if (likely(!__Pyx_CyOrPyCFunction_Check(method)))
-    #endif
-    {
-        PyMethodDescrObject *descr = (PyMethodDescrObject*) method;
-        target->func = descr->d_method->ml_meth;
-        target->flag = descr->d_method->ml_flags & ~(METH_CLASS | METH_STATIC | METH_COEXIST | METH_STACKLESS);
-    } else
-#endif
-#if CYTHON_COMPILING_IN_PYPY
-#else
-    if (PyCFunction_Check(method))
-#endif
-    {
-        PyObject *self;
-        int self_found;
-#if CYTHON_COMPILING_IN_LIMITED_API || CYTHON_COMPILING_IN_PYPY
-        self = PyObject_GetAttrString(method, "__self__");
-        if (!self) {
-            PyErr_Clear();
-        }
-#else
-        self = PyCFunction_GET_SELF(method);
-#endif
-        self_found = (self && self != Py_None);
-#if CYTHON_COMPILING_IN_LIMITED_API || CYTHON_COMPILING_IN_PYPY
-        Py_XDECREF(self);
-#endif
-        if (self_found) {
-            PyObject *unbound_method = PyCFunction_New(&__Pyx_UnboundCMethod_Def, method);
-            if (unlikely(!unbound_method)) return -1;
-            Py_DECREF(method);
-            target->method = unbound_method;
-        }
-    }
-    return 0;
-}
-
-/* CallUnboundCMethod0 */
-static PyObject* __Pyx__CallUnboundCMethod0(__Pyx_CachedCFunction* cfunc, PyObject* self) {
-    PyObject *args, *result = NULL;
-    if (unlikely(!cfunc->method) && unlikely(__Pyx_TryUnpackUnboundCMethod(cfunc) < 0)) return NULL;
-#if CYTHON_ASSUME_SAFE_MACROS
-    args = PyTuple_New(1);
-    if (unlikely(!args)) goto bad;
-    Py_INCREF(self);
-    PyTuple_SET_ITEM(args, 0, self);
-#else
-    args = PyTuple_Pack(1, self);
-    if (unlikely(!args)) goto bad;
-#endif
-    result = __Pyx_PyObject_Call(cfunc->method, args, NULL);
-    Py_DECREF(args);
-bad:
-    return result;
-}
-
-/* RaiseUnexpectedTypeError */
-static int
-__Pyx_RaiseUnexpectedTypeError(const char *expected, PyObject *obj)
-{
-    __Pyx_TypeName obj_type_name = __Pyx_PyType_GetName(Py_TYPE(obj));
-    PyErr_Format(PyExc_TypeError, "Expected %s, got " __Pyx_FMT_TYPENAME,
-                 expected, obj_type_name);
-    __Pyx_DECREF_TypeName(obj_type_name);
-    return 0;
+/* DivInt[long] */
+static CYTHON_INLINE long __Pyx_div_long(long a, long b) {
+    long q = a / b;
+    long r = a - q*b;
+    q -= ((r != 0) & ((r ^ b) < 0));
+    return q;
 }
 
 /* TupleAndListFromArray */
@@ -5675,32 +6375,191 @@ bad:
     return -1;
 }
 
-/* ArgTypeTest */
-static int __Pyx__ArgTypeTest(PyObject *obj, PyTypeObject *type, const char *name, int exact)
+/* RaiseUnexpectedTypeError */
+static int
+__Pyx_RaiseUnexpectedTypeError(const char *expected, PyObject *obj)
 {
-    __Pyx_TypeName type_name;
-    __Pyx_TypeName obj_type_name;
-    if (unlikely(!type)) {
-        PyErr_SetString(PyExc_SystemError, "Missing type object");
-        return 0;
-    }
-    else if (exact) {
-        #if PY_MAJOR_VERSION == 2
-        if ((type == &PyBaseString_Type) && likely(__Pyx_PyBaseString_CheckExact(obj))) return 1;
-        #endif
-    }
-    else {
-        if (likely(__Pyx_TypeCheck(obj, type))) return 1;
-    }
-    type_name = __Pyx_PyType_GetName(type);
-    obj_type_name = __Pyx_PyType_GetName(Py_TYPE(obj));
-    PyErr_Format(PyExc_TypeError,
-        "Argument '%.200s' has incorrect type (expected " __Pyx_FMT_TYPENAME
-        ", got " __Pyx_FMT_TYPENAME ")", name, type_name, obj_type_name);
-    __Pyx_DECREF_TypeName(type_name);
+    __Pyx_TypeName obj_type_name = __Pyx_PyType_GetName(Py_TYPE(obj));
+    PyErr_Format(PyExc_TypeError, "Expected %s, got " __Pyx_FMT_TYPENAME,
+                 expected, obj_type_name);
     __Pyx_DECREF_TypeName(obj_type_name);
     return 0;
 }
+
+/* GetItemInt */
+static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j) {
+    PyObject *r;
+    if (unlikely(!j)) return NULL;
+    r = PyObject_GetItem(o, j);
+    Py_DECREF(j);
+    return r;
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
+                                                              CYTHON_NCP_UNUSED int wraparound,
+                                                              CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    Py_ssize_t wrapped_i = i;
+    if (wraparound & unlikely(i < 0)) {
+        wrapped_i += PyList_GET_SIZE(o);
+    }
+    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyList_GET_SIZE(o)))) {
+        PyObject *r = PyList_GET_ITEM(o, wrapped_i);
+        Py_INCREF(r);
+        return r;
+    }
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+#else
+    return PySequence_GetItem(o, i);
+#endif
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
+                                                              CYTHON_NCP_UNUSED int wraparound,
+                                                              CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    Py_ssize_t wrapped_i = i;
+    if (wraparound & unlikely(i < 0)) {
+        wrapped_i += PyTuple_GET_SIZE(o);
+    }
+    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyTuple_GET_SIZE(o)))) {
+        PyObject *r = PyTuple_GET_ITEM(o, wrapped_i);
+        Py_INCREF(r);
+        return r;
+    }
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+#else
+    return PySequence_GetItem(o, i);
+#endif
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i, int is_list,
+                                                     CYTHON_NCP_UNUSED int wraparound,
+                                                     CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS && CYTHON_USE_TYPE_SLOTS
+    if (is_list || PyList_CheckExact(o)) {
+        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyList_GET_SIZE(o);
+        if ((!boundscheck) || (likely(__Pyx_is_valid_index(n, PyList_GET_SIZE(o))))) {
+            PyObject *r = PyList_GET_ITEM(o, n);
+            Py_INCREF(r);
+            return r;
+        }
+    }
+    else if (PyTuple_CheckExact(o)) {
+        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyTuple_GET_SIZE(o);
+        if ((!boundscheck) || likely(__Pyx_is_valid_index(n, PyTuple_GET_SIZE(o)))) {
+            PyObject *r = PyTuple_GET_ITEM(o, n);
+            Py_INCREF(r);
+            return r;
+        }
+    } else {
+        PyMappingMethods *mm = Py_TYPE(o)->tp_as_mapping;
+        PySequenceMethods *sm = Py_TYPE(o)->tp_as_sequence;
+        if (mm && mm->mp_subscript) {
+            PyObject *r, *key = PyInt_FromSsize_t(i);
+            if (unlikely(!key)) return NULL;
+            r = mm->mp_subscript(o, key);
+            Py_DECREF(key);
+            return r;
+        }
+        if (likely(sm && sm->sq_item)) {
+            if (wraparound && unlikely(i < 0) && likely(sm->sq_length)) {
+                Py_ssize_t l = sm->sq_length(o);
+                if (likely(l >= 0)) {
+                    i += l;
+                } else {
+                    if (!PyErr_ExceptionMatches(PyExc_OverflowError))
+                        return NULL;
+                    PyErr_Clear();
+                }
+            }
+            return sm->sq_item(o, i);
+        }
+    }
+#else
+    if (is_list || !PyMapping_Check(o)) {
+        return PySequence_GetItem(o, i);
+    }
+#endif
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+}
+
+/* TypeImport */
+#ifndef __PYX_HAVE_RT_ImportType_3_0_11
+#define __PYX_HAVE_RT_ImportType_3_0_11
+static PyTypeObject *__Pyx_ImportType_3_0_11(PyObject *module, const char *module_name, const char *class_name,
+    size_t size, size_t alignment, enum __Pyx_ImportType_CheckSize_3_0_11 check_size)
+{
+    PyObject *result = 0;
+    char warning[200];
+    Py_ssize_t basicsize;
+    Py_ssize_t itemsize;
+#if CYTHON_COMPILING_IN_LIMITED_API
+    PyObject *py_basicsize;
+    PyObject *py_itemsize;
+#endif
+    result = PyObject_GetAttrString(module, class_name);
+    if (!result)
+        goto bad;
+    if (!PyType_Check(result)) {
+        PyErr_Format(PyExc_TypeError,
+            "%.200s.%.200s is not a type object",
+            module_name, class_name);
+        goto bad;
+    }
+#if !CYTHON_COMPILING_IN_LIMITED_API
+    basicsize = ((PyTypeObject *)result)->tp_basicsize;
+    itemsize = ((PyTypeObject *)result)->tp_itemsize;
+#else
+    py_basicsize = PyObject_GetAttrString(result, "__basicsize__");
+    if (!py_basicsize)
+        goto bad;
+    basicsize = PyLong_AsSsize_t(py_basicsize);
+    Py_DECREF(py_basicsize);
+    py_basicsize = 0;
+    if (basicsize == (Py_ssize_t)-1 && PyErr_Occurred())
+        goto bad;
+    py_itemsize = PyObject_GetAttrString(result, "__itemsize__");
+    if (!py_itemsize)
+        goto bad;
+    itemsize = PyLong_AsSsize_t(py_itemsize);
+    Py_DECREF(py_itemsize);
+    py_itemsize = 0;
+    if (itemsize == (Py_ssize_t)-1 && PyErr_Occurred())
+        goto bad;
+#endif
+    if (itemsize) {
+        if (size % alignment) {
+            alignment = size % alignment;
+        }
+        if (itemsize < (Py_ssize_t)alignment)
+            itemsize = (Py_ssize_t)alignment;
+    }
+    if ((size_t)(basicsize + itemsize) < size) {
+        PyErr_Format(PyExc_ValueError,
+            "%.200s.%.200s size changed, may indicate binary incompatibility. "
+            "Expected %zd from C header, got %zd from PyObject",
+            module_name, class_name, size, basicsize+itemsize);
+        goto bad;
+    }
+    if (check_size == __Pyx_ImportType_CheckSize_Error_3_0_11 &&
+            ((size_t)basicsize > size || (size_t)(basicsize + itemsize) < size)) {
+        PyErr_Format(PyExc_ValueError,
+            "%.200s.%.200s size changed, may indicate binary incompatibility. "
+            "Expected %zd from C header, got %zd-%zd from PyObject",
+            module_name, class_name, size, basicsize, basicsize+itemsize);
+        goto bad;
+    }
+    else if (check_size == __Pyx_ImportType_CheckSize_Warn_3_0_11 && (size_t)basicsize > size) {
+        PyOS_snprintf(warning, sizeof(warning),
+            "%s.%s size changed, may indicate binary incompatibility. "
+            "Expected %zd from C header, got %zd from PyObject",
+            module_name, class_name, size, basicsize);
+        if (PyErr_WarnEx(NULL, warning, 0) < 0) goto bad;
+    }
+    return (PyTypeObject *)result;
+bad:
+    Py_XDECREF(result);
+    return NULL;
+}
+#endif
 
 /* Import */
 static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level) {
@@ -5758,49 +6617,6 @@ bad:
     Py_XDECREF(py_import);
     #endif
     return module;
-}
-
-/* ImportFrom */
-static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name) {
-    PyObject* value = __Pyx_PyObject_GetAttrStr(module, name);
-    if (unlikely(!value) && PyErr_ExceptionMatches(PyExc_AttributeError)) {
-        const char* module_name_str = 0;
-        PyObject* module_name = 0;
-        PyObject* module_dot = 0;
-        PyObject* full_name = 0;
-        PyErr_Clear();
-        module_name_str = PyModule_GetName(module);
-        if (unlikely(!module_name_str)) { goto modbad; }
-        module_name = PyUnicode_FromString(module_name_str);
-        if (unlikely(!module_name)) { goto modbad; }
-        module_dot = PyUnicode_Concat(module_name, __pyx_kp_u_);
-        if (unlikely(!module_dot)) { goto modbad; }
-        full_name = PyUnicode_Concat(module_dot, name);
-        if (unlikely(!full_name)) { goto modbad; }
-        #if PY_VERSION_HEX < 0x030700A1 || (CYTHON_COMPILING_IN_PYPY && PYPY_VERSION_NUM  < 0x07030400)
-        {
-            PyObject *modules = PyImport_GetModuleDict();
-            if (unlikely(!modules))
-                goto modbad;
-            value = PyObject_GetItem(modules, full_name);
-        }
-        #else
-        value = PyImport_GetModule(full_name);
-        #endif
-      modbad:
-        Py_XDECREF(full_name);
-        Py_XDECREF(module_dot);
-        Py_XDECREF(module_name);
-    }
-    if (unlikely(!value)) {
-        PyErr_Format(PyExc_ImportError,
-        #if PY_MAJOR_VERSION < 3
-            "cannot import name %.230s", PyString_AS_STRING(name));
-        #else
-            "cannot import name %S", name);
-        #endif
-    }
-    return value;
 }
 
 /* ImportDottedModule */
@@ -5881,7 +6697,7 @@ static PyObject *__Pyx_ImportDottedModule_WalkParts(PyObject *module, PyObject *
 #endif
 static PyObject *__Pyx__ImportDottedModule(PyObject *name, PyObject *parts_tuple) {
 #if PY_MAJOR_VERSION < 3
-    PyObject *module, *from_list, *star = __pyx_n_s__2;
+    PyObject *module, *from_list, *star = __pyx_n_s__3;
     CYTHON_UNUSED_VAR(parts_tuple);
     from_list = PyList_New(1);
     if (unlikely(!from_list))
@@ -7791,31 +8607,31 @@ raise_neg_overflow:
 }
 
 /* CIntToPy */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_unsigned_int(unsigned int value) {
 #ifdef __Pyx_HAS_GCC_DIAGNOSTIC
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion"
 #endif
-    const long neg_one = (long) -1, const_zero = (long) 0;
+    const unsigned int neg_one = (unsigned int) -1, const_zero = (unsigned int) 0;
 #ifdef __Pyx_HAS_GCC_DIAGNOSTIC
 #pragma GCC diagnostic pop
 #endif
     const int is_unsigned = neg_one > const_zero;
     if (is_unsigned) {
-        if (sizeof(long) < sizeof(long)) {
+        if (sizeof(unsigned int) < sizeof(long)) {
             return PyInt_FromLong((long) value);
-        } else if (sizeof(long) <= sizeof(unsigned long)) {
+        } else if (sizeof(unsigned int) <= sizeof(unsigned long)) {
             return PyLong_FromUnsignedLong((unsigned long) value);
 #ifdef HAVE_LONG_LONG
-        } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
+        } else if (sizeof(unsigned int) <= sizeof(unsigned PY_LONG_LONG)) {
             return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
 #endif
         }
     } else {
-        if (sizeof(long) <= sizeof(long)) {
+        if (sizeof(unsigned int) <= sizeof(long)) {
             return PyInt_FromLong((long) value);
 #ifdef HAVE_LONG_LONG
-        } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
+        } else if (sizeof(unsigned int) <= sizeof(PY_LONG_LONG)) {
             return PyLong_FromLongLong((PY_LONG_LONG) value);
 #endif
         }
@@ -7830,7 +8646,7 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
         }
 #elif !CYTHON_COMPILING_IN_LIMITED_API && PY_VERSION_HEX < 0x030d0000
         int one = 1; int little = (int)*(unsigned char *)&one;
-        return _PyLong_FromByteArray(bytes, sizeof(long),
+        return _PyLong_FromByteArray(bytes, sizeof(unsigned int),
                                      little, !is_unsigned);
 #else
         int one = 1; int little = (int)*(unsigned char *)&one;
@@ -7838,7 +8654,7 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
         PyObject *py_bytes = NULL, *arg_tuple = NULL, *kwds = NULL, *order_str = NULL;
         from_bytes = PyObject_GetAttrString((PyObject*)&PyLong_Type, "from_bytes");
         if (!from_bytes) return NULL;
-        py_bytes = PyBytes_FromStringAndSize((char*)bytes, sizeof(long));
+        py_bytes = PyBytes_FromStringAndSize((char*)bytes, sizeof(unsigned int));
         if (!py_bytes) goto limited_bad;
         order_str = PyUnicode_FromString(little ? "little" : "big");
         if (!order_str) goto limited_bad;
@@ -7859,6 +8675,273 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
         return result;
 #endif
     }
+}
+
+/* CIntFromPy */
+static CYTHON_INLINE unsigned int __Pyx_PyInt_As_unsigned_int(PyObject *x) {
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
+    const unsigned int neg_one = (unsigned int) -1, const_zero = (unsigned int) 0;
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic pop
+#endif
+    const int is_unsigned = neg_one > const_zero;
+#if PY_MAJOR_VERSION < 3
+    if (likely(PyInt_Check(x))) {
+        if ((sizeof(unsigned int) < sizeof(long))) {
+            __PYX_VERIFY_RETURN_INT(unsigned int, long, PyInt_AS_LONG(x))
+        } else {
+            long val = PyInt_AS_LONG(x);
+            if (is_unsigned && unlikely(val < 0)) {
+                goto raise_neg_overflow;
+            }
+            return (unsigned int) val;
+        }
+    }
+#endif
+    if (unlikely(!PyLong_Check(x))) {
+        unsigned int val;
+        PyObject *tmp = __Pyx_PyNumber_IntOrLong(x);
+        if (!tmp) return (unsigned int) -1;
+        val = __Pyx_PyInt_As_unsigned_int(tmp);
+        Py_DECREF(tmp);
+        return val;
+    }
+    if (is_unsigned) {
+#if CYTHON_USE_PYLONG_INTERNALS
+        if (unlikely(__Pyx_PyLong_IsNeg(x))) {
+            goto raise_neg_overflow;
+        } else if (__Pyx_PyLong_IsCompact(x)) {
+            __PYX_VERIFY_RETURN_INT(unsigned int, __Pyx_compact_upylong, __Pyx_PyLong_CompactValueUnsigned(x))
+        } else {
+            const digit* digits = __Pyx_PyLong_Digits(x);
+            assert(__Pyx_PyLong_DigitCount(x) > 1);
+            switch (__Pyx_PyLong_DigitCount(x)) {
+                case 2:
+                    if ((8 * sizeof(unsigned int) > 1 * PyLong_SHIFT)) {
+                        if ((8 * sizeof(unsigned long) > 2 * PyLong_SHIFT)) {
+                            __PYX_VERIFY_RETURN_INT(unsigned int, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if ((8 * sizeof(unsigned int) >= 2 * PyLong_SHIFT)) {
+                            return (unsigned int) (((((unsigned int)digits[1]) << PyLong_SHIFT) | (unsigned int)digits[0]));
+                        }
+                    }
+                    break;
+                case 3:
+                    if ((8 * sizeof(unsigned int) > 2 * PyLong_SHIFT)) {
+                        if ((8 * sizeof(unsigned long) > 3 * PyLong_SHIFT)) {
+                            __PYX_VERIFY_RETURN_INT(unsigned int, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if ((8 * sizeof(unsigned int) >= 3 * PyLong_SHIFT)) {
+                            return (unsigned int) (((((((unsigned int)digits[2]) << PyLong_SHIFT) | (unsigned int)digits[1]) << PyLong_SHIFT) | (unsigned int)digits[0]));
+                        }
+                    }
+                    break;
+                case 4:
+                    if ((8 * sizeof(unsigned int) > 3 * PyLong_SHIFT)) {
+                        if ((8 * sizeof(unsigned long) > 4 * PyLong_SHIFT)) {
+                            __PYX_VERIFY_RETURN_INT(unsigned int, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if ((8 * sizeof(unsigned int) >= 4 * PyLong_SHIFT)) {
+                            return (unsigned int) (((((((((unsigned int)digits[3]) << PyLong_SHIFT) | (unsigned int)digits[2]) << PyLong_SHIFT) | (unsigned int)digits[1]) << PyLong_SHIFT) | (unsigned int)digits[0]));
+                        }
+                    }
+                    break;
+            }
+        }
+#endif
+#if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX < 0x030C00A7
+        if (unlikely(Py_SIZE(x) < 0)) {
+            goto raise_neg_overflow;
+        }
+#else
+        {
+            int result = PyObject_RichCompareBool(x, Py_False, Py_LT);
+            if (unlikely(result < 0))
+                return (unsigned int) -1;
+            if (unlikely(result == 1))
+                goto raise_neg_overflow;
+        }
+#endif
+        if ((sizeof(unsigned int) <= sizeof(unsigned long))) {
+            __PYX_VERIFY_RETURN_INT_EXC(unsigned int, unsigned long, PyLong_AsUnsignedLong(x))
+#ifdef HAVE_LONG_LONG
+        } else if ((sizeof(unsigned int) <= sizeof(unsigned PY_LONG_LONG))) {
+            __PYX_VERIFY_RETURN_INT_EXC(unsigned int, unsigned PY_LONG_LONG, PyLong_AsUnsignedLongLong(x))
+#endif
+        }
+    } else {
+#if CYTHON_USE_PYLONG_INTERNALS
+        if (__Pyx_PyLong_IsCompact(x)) {
+            __PYX_VERIFY_RETURN_INT(unsigned int, __Pyx_compact_pylong, __Pyx_PyLong_CompactValue(x))
+        } else {
+            const digit* digits = __Pyx_PyLong_Digits(x);
+            assert(__Pyx_PyLong_DigitCount(x) > 1);
+            switch (__Pyx_PyLong_SignedDigitCount(x)) {
+                case -2:
+                    if ((8 * sizeof(unsigned int) - 1 > 1 * PyLong_SHIFT)) {
+                        if ((8 * sizeof(unsigned long) > 2 * PyLong_SHIFT)) {
+                            __PYX_VERIFY_RETURN_INT(unsigned int, long, -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if ((8 * sizeof(unsigned int) - 1 > 2 * PyLong_SHIFT)) {
+                            return (unsigned int) (((unsigned int)-1)*(((((unsigned int)digits[1]) << PyLong_SHIFT) | (unsigned int)digits[0])));
+                        }
+                    }
+                    break;
+                case 2:
+                    if ((8 * sizeof(unsigned int) > 1 * PyLong_SHIFT)) {
+                        if ((8 * sizeof(unsigned long) > 2 * PyLong_SHIFT)) {
+                            __PYX_VERIFY_RETURN_INT(unsigned int, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if ((8 * sizeof(unsigned int) - 1 > 2 * PyLong_SHIFT)) {
+                            return (unsigned int) ((((((unsigned int)digits[1]) << PyLong_SHIFT) | (unsigned int)digits[0])));
+                        }
+                    }
+                    break;
+                case -3:
+                    if ((8 * sizeof(unsigned int) - 1 > 2 * PyLong_SHIFT)) {
+                        if ((8 * sizeof(unsigned long) > 3 * PyLong_SHIFT)) {
+                            __PYX_VERIFY_RETURN_INT(unsigned int, long, -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if ((8 * sizeof(unsigned int) - 1 > 3 * PyLong_SHIFT)) {
+                            return (unsigned int) (((unsigned int)-1)*(((((((unsigned int)digits[2]) << PyLong_SHIFT) | (unsigned int)digits[1]) << PyLong_SHIFT) | (unsigned int)digits[0])));
+                        }
+                    }
+                    break;
+                case 3:
+                    if ((8 * sizeof(unsigned int) > 2 * PyLong_SHIFT)) {
+                        if ((8 * sizeof(unsigned long) > 3 * PyLong_SHIFT)) {
+                            __PYX_VERIFY_RETURN_INT(unsigned int, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if ((8 * sizeof(unsigned int) - 1 > 3 * PyLong_SHIFT)) {
+                            return (unsigned int) ((((((((unsigned int)digits[2]) << PyLong_SHIFT) | (unsigned int)digits[1]) << PyLong_SHIFT) | (unsigned int)digits[0])));
+                        }
+                    }
+                    break;
+                case -4:
+                    if ((8 * sizeof(unsigned int) - 1 > 3 * PyLong_SHIFT)) {
+                        if ((8 * sizeof(unsigned long) > 4 * PyLong_SHIFT)) {
+                            __PYX_VERIFY_RETURN_INT(unsigned int, long, -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if ((8 * sizeof(unsigned int) - 1 > 4 * PyLong_SHIFT)) {
+                            return (unsigned int) (((unsigned int)-1)*(((((((((unsigned int)digits[3]) << PyLong_SHIFT) | (unsigned int)digits[2]) << PyLong_SHIFT) | (unsigned int)digits[1]) << PyLong_SHIFT) | (unsigned int)digits[0])));
+                        }
+                    }
+                    break;
+                case 4:
+                    if ((8 * sizeof(unsigned int) > 3 * PyLong_SHIFT)) {
+                        if ((8 * sizeof(unsigned long) > 4 * PyLong_SHIFT)) {
+                            __PYX_VERIFY_RETURN_INT(unsigned int, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if ((8 * sizeof(unsigned int) - 1 > 4 * PyLong_SHIFT)) {
+                            return (unsigned int) ((((((((((unsigned int)digits[3]) << PyLong_SHIFT) | (unsigned int)digits[2]) << PyLong_SHIFT) | (unsigned int)digits[1]) << PyLong_SHIFT) | (unsigned int)digits[0])));
+                        }
+                    }
+                    break;
+            }
+        }
+#endif
+        if ((sizeof(unsigned int) <= sizeof(long))) {
+            __PYX_VERIFY_RETURN_INT_EXC(unsigned int, long, PyLong_AsLong(x))
+#ifdef HAVE_LONG_LONG
+        } else if ((sizeof(unsigned int) <= sizeof(PY_LONG_LONG))) {
+            __PYX_VERIFY_RETURN_INT_EXC(unsigned int, PY_LONG_LONG, PyLong_AsLongLong(x))
+#endif
+        }
+    }
+    {
+        unsigned int val;
+        int ret = -1;
+#if PY_VERSION_HEX >= 0x030d00A6 && !CYTHON_COMPILING_IN_LIMITED_API
+        Py_ssize_t bytes_copied = PyLong_AsNativeBytes(
+            x, &val, sizeof(val), Py_ASNATIVEBYTES_NATIVE_ENDIAN | (is_unsigned ? Py_ASNATIVEBYTES_UNSIGNED_BUFFER | Py_ASNATIVEBYTES_REJECT_NEGATIVE : 0));
+        if (unlikely(bytes_copied == -1)) {
+        } else if (unlikely(bytes_copied > (Py_ssize_t) sizeof(val))) {
+            goto raise_overflow;
+        } else {
+            ret = 0;
+        }
+#elif PY_VERSION_HEX < 0x030d0000 && !(CYTHON_COMPILING_IN_PYPY || CYTHON_COMPILING_IN_LIMITED_API) || defined(_PyLong_AsByteArray)
+        int one = 1; int is_little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&val;
+        ret = _PyLong_AsByteArray((PyLongObject *)x,
+                                    bytes, sizeof(val),
+                                    is_little, !is_unsigned);
+#else
+        PyObject *v;
+        PyObject *stepval = NULL, *mask = NULL, *shift = NULL;
+        int bits, remaining_bits, is_negative = 0;
+        int chunk_size = (sizeof(long) < 8) ? 30 : 62;
+        if (likely(PyLong_CheckExact(x))) {
+            v = __Pyx_NewRef(x);
+        } else {
+            v = PyNumber_Long(x);
+            if (unlikely(!v)) return (unsigned int) -1;
+            assert(PyLong_CheckExact(v));
+        }
+        {
+            int result = PyObject_RichCompareBool(v, Py_False, Py_LT);
+            if (unlikely(result < 0)) {
+                Py_DECREF(v);
+                return (unsigned int) -1;
+            }
+            is_negative = result == 1;
+        }
+        if (is_unsigned && unlikely(is_negative)) {
+            Py_DECREF(v);
+            goto raise_neg_overflow;
+        } else if (is_negative) {
+            stepval = PyNumber_Invert(v);
+            Py_DECREF(v);
+            if (unlikely(!stepval))
+                return (unsigned int) -1;
+        } else {
+            stepval = v;
+        }
+        v = NULL;
+        val = (unsigned int) 0;
+        mask = PyLong_FromLong((1L << chunk_size) - 1); if (unlikely(!mask)) goto done;
+        shift = PyLong_FromLong(chunk_size); if (unlikely(!shift)) goto done;
+        for (bits = 0; bits < (int) sizeof(unsigned int) * 8 - chunk_size; bits += chunk_size) {
+            PyObject *tmp, *digit;
+            long idigit;
+            digit = PyNumber_And(stepval, mask);
+            if (unlikely(!digit)) goto done;
+            idigit = PyLong_AsLong(digit);
+            Py_DECREF(digit);
+            if (unlikely(idigit < 0)) goto done;
+            val |= ((unsigned int) idigit) << bits;
+            tmp = PyNumber_Rshift(stepval, shift);
+            if (unlikely(!tmp)) goto done;
+            Py_DECREF(stepval); stepval = tmp;
+        }
+        Py_DECREF(shift); shift = NULL;
+        Py_DECREF(mask); mask = NULL;
+        {
+            long idigit = PyLong_AsLong(stepval);
+            if (unlikely(idigit < 0)) goto done;
+            remaining_bits = ((int) sizeof(unsigned int) * 8) - bits - (is_unsigned ? 0 : 1);
+            if (unlikely(idigit >= (1L << remaining_bits)))
+                goto raise_overflow;
+            val |= ((unsigned int) idigit) << bits;
+        }
+        if (!is_unsigned) {
+            if (unlikely(val & (((unsigned int) 1) << (sizeof(unsigned int) * 8 - 1))))
+                goto raise_overflow;
+            if (is_negative)
+                val = ~val;
+        }
+        ret = 0;
+    done:
+        Py_XDECREF(shift);
+        Py_XDECREF(mask);
+        Py_XDECREF(stepval);
+#endif
+        if (unlikely(ret))
+            return (unsigned int) -1;
+        return val;
+    }
+raise_overflow:
+    PyErr_SetString(PyExc_OverflowError,
+        "value too large to convert to unsigned int");
+    return (unsigned int) -1;
+raise_neg_overflow:
+    PyErr_SetString(PyExc_OverflowError,
+        "can't convert negative value to unsigned int");
+    return (unsigned int) -1;
 }
 
 /* CIntToPy */
@@ -7942,11 +9025,82 @@ __Pyx_PyType_GetName(PyTypeObject* tp)
     if (unlikely(name == NULL) || unlikely(!PyUnicode_Check(name))) {
         PyErr_Clear();
         Py_XDECREF(name);
-        name = __Pyx_NewRef(__pyx_n_s__5);
+        name = __Pyx_NewRef(__pyx_n_s__6);
     }
     return name;
 }
 #endif
+
+/* CIntToPy */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
+    const long neg_one = (long) -1, const_zero = (long) 0;
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic pop
+#endif
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(long) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(long) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(long) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        unsigned char *bytes = (unsigned char *)&value;
+#if !CYTHON_COMPILING_IN_LIMITED_API && PY_VERSION_HEX >= 0x030d00A4
+        if (is_unsigned) {
+            return PyLong_FromUnsignedNativeBytes(bytes, sizeof(value), -1);
+        } else {
+            return PyLong_FromNativeBytes(bytes, sizeof(value), -1);
+        }
+#elif !CYTHON_COMPILING_IN_LIMITED_API && PY_VERSION_HEX < 0x030d0000
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        return _PyLong_FromByteArray(bytes, sizeof(long),
+                                     little, !is_unsigned);
+#else
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        PyObject *from_bytes, *result = NULL;
+        PyObject *py_bytes = NULL, *arg_tuple = NULL, *kwds = NULL, *order_str = NULL;
+        from_bytes = PyObject_GetAttrString((PyObject*)&PyLong_Type, "from_bytes");
+        if (!from_bytes) return NULL;
+        py_bytes = PyBytes_FromStringAndSize((char*)bytes, sizeof(long));
+        if (!py_bytes) goto limited_bad;
+        order_str = PyUnicode_FromString(little ? "little" : "big");
+        if (!order_str) goto limited_bad;
+        arg_tuple = PyTuple_Pack(2, py_bytes, order_str);
+        if (!arg_tuple) goto limited_bad;
+        if (!is_unsigned) {
+            kwds = PyDict_New();
+            if (!kwds) goto limited_bad;
+            if (PyDict_SetItemString(kwds, "signed", __Pyx_NewRef(Py_True))) goto limited_bad;
+        }
+        result = PyObject_Call(from_bytes, arg_tuple, kwds);
+        limited_bad:
+        Py_XDECREF(kwds);
+        Py_XDECREF(arg_tuple);
+        Py_XDECREF(order_str);
+        Py_XDECREF(py_bytes);
+        Py_XDECREF(from_bytes);
+        return result;
+#endif
+    }
+}
 
 /* CIntFromPy */
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *x) {
@@ -8377,6 +9531,44 @@ static int __Pyx_check_binary_version(unsigned long ct_version, unsigned long rt
         return PyErr_WarnEx(NULL, message, 1);
     }
 }
+
+/* FunctionImport */
+#ifndef __PYX_HAVE_RT_ImportFunction_3_0_11
+#define __PYX_HAVE_RT_ImportFunction_3_0_11
+static int __Pyx_ImportFunction_3_0_11(PyObject *module, const char *funcname, void (**f)(void), const char *sig) {
+    PyObject *d = 0;
+    PyObject *cobj = 0;
+    union {
+        void (*fp)(void);
+        void *p;
+    } tmp;
+    d = PyObject_GetAttrString(module, (char *)"__pyx_capi__");
+    if (!d)
+        goto bad;
+    cobj = PyDict_GetItemString(d, funcname);
+    if (!cobj) {
+        PyErr_Format(PyExc_ImportError,
+            "%.200s does not export expected C function %.200s",
+                PyModule_GetName(module), funcname);
+        goto bad;
+    }
+    if (!PyCapsule_IsValid(cobj, sig)) {
+        PyErr_Format(PyExc_TypeError,
+            "C function %.200s.%.200s has wrong signature (expected %.500s, got %.500s)",
+             PyModule_GetName(module), funcname, sig, PyCapsule_GetName(cobj));
+        goto bad;
+    }
+    tmp.p = PyCapsule_GetPointer(cobj, sig);
+    *f = tmp.fp;
+    if (!(*f))
+        goto bad;
+    Py_DECREF(d);
+    return 0;
+bad:
+    Py_XDECREF(d);
+    return -1;
+}
+#endif
 
 /* InitStrings */
 #if PY_MAJOR_VERSION >= 3

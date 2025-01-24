@@ -108,11 +108,8 @@ class Bot():
                         likelihood = 0.0
             else:
                 if count_seen > 0:
-                    # If the rank is present in opp_hand, and bounty wasn't hit, this rank cannot be the bounty
                     likelihood = 0.0
                 else:
-                    # Probability that no cards in opponent's hand are of this rank
-                    # P(not hit | rank) = C(remaining_deck_size - remaining_count, 2) / C(remaining_deck_size, 2)
                     try:
                         combinations_total = math.comb(remaining_deck_size, 2)
                         combinations_without_rank = math.comb(remaining_deck_size - remaining_count, 2)
@@ -130,17 +127,14 @@ class Bot():
         total_unnormalized = sum(unnormalized_probs)
         
         if total_unnormalized == 0:
-            # Avoid division by zero; return the current probabilities unchanged
-            # Alternatively, you could reset to uniform probabilities or handle as needed
-            # print("Warning: Total unnormalized probability is zero. Returning prior probabilities unchanged.")
             return opp_bounty_prob.copy()
         
         # Normalize the probabilities so that they sum to 1
         updated_prob = np.array(unnormalized_probs, dtype=np.float64)
         updated_prob /= total_unnormalized
 
-        for rank, prob in zip(ranks, updated_prob):
-            print(f"Rank {rank}: {prob:.2%}")
+        # for rank, prob in zip(ranks, updated_prob):
+        #     print(f"Rank {rank}: {prob:.2%}")
         return updated_prob
 
 
@@ -175,14 +169,6 @@ class Bot():
         # global past_bankroll
         # past_bankroll += my_delta
 
-    # def generate_possible_hands(self, deck):
-    #     ls = []
-    #     for hand in combinations(deck.cards, 2):
-    #         temp = []
-    #         for card in hand:
-    #             temp.append(card)
-    #             ls.append([temp])
-    #     return ls
 
     def generate_possible_hands(self, deck, my_hand):
         ls = []
@@ -191,37 +177,20 @@ class Bot():
                 if not (card1 == card2 or card1 in my_hand or card2 in my_hand):
                     ls.append((card1, card2))
         return ls
-
-
-    def build_prefix_sums(self, hands, weights):
-        prefix_sums = []
-        sum = 0
-        for hand in hands:
-            sum += weights[hand]
-            prefix_sums.append(sum)
-        return prefix_sums
-
-
-    def pick_weighted_two_card_hand(self, prefix_sums, hands):
-        r = random.random()
-        i = bisect.bisect_left(prefix_sums, r)
-        opp_cards = []
-        for card in hands[i]:
-            opp_cards.append(card)
-        return opp_cards
     
 
     def weight_hands(self, hands, board_cards):
         weights = {}
         # keep track of rank and suit
-        rank_count = [0] * 13
-        suit_count = [0] * 4
-        for cards in board_cards:
-                rank_count[cards.rank] += 1
-                suit_count[cards.suit] += 1
+        
 
         for hand in hands:
             # these are indices
+            rank_count = [0] * 13
+            suit_count = [0] * 4
+            for cards in board_cards:
+                rank_count[cards.rank] += 1
+                suit_count[cards.suit] += 1
             rank1 = hand[0].rank
             rank2 = hand[1].rank
             suit1 = hand[0].suit
@@ -231,41 +200,41 @@ class Bot():
             suit_count[suit1] += 1
             suit_count[suit2] += 1
 
-            weights[hand] = 1
+            weights[hand] = 1.0
 
             #pockets
             pocket = False
             if rank1 == rank2:
-                weights[hand] = math.floor(10 * (1.4+rank1/12))
+                weights[hand] = math.floor(1.4+rank1/12)
                 pocket = True
             #quads
             if (rank_count[rank1] == 4 or rank_count[rank2] == 4):
-                weights[hand] = 250
+                weights[hand] = 25.0
             trips = False
             tripIndex = -1
             #trips
             if (rank_count[rank1] == 3 or rank_count[rank2] == 3):
-                weights[hand] = 40 if pocket else 35
+                weights[hand] = 4.5 if pocket else 4.0
                 trips = True
                 tripIndex = rank1 if rank_count[rank1] == 3 else rank2
             for card in board_cards:
                 # full house
                 if trips and (rank_count[card.rank] >= 2 and card.rank != tripIndex):
-                    weights[hand] = 150
+                    weights[hand] = 15.0
                     break
                 #pair 
                 if rank1 == card.rank:
-                    weights[hand] *= math.floor(10 * (1.2+rank1/20))
+                    weights[hand] *= math.floor(1.2+rank1/20)
                 if rank2 == card.rank:
-                    weights[hand] *= math.floor(10 * (1.2+rank1/20))
+                    weights[hand] *= math.floor(1.2+rank1/20)
 
             # straight draw and flush draw
             flush = False
             for suit in range(4):
                 if suit_count[suit] == 4:
-                    weights[hand] *= 30 if len(board_cards) == 3 else 20
+                    weights[hand] *= 3.5 if len(board_cards) == 3 else 2.4
                 elif suit_count[suit] == 5:
-                    weights[hand] = 100
+                    weights[hand] = 10.0
                     flush = True
             psums = []
             psums.append(0)
@@ -274,9 +243,9 @@ class Bot():
             for i in range(5,14):
                 val = psums[i] - psums[i-5]
                 if val == 4:
-                    weights[hand] *= 16 if len(board_cards) == 3 else 13
+                    weights[hand] *= 1.6 if len(board_cards) == 3 else 1.3
                 elif val == 5:
-                    weights[hand] = 75 if not flush else 350
+                    weights[hand] = 8.0 if not flush else 35.0
         return weights
 
 
@@ -294,11 +263,11 @@ class Bot():
         return hands
 
 
-    def normalize_weights(self, weights):
-        total_weight = sum(weights.values())
-        for hand in weights:
-            weights[hand] /= total_weight
-        return weights
+    # def normalize_weights(self, weights):
+    #     total_weight = sum(weights.values())
+    #     for hand in weights:
+    #         weights[hand] /= total_weight
+    #     return weights
 
 
     def estimate_opponent_range(self, my_hand, board_cards, action):
@@ -307,68 +276,11 @@ class Bot():
         weights = self.weight_hands(hands, board_cards)
         hands = self.update_range_based_on_action(hands, weights, action)
         weights = {hand: weights[hand] for hand in hands}  # Filter weights for remaining hands
-        normalized_weights = self.normalize_weights(weights)
-        return hands, normalized_weights
+        # normalized_weights = self.normalize_weights(weights)
+        # return normalized_weights
+        return weights
 
 
-    def get_equity_and_opp_bounty_prob(self, my_cards, hands, weights, board_cards, NUM_SIMULATIONS):
-        """
-        Returns the equity (probability of winning + 0.5 * probability of tying)
-        for 'my_cards' against the weighted 'opponent_range', by performing 
-        a Monte Carlo over unknown board runouts.
-        """
-        
-        wins = 0
-        ties = 0
-        opp_bounty_hit_total = 0.0
-        needed_board_cards = 5-len(board_cards)
-        prefix_sums = self.build_prefix_sums(hands, weights)
-        
-        for _ in range(NUM_SIMULATIONS):
-            opp_cards = self.pick_weighted_two_card_hand(prefix_sums, hands)
-            all_cards = my_cards+opp_cards+board_cards
-
-            deck = val.Deck()
-            deck.shuffle()
-
-            # deal remaining board cards without any repeats
-            board = []
-            counter = 0
-            for i in range(52):
-                card = deck.cards[i]
-                if card not in all_cards:
-                    board.append(card)
-                    counter += 1
-                if counter == needed_board_cards:
-                    break
-                    
-            my_hand = my_cards+board+board_cards
-            opp_hand = opp_cards+board+board_cards
-
-            #calculate opp_bounty_prob
-            opp_bounty_hit_prob = 0.0
-            opp_rank_counts = [0] * 13
-            for card in opp_hand:
-                r = card.rank
-                if opp_rank_counts[r] == 0:
-                    opp_rank_counts[r] = 1
-                    opp_bounty_hit_prob += opp_bounty_prob[r]
-            opp_bounty_hit_total += opp_bounty_hit_prob
-
-            # evaluate my_hand vs opp_hand
-            my_eval = val.evaluate(my_hand)
-            opp_eval = val.evaluate(opp_hand)
-            if (my_eval > opp_eval):
-                wins += 1
-            elif (my_eval == opp_eval):
-                ties += 1
-
-        # Equity = wins + ties/2
-        equity = (wins + 0.5 * ties) / NUM_SIMULATIONS
-        opp_bounty_hit = opp_bounty_hit_total / NUM_SIMULATIONS
-        return equity, opp_bounty_hit
-
-    
     def calculate_pot_odds(self, is_raise, my_contribution, opp_contribution, cost, my_bounty_hit, equity, opp_bounty_hit):
         
         # Compute expected_loss:
@@ -445,21 +357,13 @@ class Bot():
             action = 'raise'
         else:
             action = 'call'
-        hands, weights = self.estimate_opponent_range(MY_HAND, BOARD_CARDS, action)
+        weights = self.estimate_opponent_range(MY_HAND, BOARD_CARDS, action)
+        print(weights)
 
-        # global opp_bounty_prob
-        # equity, opp_bounty_hit = self.get_equity_and_opp_bounty_prob(MY_CARDS, hands, weights, BOARD_CARDS, NUM_SIMULATIONS)
-        # deck = val.Deck()
-        # for card in my_hand:
-        #     deck.cards.remove(card)
-        # opponent_range = self.generate_possible_hands(deck)
         equity, opp_bounty_hit = py_hand_vs_weighted_range_monte_carlo(MY_CARDS, weights, BOARD_CARDS, opp_bounty_prob, NUM_SIMULATIONS)
-        # opp_bounty_hit = 1/13
         print(f"Equity: {equity}")
         print(f"Opponent bounty hit: {opp_bounty_hit}")
 
-        print(f"Equity: {equity:.3f}")
-        print(f"Probability opponent bounty is hit: {opp_bounty_hit:.3f}")
         if CheckAction in legal_actions: 
             check_pot_odds = self.calculate_pot_odds(False, my_contribution, opp_contribution, continue_cost, my_bounty_hit, equity, opp_bounty_hit)
         if CallAction in legal_actions:
